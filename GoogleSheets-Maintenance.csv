@@ -1,0 +1,9 @@
+ID,Machine,Date Prévue,Type,Responsable,Description,Statut,Date Effective
+1,Tour à métaux T-200,2025-01-20,Quotidienne,Opérateurs Atelier,Nettoyage et vérification des niveaux d'huile,Planifiée,
+2,Fraiseuse universelle FU-350,2025-01-22,Hebdomadaire,Technicien Atelier,Vérification courroies et graissage général,Planifiée,
+3,Tour CNC TC-500,2025-02-01,Mensuelle,Service Maintenance,Contrôle de précision et calibration complète,Planifiée,
+4,Rectifieuse plane RP-100,2025-01-18,Corrective,Technicien Senior,Remplacement du disque de rectification usé,En cours,
+5,Poste à souder MIG-250,2025-01-25,Hebdomadaire,Opérateur Soudure,Nettoyage et vérification câbles et torche,Planifiée,
+6,Affûteuse universelle AU-75,2025-01-16,Corrective,Service Maintenance,Réparation du moteur défaillant,En cours,
+7,Scie à ruban SR-300,2025-01-19,Quotidienne,Opérateurs Atelier,Changement de la lame et nettoyage,Planifiée,
+8,Plieuse hydraulique PH-120,2025-01-30,Mensuelle,Technicien Hydraulique,Vérification circuit hydraulique et remplacement huile,Planifiée,

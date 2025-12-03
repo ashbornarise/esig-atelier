@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration Google Sheets - ESIG Atelier</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a365d, #2c5282);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 15px;
+            border-left: 5px solid #2563eb;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: #2563eb;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .step h2 {
+            display: inline-block;
+            color: #1a365d;
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 30px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #2563eb;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .code-box {
+            background: #1f2937;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .file-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .file-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .file-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .file-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .screenshot {
+            width: 100%;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        ol {
+            margin-left: 30px;
+            margin-top: 15px;
+        }
+
+        ol li {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .important {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Configuration Google Sheets</h1>
+            <p>Guide Super Simple - ESIG Atelier</p>
+        </header>
+
+        <div class="content">
+            <!-- MÉTHODE RAPIDE -->
+            <div class="alert alert-success">
+                <span style="font-size: 3em;">🚀</span>
+                <div>
+                    <strong style="font-size: 1.3em;">MÉTHODE ULTRA-RAPIDE !</strong><br><br>
+                    J'ai créé 5 fichiers CSV prêts à importer directement dans Google Sheets !<br>
+                    <strong>Temps total : 5 minutes ⏱️</strong>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 1 -->
+            <div class="step">
+                <span class="step-number">1</span>
+                <h2>Créer le Google Sheet</h2>
+                <div style="margin-top: 20px;">
+                    <ol>
+                        <li>Allez sur <strong>Google Sheets</strong></li>
+                        <li>Cliquez sur le bouton <strong>"+ Vide"</strong></li>
+                        <li>Nommez le document : <strong>"ESIG - Données Atelier"</strong></li>
+                    </ol>
+
+                    <a href="https://sheets.google.com" target="_blank" class="btn">
+                        📊 Ouvrir Google Sheets
+                    </a>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 2 -->
+            <div class="step">
+                <span class="step-number">2</span>
+                <h2>Importer les Fichiers CSV</h2>
+                <div style="margin-top: 20px;">
+                    
+                    <div class="alert alert-info">
+                        <span>💡</span>
+                        <div>
+                            <strong>Vous avez 5 fichiers CSV à importer :</strong>
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li>GoogleSheets-TP.csv</li>
+                                <li>GoogleSheets-Machines.csv</li>
+                                <li>GoogleSheets-Stock.csv</li>
+                                <li>GoogleSheets-Maintenance.csv</li>
+                                <li>GoogleSheets-Utilisateurs.csv</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Pour CHAQUE fichier CSV :</h3>
+                    
+                    <ol>
+                        <li><strong>Fichier</strong> → <strong>Importer</strong></li>
+                        <li>Onglet <strong>"Importer un fichier"</strong></li>
+                        <li>Cliquez sur <strong>"Parcourir"</strong></li>
+                        <li>Sélectionnez le fichier CSV (ex: GoogleSheets-TP.csv)</li>
+                        <li>Dans "Emplacement de l'importation", choisissez :<br>
+                            <strong>"Insérer une nouvelle feuille"</strong></li>
+                        <li>Cliquez sur <strong>"Importer les données"</strong></li>
+                    </ol>
+
+                    <div class="important">
+                        <strong>⚠️ IMPORTANT :</strong> Répétez cette opération pour les 5 fichiers CSV !
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 3 -->
+            <div class="step">
+                <span class="step-number">3</span>
+                <h2>Renommer les Feuilles</h2>
+                <div style="margin-top: 20px;">
+                    <p>Les feuilles importées ont des noms longs. Renommez-les :</p>
+
+                    <ol style="margin-top: 15px;">
+                        <li><strong>GoogleSheets-TP</strong> → Renommer en <strong>"TP"</strong></li>
+                        <li><strong>GoogleSheets-Machines</strong> → Renommer en <strong>"Machines"</strong></li>
+                        <li><strong>GoogleSheets-Stock</strong> → Renommer en <strong>"Stock"</strong></li>
+                        <li><strong>GoogleSheets-Maintenance</strong> → Renommer en <strong>"Maintenance"</strong></li>
+                        <li><strong>GoogleSheets-Utilisateurs</strong> → Renommer en <strong>"Utilisateurs"</strong></li>
+                    </ol>
+
+                    <div class="alert alert-info" style="margin-top: 20px;">
+                        <span>💡</span>
+                        <div>
+                            <strong>Comment renommer :</strong><br>
+                            Clic droit sur le nom de la feuille en bas → "Renommer"
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 4 -->
+            <div class="step">
+                <span class="step-number">4</span>
+                <h2>Supprimer la Feuille Vide</h2>
+                <div style="margin-top: 20px;">
+                    <p>Google Sheets a créé une feuille vide "Feuille 1" au début.</p>
+                    
+                    <ol style="margin-top: 15px;">
+                        <li>Clic droit sur <strong>"Feuille 1"</strong> en bas</li>
+                        <li>Cliquez sur <strong>"Supprimer"</strong></li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 5 -->
+            <div class="step">
+                <span class="step-number">5</span>
+                <h2>Obtenir l'ID du Sheet</h2>
+                <div style="margin-top: 20px;">
+                    <p>L'ID se trouve dans l'URL de votre Google Sheet :</p>
+
+                    <div class="code-box">https://docs.google.com/spreadsheets/d/<span style="color: #f59e0b; font-weight: bold;">[VOTRE_ID_ICI]</span>/edit</div>
+
+                    <p style="margin-top: 15px;"><strong>Exemple :</strong></p>
+                    <div class="code-box">https://docs.google.com/spreadsheets/d/<span style="color: #f59e0b; font-weight: bold;">1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms</span>/edit</div>
+
+                    <p style="margin-top: 20px; font-size: 1.1em;"><strong>👉 Copiez cet ID, vous en aurez besoin !</strong></p>
+                </div>
+            </div>
+
+            <!-- ÉTAPE 6 -->
+            <div class="step">
+                <span class="step-number">6</span>
+                <h2>Configurer dans l'Application</h2>
+                <div style="margin-top: 20px;">
+                    <ol>
+                        <li>Ouvrez votre application : <code>votre-url/admin.html</code></li>
+                        <li>Connectez-vous avec :
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Utilisateur : <strong>admin</strong></li>
+                                <li>Mot de passe : <strong>esig2025</strong></li>
+                            </ul>
+                        </li>
+                        <li>Cliquez sur l'onglet <strong>"⚙️ Paramètres"</strong></li>
+                        <li>Dans "Configuration Google Sheets", collez votre <strong>Spreadsheet ID</strong></li>
+                        <li>Cliquez sur <strong>"💾 Enregistrer la configuration"</strong></li>
+                    </ol>
+
+                    <div class="alert alert-success" style="margin-top: 20px;">
+                        <span>✓</span>
+                        <div>
+                            <strong>Bravo !</strong> Votre application est maintenant connectée à Google Sheets.<br>
+                            Toutes les données seront automatiquement sauvegardées dans le cloud !
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VÉRIFICATION -->
+            <div class="step">
+                <span class="step-number">✓</span>
+                <h2>Vérification Finale</h2>
+                <div style="margin-top: 20px;">
+                    <p><strong>Votre Google Sheet doit avoir :</strong></p>
+                    
+                    <ul class="checklist" style="margin-top: 15px;">
+                        <li>5 onglets : TP, Machines, Stock, Maintenance, Utilisateurs</li>
+                        <li>Chaque onglet a des en-têtes dans la première ligne</li>
+                        <li>Des données d'exemple dans chaque onglet</li>
+                        <li>Pas de feuille vide</li>
+                        <li>L'ID est copié et configuré dans l'app</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- ALTERNATIVE -->
+            <div style="margin-top: 40px; padding: 30px; background: #f9fafb; border-radius: 15px; border-left: 5px solid #f59e0b;">
+                <h2 style="color: #1a365d; margin-bottom: 20px;">📋 ALTERNATIVE : Copier-Coller Manuel</h2>
+                
+                <p>Si l'importation CSV ne fonctionne pas, vous pouvez copier-coller directement :</p>
+
+                <div style="margin-top: 20px;">
+                    <h3 style="color: #1a365d; margin-bottom: 10px;">Feuille TP :</h3>
+                    <button class="btn" onclick="copyToClipboard('tp')">📋 Copier les en-têtes TP</button>
+                    <div id="tp" class="code-box" style="margin-top: 10px;">ID	Date	Heure Début	Heure Fin	Machine	Type TP	Membres	EPI	Description	État	Timestamp</div>
+
+                    <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Feuille Machines :</h3>
+                    <button class="btn" onclick="copyToClipboard('machines')">📋 Copier les en-têtes Machines</button>
+                    <div id="machines" class="code-box" style="margin-top: 10px;">ID	Nom	Référence	Puissance	Statut	Heures Utilisation	Dernière Maintenance</div>
+
+                    <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Feuille Stock :</h3>
+                    <button class="btn" onclick="copyToClipboard('stock')">📋 Copier les en-têtes Stock</button>
+                    <div id="stock" class="code-box" style="margin-top: 10px;">ID	Article	Minimum	Actuel	Catégorie	Urgent	Dernière MAJ</div>
+
+                    <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Feuille Maintenance :</h3>
+                    <button class="btn" onclick="copyToClipboard('maintenance')">📋 Copier les en-têtes Maintenance</button>
+                    <div id="maintenance" class="code-box" style="margin-top: 10px;">ID	Machine	Date Prévue	Type	Responsable	Description	Statut	Date Effective</div>
+
+                    <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Feuille Utilisateurs :</h3>
+                    <button class="btn" onclick="copyToClipboard('utilisateurs')">📋 Copier les en-têtes Utilisateurs</button>
+                    <div id="utilisateurs" class="code-box" style="margin-top: 10px;">ID	Nom	Email	Niveau	Dernière Connexion	Role</div>
+                </div>
+
+                <div class="alert alert-info" style="margin-top: 20px;">
+                    <span>💡</span>
+                    <div>
+                        <strong>Comment utiliser :</strong><br>
+                        1. Cliquez sur "Copier"<br>
+                        2. Allez dans votre Google Sheet<br>
+                        3. Sélectionnez la cellule A1<br>
+                        4. Collez (Ctrl+V)
+                    </div>
+                </div>
+            </div>
+
+            <!-- FICHIERS CSV -->
+            <div style="margin-top: 40px; padding: 30px; background: #dbeafe; border-radius: 15px;">
+                <h2 style="color: #1a365d; margin-bottom: 20px;">📁 Fichiers CSV Disponibles</h2>
+                
+                <div class="file-list">
+                    <div class="file-card">
+                        <div class="file-icon">📝</div>
+                        <div style="font-weight: bold; margin-bottom: 10px;">TP</div>
+                        <a href="GoogleSheets-TP.csv" download class="btn btn-success">Télécharger</a>
+                    </div>
+
+                    <div class="file-card">
+                        <div class="file-icon">🏭</div>
+                        <div style="font-weight: bold; margin-bottom: 10px;">Machines</div>
+                        <a href="GoogleSheets-Machines.csv" download class="btn btn-success">Télécharger</a>
+                    </div>
+
+                    <div class="file-card">
+                        <div class="file-icon">📦</div>
+                        <div style="font-weight: bold; margin-bottom: 10px;">Stock</div>
+                        <a href="GoogleSheets-Stock.csv" download class="btn btn-success">Télécharger</a>
+                    </div>
+
+                    <div class="file-card">
+                        <div class="file-icon">🔧</div>
+                        <div style="font-weight: bold; margin-bottom: 10px;">Maintenance</div>
+                        <a href="GoogleSheets-Maintenance.csv" download class="btn btn-success">Télécharger</a>
+                    </div>
+
+                    <div class="file-card">
+                        <div class="file-icon">👥</div>
+                        <div style="font-weight: bold; margin-bottom: 10px;">Utilisateurs</div>
+                        <a href="GoogleSheets-Utilisateurs.csv" download class="btn btn-success">Télécharger</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUCCESS -->
+            <div class="alert alert-success" style="margin-top: 40px; padding: 30px; font-size: 1.2em;">
+                <span style="font-size: 3em;">🎉</span>
+                <div>
+                    <strong style="font-size: 1.3em;">Configuration Terminée !</strong><br><br>
+                    Votre application ESIG est maintenant connectée à Google Sheets !<br>
+                    Toutes les données seront automatiquement sauvegardées dans le cloud. ☁️
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copié !';
+                btn.style.background = '#10b981';
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#2563eb';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

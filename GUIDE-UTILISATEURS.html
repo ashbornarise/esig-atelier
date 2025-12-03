@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guide - Gestion des Utilisateurs ESIG</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a365d, #2c5282);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f9fafb;
+            border-radius: 15px;
+            border-left: 5px solid #2563eb;
+        }
+
+        .section h2 {
+            color: #1a365d;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left: 4px solid #2563eb;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border-left: 4px solid #f59e0b;
+        }
+
+        .method {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .method h3 {
+            color: #1a365d;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-number {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            background: #2563eb;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            font-weight: bold;
+        }
+
+        ol {
+            margin-left: 30px;
+            margin-top: 15px;
+        }
+
+        ol li {
+            margin: 10px 0;
+            font-size: 1.05em;
+        }
+
+        .code-box {
+            background: #1f2937;
+            color: #10b981;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            margin: 10px 10px 10px 0;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-success {
+            background: #10b981;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #1a365d;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-etudiant {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-enseignant {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-technicien {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-admin {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .checklist {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+
+        .checklist li {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checklist li:before {
+            content: "✓";
+            display: inline-block;
+            width: 25px;
+            height: 25px;
+            background: #10b981;
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 25px;
+            font-weight: bold;
+        }
+
+        .example-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>👥 Gestion des Utilisateurs</h1>
+            <p>Guide Complet - ESIG Global Success</p>
+        </header>
+
+        <div class="content">
+            <!-- INTRODUCTION -->
+            <div class="alert alert-success">
+                <span style="font-size: 3em;">🎉</span>
+                <div>
+                    <strong style="font-size: 1.3em;">Système de Gestion des Utilisateurs</strong><br><br>
+                    Votre application dispose maintenant d'un système complet pour créer et gérer les comptes de tous vos utilisateurs : étudiants, enseignants, techniciens et administrateurs !
+                </div>
+            </div>
+
+            <!-- ROLES -->
+            <div class="section">
+                <h2>👤 Types d'Utilisateurs (Rôles)</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Rôle</th>
+                            <th>Icône</th>
+                            <th>Permissions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="role-badge badge-etudiant">🎓 Étudiant</span></td>
+                            <td>🎓</td>
+                            <td>
+                                • Enregistrer des TP<br>
+                                • Consulter les machines<br>
+                                • Voir son historique
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="role-badge badge-enseignant">👨‍🏫 Enseignant</span></td>
+                            <td>👨‍🏫</td>
+                            <td>
+                                • Toutes les permissions étudiants<br>
+                                • Consulter tous les TP<br>
+                                • Voir les rapports<br>
+                                • Exporter les données
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="role-badge badge-technicien">🔧 Technicien</span></td>
+                            <td>🔧</td>
+                            <td>
+                                • Gérer le stock<br>
+                                • Planifier les maintenances<br>
+                                • Modifier les machines<br>
+                                • Accès à l'historique
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><span class="role-badge badge-admin">⚙️ Administrateur</span></td>
+                            <td>⚙️</td>
+                            <td>
+                                • <strong>TOUTES LES PERMISSIONS</strong><br>
+                                • Gestion des utilisateurs<br>
+                                • Configuration du système<br>
+                                • Accès au panneau admin
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- MÉTHODE 1 -->
+            <div class="section">
+                <h2>🚀 MÉTHODE 1 : Auto-inscription (RECOMMANDÉE)</h2>
+
+                <div class="alert alert-info">
+                    <span>💡</span>
+                    <div>
+                        <strong>La plus simple !</strong><br>
+                        Les utilisateurs créent eux-mêmes leurs comptes.
+                    </div>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">1</span> Ouvrir la page d'inscription</h3>
+                    <p>Les utilisateurs vont sur :</p>
+                    <div class="code-box">https://votre-url/login.html</div>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">2</span> Cliquer sur "Inscription"</h3>
+                    <p>Sur la page de connexion, cliquer sur l'onglet <strong>"Inscription"</strong></p>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">3</span> Remplir le formulaire</h3>
+                    <ol>
+                        <li>Sélectionner son rôle : 🎓 Étudiant / 👨‍🏫 Enseignant / 🔧 Technicien</li>
+                        <li>Entrer son nom complet</li>
+                        <li>Entrer son email ESIG : <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f0f0d1a111012511110123f1a0c1618510b18">[email&#160;protected]</a></code></li>
+                        <li>Entrer son matricule : <code>ESIG-2025-001</code></li>
+                        <li>Pour les étudiants : choisir le niveau (Licence 1, 2, 3, etc.)</li>
+                        <li>Créer un mot de passe (minimum 6 caractères)</li>
+                        <li>Confirmer le mot de passe</li>
+                    </ol>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">4</span> Valider</h3>
+                    <p>Cliquer sur <strong>"✓ Créer mon compte"</strong></p>
+                    <div class="alert alert-success" style="margin-top: 15px;">
+                        <span>✓</span>
+                        <div><strong>Compte créé !</strong> L'utilisateur peut maintenant se connecter.</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px; color: #1a365d;">✅ Avantages :</h3>
+                <ul class="checklist">
+                    <li>Rapide et simple</li>
+                    <li>Pas besoin de l'administrateur</li>
+                    <li>Les utilisateurs choisissent leur mot de passe</li>
+                    <li>Informations à jour</li>
+                </ul>
+            </div>
+
+            <!-- MÉTHODE 2 -->
+            <div class="section">
+                <h2>⚙️ MÉTHODE 2 : Création par l'Admin</h2>
+
+                <div class="alert alert-info">
+                    <span>💡</span>
+                    <div>
+                        <strong>Contrôle total</strong><br>
+                        L'administrateur crée tous les comptes manuellement.
+                    </div>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">1</span> Accéder au panneau admin</h3>
+                    <ol>
+                        <li>Ouvrir : <code>votre-url/admin.html</code></li>
+                        <li>Se connecter avec :
+                            <ul style="margin-left: 20px; margin-top: 10px;">
+                                <li>Email : <code><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="046560696d6a4461776d632963686b666568777167676177772a7063">[email&#160;protected]</a></code></li>
+                                <li>Mot de passe : <code>esig2025</code></li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">2</span> Aller dans "Utilisateurs"</h3>
+                    <p>Cliquer sur l'onglet <strong>"👥 Utilisateurs"</strong></p>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">3</span> Créer un nouvel utilisateur</h3>
+                    <p><em>Fonctionnalité disponible dans la prochaine mise à jour du panneau admin</em></p>
+                </div>
+            </div>
+
+            <!-- MÉTHODE 3 -->
+            <div class="section">
+                <h2>📊 MÉTHODE 3 : Import en masse via CSV</h2>
+
+                <div class="alert alert-info">
+                    <span>💡</span>
+                    <div>
+                        <strong>Pour créer beaucoup de comptes d'un coup</strong><br>
+                        Idéal pour inscrire toute une promotion d'étudiants.
+                    </div>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">1</span> Créer un fichier Excel/CSV</h3>
+                    <p>Créez un tableau avec ces colonnes :</p>
+                    
+                    <table style="margin-top: 15px;">
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Matricule</th>
+                                <th>Rôle</th>
+                                <th>Niveau</th>
+                                <th>Mot de passe</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Jean Kouassi</td>
+                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="9df7f8fcf3b3f6f2e8fceeeef4ddf8eef4fab3e9fa">[email&#160;protected]</a></td>
+                                <td>ESIG-2025-001</td>
+                                <td>etudiant</td>
+                                <td>licence1</td>
+                                <td>esig2025</td>
+                            </tr>
+                            <tr>
+                                <td>Marie Ablavi</td>
+                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a9c4c8dbc0cc87c8cbc5c8dfc0e9ccdac0ce87ddce">[email&#160;protected]</a></td>
+                                <td>ESIG-2025-002</td>
+                                <td>etudiant</td>
+                                <td>licence1</td>
+                                <td>esig2025</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="method">
+                    <h3><span class="method-number">2</span> Importer dans Google Sheets</h3>
+                    <ol>
+                        <li>Ouvrez votre Google Sheet ESIG</li>
+                        <li>Allez dans l'onglet <strong>"Utilisateurs"</strong></li>
+                        <li>Copiez-collez les données</li>
+                    </ol>
+                </div>
+
+                <div class="alert alert-warning" style="margin-top: 20px;">
+                    <span>⚠️</span>
+                    <div>
+                        <strong>Important :</strong> Tous les utilisateurs auront le même mot de passe initial. Ils devront le changer après leur première connexion.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONNEXION -->
+            <div class="section">
+                <h2>🔐 Se Connecter à l'Application</h2>
+
+                <div class="method">
+                    <h3>Pour tous les utilisateurs :</h3>
+                    <ol>
+                        <li>Ouvrir : <code>votre-url/login.html</code></li>
+                        <li>Entrer son email OU son matricule</li>
+                        <li>Entrer son mot de passe</li>
+                        <li>Cliquer sur <strong>"🔐 Se connecter"</strong></li>
+                    </ol>
+
+                    <div class="alert alert-success" style="margin-top: 20px;">
+                        <span>✓</span>
+                        <div>
+                            <strong>Redirection automatique :</strong><br>
+                            • Étudiants/Enseignants/Techniciens → Application principale<br>
+                            • Administrateurs → Panneau d'administration
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- EXEMPLES -->
+            <div class="section">
+                <h2>📝 Exemples de Comptes</h2>
+
+                <div class="example-card">
+                    <h3 style="color: #1a365d; margin-bottom: 15px;">🎓 Compte Étudiant</h3>
+                    <table>
+                        <tr>
+                            <td><strong>Nom :</strong></td>
+                            <td>Jean Kouassi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email :</strong></td>
+                            <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2d47484c43034642584c5e5e446d485e444a03594a">[email&#160;protected]</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Matricule :</strong></td>
+                            <td>ESIG-2025-001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rôle :</strong></td>
+                            <td>Étudiant</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Niveau :</strong></td>
+                            <td>Licence 2</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mot de passe :</strong></td>
+                            <td>esig2025</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #1a365d; margin-bottom: 15px;">👨‍🏫 Compte Enseignant</h3>
+                    <table>
+                        <tr>
+                            <td><strong>Nom :</strong></td>
+                            <td>Prof. Mensah Koffi</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email :</strong></td>
+                            <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="ddb0b8b3aebcb5f3b6b2bbbbb49db8aeb4baf3a9ba">[email&#160;protected]</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Matricule :</strong></td>
+                            <td>PROF-001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rôle :</strong></td>
+                            <td>Enseignant</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mot de passe :</strong></td>
+                            <td>prof2025</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #1a365d; margin-bottom: 15px;">🔧 Compte Technicien</h3>
+                    <table>
+                        <tr>
+                            <td><strong>Nom :</strong></td>
+                            <td>Technicien Atelier</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email :</strong></td>
+                            <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ffbeaece7e1e6ece6eae1cfeafce6e8a1fbe8">[email&#160;protected]</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Matricule :</strong></td>
+                            <td>TECH-001</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rôle :</strong></td>
+                            <td>Technicien</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mot de passe :</strong></td>
+                            <td>tech2025</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="example-card">
+                    <h3 style="color: #1a365d; margin-bottom: 15px;">⚙️ Compte Administrateur</h3>
+                    <table>
+                        <tr>
+                            <td><strong>Nom :</strong></td>
+                            <td>Administrateur ESIG</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Email :</strong></td>
+                            <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2746434a4e496742544e400a404b4845464b54524444425454095340">[email&#160;protected]</a></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Matricule :</strong></td>
+                            <td>ADMIN</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Rôle :</strong></td>
+                            <td>Administrateur</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mot de passe :</strong></td>
+                            <td>esig2025</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- BONNES PRATIQUES -->
+            <div class="section">
+                <h2>✅ Bonnes Pratiques</h2>
+
+                <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Format des Emails :</h3>
+                <div class="code-box"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="91e1e3f4fffefcbffffefcd1f4e2f8f6bfe5f6">[email&#160;protected]</a>
+<a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5626243338393b7838393b1633253f317b313a3934373a25233535332525782231">[email&#160;protected]</a></div>
+
+                <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Format des Matricules :</h3>
+                <div class="code-box">ESIG-2025-001  (pour étudiants)
+PROF-001       (pour enseignants)
+TECH-001       (pour techniciens)
+ADMIN          (pour administrateurs)</div>
+
+                <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Mots de passe :</h3>
+                <ul class="checklist">
+                    <li>Minimum 6 caractères</li>
+                    <li>Mot de passe initial simple : <code>esig2025</code></li>
+                    <li>Demander aux utilisateurs de changer leur mot de passe après la première connexion</li>
+                    <li>Ne jamais partager les mots de passe par email</li>
+                </ul>
+
+                <h3 style="color: #1a365d; margin: 20px 0 10px 0;">Sécurité :</h3>
+                <ul class="checklist">
+                    <li>Vérifier l'identité avant de créer un compte</li>
+                    <li>Utiliser uniquement des emails ESIG officiels</li>
+                    <li>Désactiver les comptes des anciens étudiants</li>
+                    <li>Faire des sauvegardes régulières</li>
+                </ul>
+            </div>
+
+            <!-- DISTRIBUTION -->
+            <div class="section">
+                <h2>📢 Distribuer les Identifiants</h2>
+
+                <div class="method">
+                    <h3>Méthode 1 : Affiche QR Code</h3>
+                    <ol>
+                        <li>Créez un QR code pointant vers : <code>votre-url/login.html</code></li>
+                        <li>Imprimez-le en grand format</li>
+                        <li>Affichez-le à l'entrée de l'atelier</li>
+                        <li>Les étudiants scannent et s'inscrivent directement</li>
+                    </ol>
+                </div>
+
+                <div class="method">
+                    <h3>Méthode 2 : Email groupé</h3>
+                    <p>Envoyez un email à tous les étudiants avec :</p>
+                    <div class="code-box" style="color: white;">
+Objet : Accès à l'application ESIG Atelier
+
+Bonjour,
+
+L'atelier ESIG dispose maintenant d'une application web pour gérer les travaux pratiques !
+
+🔗 Lien : https://votre-url/login.html
+
+📝 Pour vous inscrire :
+1. Cliquez sur "Inscription"
+2. Sélectionnez "Étudiant"
+3. Remplissez le formulaire avec votre email ESIG
+4. Créez votre mot de passe
+
+✓ Vous pourrez ensuite enregistrer vos TP directement sur l'app !
+
+Cordialement,
+L'équipe ESIG
+                    </div>
+                </div>
+
+                <div class="method">
+                    <h3>Méthode 3 : Session de formation</h3>
+                    <ol>
+                        <li>Organisez une session de 15 minutes</li>
+                        <li>Montrez comment s'inscrire</li>
+                        <li>Aidez les étudiants à créer leurs comptes</li>
+                        <li>Faites une démo de l'application</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- GESTION -->
+            <div class="section">
+                <h2>🔧 Gestion des Utilisateurs</h2>
+
+                <h3 style="color: #1a365d; margin-bottom: 15px;">Consulter la liste des utilisateurs :</h3>
+                <ol>
+                    <li>Ouvrir le panneau admin : <code>votre-url/admin.html</code></li>
+                    <li>Aller dans l'onglet <strong>"👥 Utilisateurs"</strong></li>
+                    <li>Voir tous les comptes créés</li>
+                </ol>
+
+                <h3 style="color: #1a365d; margin: 30px 0 15px 0;">Désactiver un compte :</h3>
+                <p><em>Fonctionnalité à venir dans le panneau admin</em></p>
+
+                <h3 style="color: #1a365d; margin: 30px 0 15px 0;">Réinitialiser un mot de passe :</h3>
+              

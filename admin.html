@@ -785,9 +785,37 @@ Dernière mise à jour: <span id="lastUpdate"></span>
         };
 
         // Check if already logged in
+        window.onload = function() {
+            checkAdminAccess();
+        };
+
+        function checkAdminAccess() {
+            const isAdminLoggedIn = localStorage.getItem('esig_admin_logged_in') === 'true';
+            const currentUser = JSON.parse(localStorage.getItem('esig_current_user'));
+
+            // Si connecté via le système d'utilisateurs et admin
+            if (currentUser && currentUser.role === 'admin') {
+                localStorage.setItem('esig_admin_logged_in', 'true');
+                showAdminPanel();
+                return;
+            }
+
+            // Si connecté via l'ancien système
+            if (isAdminLoggedIn) {
+                showAdminPanel();
+                return;
+            }
+
+            // Sinon, afficher le login
+            document.getElementById('loginContainer').style.display = 'block';
+        }
+
+        // Check if already logged in (OLD CODE - REMOVE THIS)
+        /*
         if (localStorage.getItem('esig_admin_logged_in') === 'true') {
             showAdminPanel();
         }
+        */
 
         // LOGIN
         function handleLogin(event) {

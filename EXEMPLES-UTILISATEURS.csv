@@ -1,0 +1,11 @@
+Nom,Email,Matricule,Role,Niveau,Mot de passe
+Administrateur ESIG,admin@esig-globalsuccess.tg,ADMIN,admin,,esig2025
+Prof. Mensah Koffi,mensah.koffi@esig.tg,PROF-001,enseignant,,prof2025
+Technicien Atelier,technicien@esig.tg,TECH-001,technicien,,tech2025
+Jean Kouassi,jean.kouassi@esig.tg,ESIG-2025-001,etudiant,licence2,esig2025
+Marie Ablavi,marie.ablavi@esig.tg,ESIG-2025-002,etudiant,licence2,esig2025
+Paul Agbeko,paul.agbeko@esig.tg,ESIG-2025-003,etudiant,licence2,esig2025
+Afi Mensah,afi.mensah@esig.tg,ESIG-2025-004,etudiant,licence1,esig2025
+Kofi Adjei,kofi.adjei@esig.tg,ESIG-2025-005,etudiant,licence1,esig2025
+Akossiwa Doe,akossiwa.doe@esig.tg,ESIG-2025-006,etudiant,licence3,esig2025
+Edem Tossa,edem.tossa@esig.tg,ESIG-2025-007,etudiant,licence3,esig2025

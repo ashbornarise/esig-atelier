@@ -1,0 +1,3 @@
+ID,Date,Heure Début,Heure Fin,Machine,Type TP,Membres,EPI,Description,État,Timestamp
+TP-001,2025-01-15,08:00,12:00,Tour à métaux T-200,Tournage,"Jean Kouassi, Marie Ablavi",Casque + Lunettes + Gants + Chaussures + Blouse,Réalisation d'un axe cylindrique en acier,Terminé,2025-01-15T12:00:00Z
+TP-002,2025-01-15,14:00,17:00,Fraiseuse universelle FU-350,Fraisage,"Paul Agbéko, Afi Mensah, Kofi Adjei",Casque + Lunettes + Gants + Chaussures + Blouse,Usinage d'une pièce rectangulaire,En cours,2025-01-15T14:00:00Z

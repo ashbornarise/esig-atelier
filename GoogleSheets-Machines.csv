@@ -1,0 +1,13 @@
+ID,Nom,Référence,Puissance,Statut,Heures Utilisation,Dernière Maintenance
+1,Tour à métaux T-200,TM-001,3kW,Disponible,1250,2024-12-01
+2,Fraiseuse universelle FU-350,FR-002,4kW,Disponible,980,2024-11-15
+3,Rectifieuse plane RP-100,RC-003,2.5kW,En cours,1450,2024-10-20
+4,Perceuse à colonne PC-50,PC-004,1.5kW,Disponible,750,2024-12-10
+5,Scie à ruban SR-300,SR-005,2kW,Disponible,620,2024-11-25
+6,Poste à souder MIG-250,PS-006,5kW,En cours,890,2024-10-30
+7,Tour CNC TC-500,CN-007,6kW,Disponible,2100,2024-12-05
+8,Fraiseuse CNC FM-400,CN-008,7kW,Disponible,1850,2024-11-20
+9,Plieuse hydraulique PH-120,PL-009,3.5kW,En cours,540,2024-12-08
+10,Cisaille guillotine CG-200,CG-010,4kW,Disponible,480,2024-11-28
+11,Poinçonneuse PP-150,PP-011,3kW,Disponible,670,2024-12-02
+12,Affûteuse universelle AU-75,AF-012,1kW,Maintenance,1320,2024-09-15

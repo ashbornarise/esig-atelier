@@ -1,0 +1,5 @@
+ID,Nom,Email,Niveau,Dernière Connexion,Role
+1,Admin ESIG,admin@esig-globalsuccess.tg,Administrateur,2025-01-15,Admin
+2,Prof. Mensah Koffi,mensah.koffi@esig.tg,Enseignant,2025-01-14,Enseignant
+3,Technicien Atelier,technicien@esig.tg,Technicien,2025-01-15,Technicien
+4,Étudiant Exemple,etudiant@esig.tg,Licence 2,,Étudiant
