@@ -464,9 +464,15 @@
 
                     showAlert('success', `✓ Bienvenue ${user.name} !`);
 
-                    // Redirect based on role
+                    // Redirect based on return URL or role
                     setTimeout(() => {
-                        if (user.role === 'admin') {
+                        const returnUrl = localStorage.getItem('esig_return_url');
+                        
+                        if (returnUrl) {
+                            // Retourner à la page d'origine
+                            localStorage.removeItem('esig_return_url');
+                            window.location.href = returnUrl;
+                        } else if (user.role === 'admin') {
                             window.location.href = 'admin.html';
                         } else {
                             window.location.href = 'index.html';

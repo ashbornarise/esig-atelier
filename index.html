@@ -1173,26 +1173,50 @@
 
     <script src="config.js"></script>
     <script>
-        // VÉRIFICATION DE LA CONNEXION
+        // VÉRIFICATION DE LA CONNEXION (optionnelle)
         window.onload = function() {
-            checkAuthentication();
+            checkIfUserLoggedIn();
+            initializeApp();
         };
 
-        function checkAuthentication() {
+        function checkIfUserLoggedIn() {
             const currentUser = JSON.parse(localStorage.getItem('esig_current_user'));
             
-            if (!currentUser) {
-                // Pas connecté -> rediriger vers login
-                alert('⚠️ Veuillez vous connecter pour accéder à l\'application');
-                window.location.href = 'login.html';
-                return;
+            if (currentUser) {
+                // Utilisateur connecté -> afficher ses infos
+                displayUserInfo(currentUser);
+            } else {
+                // Pas connecté -> afficher bouton connexion
+                displayLoginButton();
             }
+        }
 
-            // Utilisateur connecté -> afficher ses infos
-            displayUserInfo(currentUser);
+        function displayLoginButton() {
+            const loginPrompt = document.createElement('div');
+            loginPrompt.id = 'loginPrompt';
+            loginPrompt.style.cssText = 'position: fixed; top: 70px; right: 20px; background: white; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 999;';
             
-            // Continuer l'initialisation normale
-            initializeApp();
+            loginPrompt.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 1.2em;">👋</span>
+                    <div style="margin-right: 10px;">
+                        <strong style="color: #1a365d;">Mode Visiteur</strong><br>
+                        <small style="color: #6b7280;">Connectez-vous pour enregistrer des TP</small>
+                    </div>
+                    <button onclick="window.location.href='login.html'" style="background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 600; white-space: nowrap;">
+                        🔐 Connexion
+                    </button>
+                </div>
+            `;
+            
+            document.body.appendChild(loginPrompt);
+
+            // Masquer après 15 secondes
+            setTimeout(() => {
+                loginPrompt.style.transition = 'opacity 0.5s';
+                loginPrompt.style.opacity = '0';
+                setTimeout(() => loginPrompt.remove(), 500);
+            }, 15000);
         }
 
         function displayUserInfo(user) {
@@ -1241,6 +1265,30 @@
                 localStorage.removeItem('esig_current_user');
                 window.location.href = 'login.html';
             }
+        }
+
+        // Vérifier la connexion avant une action
+        function checkAuthenticationForAction(actionName = 'effectuer cette action') {
+            const currentUser = JSON.parse(localStorage.getItem('esig_current_user'));
+            
+            if (!currentUser) {
+                // Pas connecté -> demander de se connecter
+                const shouldRedirect = confirm(
+                    `🔐 Connexion requise\n\n` +
+                    `Pour ${actionName}, vous devez être connecté.\n\n` +
+                    `Voulez-vous vous connecter maintenant ?`
+                );
+                
+                if (shouldRedirect) {
+                    // Sauvegarder l'URL actuelle pour revenir après connexion
+                    localStorage.setItem('esig_return_url', window.location.href);
+                    window.location.href = 'login.html';
+                }
+                
+                return false; // Action annulée
+            }
+            
+            return true; // Action autorisée
         }
 
         function handleAdminButton() {
@@ -1603,6 +1651,11 @@
         // TP FORM SUBMISSION
         function handleTPSubmit(event) {
             event.preventDefault();
+
+            // Vérifier la connexion avant d'enregistrer
+            if (!checkAuthenticationForAction('enregistrer un TP')) {
+                return; // Arrêter si pas connecté
+            }
 
             if (members.length === 0) {
                 alert('⚠️ Ajoutez au moins un membre au groupe');
