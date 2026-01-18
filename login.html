@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Connexion - ESIG Atelier</title>
+    <title>ESIG Atelier - Connexion</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -21,141 +22,155 @@
             padding: 20px;
         }
 
-        .container {
-            max-width: 450px;
-            width: 100%;
+        .login-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #1a365d, #2c5282);
-            color: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 100%;
             padding: 40px;
-            text-align: center;
         }
 
         .logo {
-            width: 80px;
-            height: 80px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
             margin: 0 auto 15px;
-            background: white;
-            border-radius: 50%;
-            padding: 10px;
         }
 
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
+        h1 {
+            color: #1f2937;
+            font-size: 24px;
+            margin-bottom: 8px;
         }
 
-        .header h1 {
-            font-size: 1.8em;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            opacity: 0.9;
-            font-size: 0.95em;
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
         }
 
         .tabs {
             display: flex;
-            background: #f3f4f6;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e5e7eb;
         }
 
         .tab {
             flex: 1;
-            padding: 15px;
-            text-align: center;
-            background: #f3f4f6;
+            padding: 12px;
             border: none;
+            background: transparent;
             cursor: pointer;
-            font-size: 1em;
-            font-weight: 600;
             color: #6b7280;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 3px solid transparent;
             transition: all 0.3s;
         }
 
         .tab.active {
-            background: white;
-            color: #1a365d;
-            border-bottom: 3px solid #2563eb;
+            color: #667eea;
+            border-bottom-color: #667eea;
         }
 
-        .content {
-            padding: 40px;
-        }
-
-        .form-section {
+        .tab-content {
             display: none;
         }
 
-        .form-section.active {
+        .tab-content.active {
             display: block;
-            animation: fadeIn 0.3s;
+            animation: slideIn 0.3s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .form-group {
             margin-bottom: 20px;
         }
 
-        .form-group label {
+        label {
             display: block;
             margin-bottom: 8px;
-            color: #1f2937;
-            font-weight: 600;
-            font-size: 0.95em;
+            color: #374151;
+            font-weight: 500;
+            font-size: 14px;
         }
 
-        .form-group input,
-        .form-group select {
+        input,
+        select {
             width: 100%;
             padding: 12px;
-            border: 2px solid #d1d5db;
+            border: 2px solid #e5e7eb;
             border-radius: 8px;
-            font-size: 1em;
+            font-size: 14px;
+            font-family: inherit;
             transition: all 0.3s;
         }
 
-        .form-group input:focus,
-        .form-group select:focus {
+        input:focus,
+        select:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
         .btn {
             width: 100%;
-            padding: 15px;
-            background: #2563eb;
-            color: white;
+            padding: 12px;
             border: none;
             border-radius: 8px;
-            font-size: 1em;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .btn:hover {
-            background: #1d4ed8;
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .alert {
-            padding: 12px 15px;
+            padding: 12px;
             border-radius: 8px;
             margin-bottom: 20px;
+            font-size: 14px;
             display: none;
         }
 
@@ -163,466 +178,282 @@
             display: block;
         }
 
-        .alert-success {
+        .alert.success {
             background: #d1fae5;
             color: #065f46;
             border-left: 4px solid #10b981;
         }
 
-        .alert-error {
+        .alert.error {
             background: #fee2e2;
-            color: #991b1b;
+            color: #7f1d1d;
             border-left: 4px solid #ef4444;
         }
 
-        .alert-info {
-            background: #dbeafe;
-            color: #1e40af;
-            border-left: 4px solid #2563eb;
+        .alert i {
+            margin-right: 8px;
         }
 
-        .link {
-            color: #2563eb;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .link:hover {
-            text-decoration: underline;
-        }
-
-        .text-center {
-            text-align: center;
-            margin-top: 20px;
-            color: #6b7280;
-        }
-
-        .role-selector {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .role-card {
-            padding: 15px;
-            border: 2px solid #e5e7eb;
+        .demo-note {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 12px;
             border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .role-card:hover {
-            border-color: #2563eb;
-            background: #eff6ff;
-        }
-
-        .role-card.selected {
-            border-color: #2563eb;
-            background: #dbeafe;
-        }
-
-        .role-icon {
-            font-size: 2em;
-            margin-bottom: 5px;
-        }
-
-        .role-name {
-            font-size: 0.85em;
-            font-weight: 600;
-            color: #1f2937;
+            font-size: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #f59e0b;
         }
 
         .loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        .loading.active {
-            display: flex;
-        }
-
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top-color: white;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .forgot-password {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- HEADER -->
-        <div class="header">
-            <div class="logo">
-                <img src="logo-esig.png" alt="ESIG Logo">
+    <div class="login-container">
+        <!-- Logo -->
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-cogs"></i>
             </div>
-            <h1>ESIG Global Success</h1>
-            <p>Gestion d'Atelier</p>
+            <h1>ESIG Atelier</h1>
+            <p class="subtitle">Gestion d'atelier universitaire</p>
         </div>
 
-        <!-- TABS -->
+        <!-- Onglets -->
         <div class="tabs">
-            <button class="tab active" onclick="showTab('login')">Connexion</button>
-            <button class="tab" onclick="showTab('register')">Inscription</button>
+            <button class="tab active" data-tab="login">Connexion</button>
+            <button class="tab" data-tab="register">Inscription</button>
         </div>
 
-        <!-- CONTENT -->
-        <div class="content">
-            <!-- ALERT -->
-            <div id="alert" class="alert"></div>
-
-            <!-- LOGIN FORM -->
-            <div id="loginSection" class="form-section active">
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="form-group">
-                        <label>📧 Email ou Matricule</label>
-                        <input type="text" id="loginIdentifier" required placeholder="votre.email@esig.tg">
-                    </div>
-
-                    <div class="form-group">
-                        <label>🔒 Mot de passe</label>
-                        <input type="password" id="loginPassword" required placeholder="••••••••">
-                    </div>
-
-                    <button type="submit" class="btn">
-                        🔐 Se connecter
-                    </button>
-                </form>
-
-                <div class="text-center">
-                    <small>Pas encore de compte ? <a href="#" class="link" onclick="showTab('register'); return false;">S'inscrire</a></small>
-                </div>
-
-                <div class="text-center" style="margin-top: 15px;">
-                    <small><a href="admin.html" class="link">Administration</a></small>
-                </div>
+        <!-- Onglet Connexion -->
+        <div id="login" class="tab-content active">
+            <div class="demo-note">
+                <i class="fas fa-info-circle"></i>
+                Test: admin@esig.tg / password
             </div>
 
-            <!-- REGISTER FORM -->
-            <div id="registerSection" class="form-section">
-                <form id="registerForm" onsubmit="handleRegister(event)">
-                    <div class="alert alert-info show">
-                        <strong>ℹ️ Important :</strong> Utilisez votre email ESIG officiel pour l'inscription.
-                    </div>
+            <div class="alert" id="loginAlert"></div>
 
-                    <div class="form-group">
-                        <label>👤 Je suis un(e) :</label>
-                        <div class="role-selector">
-                            <div class="role-card" onclick="selectRole('etudiant')">
-                                <div class="role-icon">🎓</div>
-                                <div class="role-name">Étudiant</div>
-                            </div>
-                            <div class="role-card" onclick="selectRole('enseignant')">
-                                <div class="role-icon">👨‍🏫</div>
-                                <div class="role-name">Enseignant</div>
-                            </div>
-                            <div class="role-card" onclick="selectRole('technicien')">
-                                <div class="role-icon">🔧</div>
-                                <div class="role-name">Technicien</div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="registerRole" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label>📝 Nom complet</label>
-                        <input type="text" id="registerName" required placeholder="Prénom Nom">
-                    </div>
-
-                    <div class="form-group">
-                        <label>📧 Email ESIG</label>
-                        <input type="email" id="registerEmail" required placeholder="prenom.nom@esig.tg">
-                    </div>
-
-                    <div class="form-group">
-                        <label>🎫 Matricule</label>
-                        <input type="text" id="registerMatricule" required placeholder="Ex: ESIG-2025-001">
-                    </div>
-
-                    <div class="form-group" id="niveauGroup" style="display: none;">
-                        <label>📚 Niveau d'études</label>
-                        <select id="registerNiveau">
-                            <option value="">Sélectionner...</option>
-                            <option value="licence1">Licence 1</option>
-                            <option value="licence2">Licence 2</option>
-                            <option value="licence3">Licence 3</option>
-                            <option value="master1">Master 1</option>
-                            <option value="master2">Master 2</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>🔒 Mot de passe</label>
-                        <input type="password" id="registerPassword" required placeholder="Minimum 6 caractères" minlength="6">
-                    </div>
-
-                    <div class="form-group">
-                        <label>🔒 Confirmer le mot de passe</label>
-                        <input type="password" id="registerPasswordConfirm" required placeholder="Retapez le mot de passe">
-                    </div>
-
-                    <button type="submit" class="btn">
-                        ✓ Créer mon compte
-                    </button>
-                </form>
-
-                <div class="text-center">
-                    <small>Déjà un compte ? <a href="#" class="link" onclick="showTab('login'); return false;">Se connecter</a></small>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail"><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="loginEmail" placeholder="votre@email.com" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="loginPassword"><i class="fas fa-lock"></i> Mot de passe</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+            </form>
+
+            <div class="forgot-password">
+                <a href="#" onclick="resetPassword(); return false;">Mot de passe oublié ?</a>
             </div>
+        </div>
+
+        <!-- Onglet Inscription -->
+        <div id="register" class="tab-content">
+            <div class="alert" id="registerAlert"></div>
+
+            <form id="registerForm">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div class="form-group">
+                        <label for="regPrenom">Prénom</label>
+                        <input type="text" id="regPrenom" placeholder="Jean" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regNom">Nom</label>
+                        <input type="text" id="regNom" placeholder="Dupont" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="regEmail">Email</label>
+                    <input type="email" id="regEmail" placeholder="jean@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regPassword">Mot de passe</label>
+                    <input type="password" id="regPassword" placeholder="Min. 6 caractères" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="regNiveau">Niveau d'étude</label>
+                    <select id="regNiveau" required>
+                        <option value="">Sélectionner...</option>
+                        <option value="L1">Licence 1</option>
+                        <option value="L2">Licence 2</option>
+                        <option value="L3">Licence 3</option>
+                        <option value="M1">Master 1</option>
+                        <option value="M2">Master 2</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="regGroupe">Groupe (optionnel)</label>
+                    <input type="text" id="regGroupe" placeholder="Groupe A">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-user-plus"></i> S'inscrire
+                </button>
+            </form>
         </div>
     </div>
 
-    <!-- LOADING -->
-    <div id="loading" class="loading">
-        <div class="spinner"></div>
-    </div>
+    <!-- Firebase (version compatible navigateur classique) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
 
     <script>
-        let selectedRole = '';
+        // Gestion des onglets
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.dataset.tab;
 
-        // TABS
-        function showTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.form-section').forEach(s => s.classList.remove('active'));
+                // Désactiver les autres onglets
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
 
-            if (tab === 'login') {
-                document.querySelectorAll('.tab')[0].classList.add('active');
-                document.getElementById('loginSection').classList.add('active');
+                // Activer l'onglet sélectionné
+                this.classList.add('active');
+                document.getElementById(tabName).classList.add('active');
+            });
+        });
+
+        // FORMULAIRE DE CONNEXION
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const btn = e.target.querySelector('.btn-primary');
+            const alertEl = document.getElementById('loginAlert');
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Connexion...';
+
+            const result = await AuthManager.login(email, password);
+
+            if (result.success) {
+                // Vérifier si admin
+                const userData = await AuthManager.getCurrentUserData();
+                showAlert(alertEl, 'success', '✅ Connexion réussie ! Redirection...');
+
+                setTimeout(() => {
+                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
+                }, 1000);
             } else {
-                document.querySelectorAll('.tab')[1].classList.add('active');
-                document.getElementById('registerSection').classList.add('active');
+                showAlert(alertEl, 'error', '❌ ' + result.error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+            }
+        });
+
+        // FORMULAIRE D'INSCRIPTION
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const prenom = document.getElementById('regPrenom').value;
+            const nom = document.getElementById('regNom').value;
+            const niveau = document.getElementById('regNiveau').value;
+            const groupe = document.getElementById('regGroupe').value;
+            const btn = e.target.querySelector('.btn-primary');
+            const alertEl = document.getElementById('registerAlert');
+
+            // Vérifier la longueur du mot de passe
+            if (password.length < 6) {
+                showAlert(alertEl, 'error', '❌ Le mot de passe doit contenir au moins 6 caractères');
+                return;
             }
 
-            hideAlert();
-        }
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading"></span> Inscription...';
 
-        // ROLE SELECTION
-        function selectRole(role) {
-            selectedRole = role;
-            document.getElementById('registerRole').value = role;
-
-            document.querySelectorAll('.role-card').forEach(card => {
-                card.classList.remove('selected');
+            const result = await AuthManager.register(email, password, {
+                nom, prenom, niveau, groupe, role: 'etudiant'
             });
 
-            event.target.closest('.role-card').classList.add('selected');
+            if (result.success) {
+                showAlert(alertEl, 'success', '✅ Inscription réussie ! Redirection...');
 
-            // Show niveau field only for students
-            if (role === 'etudiant') {
-                document.getElementById('niveauGroup').style.display = 'block';
-                document.getElementById('registerNiveau').required = true;
-            } else {
-                document.getElementById('niveauGroup').style.display = 'none';
-                document.getElementById('registerNiveau').required = false;
-            }
-        }
-
-        // LOGIN
-        function handleLogin(event) {
-            event.preventDefault();
-
-            const identifier = document.getElementById('loginIdentifier').value.trim();
-            const password = document.getElementById('loginPassword').value;
-
-            showLoading();
-
-            // Get users from localStorage
-            const users = JSON.parse(localStorage.getItem('esig_users')) || [];
-
-            // Find user
-            const user = users.find(u => 
-                (u.email === identifier || u.matricule === identifier) && u.password === password
-            );
-
-            setTimeout(() => {
-                hideLoading();
-
-                if (user) {
-                    // Update last connection
-                    user.lastConnection = new Date().toISOString();
-                    localStorage.setItem('esig_users', JSON.stringify(users));
-
-                    // Save current user
-                    localStorage.setItem('esig_current_user', JSON.stringify(user));
-
-                    showAlert('success', `✓ Bienvenue ${user.name} !`);
-
-                    // Redirect based on return URL or role
-                    setTimeout(() => {
-                        const returnUrl = localStorage.getItem('esig_return_url');
-                        
-                        if (returnUrl) {
-                            // Retourner à la page d'origine
-                            localStorage.removeItem('esig_return_url');
-                            window.location.href = returnUrl;
-                        } else if (user.role === 'admin') {
-                            window.location.href = 'admin.html';
-                        } else {
-                            window.location.href = 'index.html';
-                        }
-                    }, 1000);
-                } else {
-                    showAlert('error', '❌ Identifiants incorrects. Vérifiez votre email/matricule et mot de passe.');
-                }
-            }, 1000);
-        }
-
-        // REGISTER
-        function handleRegister(event) {
-            event.preventDefault();
-
-            if (!selectedRole) {
-                showAlert('error', '⚠️ Veuillez sélectionner votre rôle (Étudiant, Enseignant ou Technicien)');
-                return;
-            }
-
-            const name = document.getElementById('registerName').value.trim();
-            const email = document.getElementById('registerEmail').value.trim().toLowerCase();
-            const matricule = document.getElementById('registerMatricule').value.trim().toUpperCase();
-            const password = document.getElementById('registerPassword').value;
-            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
-            const niveau = document.getElementById('registerNiveau').value;
-
-            // Validate
-            if (password !== passwordConfirm) {
-                showAlert('error', '❌ Les mots de passe ne correspondent pas !');
-                return;
-            }
-
-            if (!email.includes('@esig')) {
-                showAlert('error', '⚠️ Veuillez utiliser votre email ESIG officiel (@esig.tg)');
-                return;
-            }
-
-            showLoading();
-
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem('esig_users')) || [];
-
-            // Check if email or matricule already exists
-            const exists = users.find(u => u.email === email || u.matricule === matricule);
-
-            setTimeout(() => {
-                hideLoading();
-
-                if (exists) {
-                    showAlert('error', '❌ Cet email ou matricule existe déjà !');
-                    return;
-                }
-
-                // Create new user
-                const newUser = {
-                    id: Date.now(),
-                    name: name,
-                    email: email,
-                    matricule: matricule,
-                    password: password,
-                    role: selectedRole,
-                    niveau: selectedRole === 'etudiant' ? niveau : null,
-                    createdAt: new Date().toISOString(),
-                    lastConnection: null,
-                    active: true
-                };
-
-                users.push(newUser);
-                localStorage.setItem('esig_users', JSON.stringify(users));
-
-                // Save to Google Sheets if configured
-                saveUserToGoogleSheets(newUser);
-
-                showAlert('success', '✓ Compte créé avec succès ! Vous pouvez maintenant vous connecter.');
-
-                // Reset form
-                document.getElementById('registerForm').reset();
-                selectedRole = '';
-                document.querySelectorAll('.role-card').forEach(card => {
-                    card.classList.remove('selected');
-                });
-
-                // Switch to login tab
                 setTimeout(() => {
-                    showTab('login');
-                }, 2000);
-            }, 1000);
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                showAlert(alertEl, 'error', '❌ ' + result.error);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-user-plus"></i> S\'inscrire';
+            }
+        });
+
+        // Fonction pour afficher les alertes
+        function showAlert(element, type, message) {
+            element.className = `alert show ${type}`;
+            element.textContent = message;
         }
 
-        // SAVE TO GOOGLE SHEETS
-        function saveUserToGoogleSheets(user) {
-            const sheetsConfig = JSON.parse(localStorage.getItem('esig_sheets_config') || '{}');
-            
-            if (!sheetsConfig.enabled || !sheetsConfig.spreadsheetId) {
-                console.log('Google Sheets non configuré - utilisateur sauvegardé localement');
+        // Réinitialisation du mot de passe
+        function resetPassword() {
+            const email = document.getElementById('loginEmail').value;
+            if (!email) {
+                alert('Veuillez entrer votre email d\'abord');
                 return;
             }
 
-            // TODO: Implement actual Google Sheets API call
-            console.log('Sauvegarde sur Google Sheets:', user);
+            auth.sendPasswordResetEmail(email)
+                .then(() => {
+                    alert('Email de réinitialisation envoyé ! Vérifiez votre boîte de réception.');
+                })
+                .catch((error) => {
+                    alert('Erreur : ' + error.message);
+                });
         }
 
-        // ALERT
-        function showAlert(type, message) {
-            const alert = document.getElementById('alert');
-            alert.className = `alert alert-${type} show`;
-            alert.textContent = message;
-
-            setTimeout(() => {
-                hideAlert();
-            }, 5000);
-        }
-
-        function hideAlert() {
-            const alert = document.getElementById('alert');
-            alert.classList.remove('show');
-        }
-
-        // LOADING
-        function showLoading() {
-            document.getElementById('loading').classList.add('active');
-        }
-
-        function hideLoading() {
-            document.getElementById('loading').classList.remove('active');
-        }
-
-        // INITIALIZE
-        window.onload = function() {
-            // Create admin user if doesn't exist
-            const users = JSON.parse(localStorage.getItem('esig_users')) || [];
-            if (users.length === 0) {
-                const adminUser = {
-                    id: 1,
-                    name: 'Administrateur ESIG',
-                    email: 'admin@esig-globalsuccess.tg',
-                    matricule: 'ADMIN',
-                    password: 'esig2025',
-                    role: 'admin',
-                    niveau: null,
-                    createdAt: new Date().toISOString(),
-                    lastConnection: null,
-                    active: true
-                };
-                users.push(adminUser);
-                localStorage.setItem('esig_users', JSON.stringify(users));
-                console.log('✓ Compte administrateur créé');
+        // Vérifier si l'utilisateur est déjà connecté
+        AuthManager.onAuthStateChanged(user => {
+            if (user) {
+                // Rediriger vers la page appropriée
+                AuthManager.getCurrentUserData().then(userData => {
+                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
+                });
             }
-        };
+        });
     </script>
 </body>
 </html>
