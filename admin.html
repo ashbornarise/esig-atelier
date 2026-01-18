@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESIG - Administration</title>
+    <title>ESIG Atelier - Admin</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -11,86 +12,136 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --primary: #1a365d;
-            --secondary: #2563eb;
-            --accent: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --light: #f3f4f6;
-            --dark: #1f2937;
-        }
-
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--primary), #2c5282);
+            background: #f8f9fa;
+        }
+
+        .admin-wrapper {
+            display: flex;
             min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             padding: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
         }
 
-        .login-container {
-            max-width: 400px;
-            margin: 100px auto;
-            background: white;
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        .sidebar-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
-        .admin-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: none;
+        .sidebar-header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
         }
 
-        .admin-container.active {
-            display: block;
+        .sidebar-header p {
+            font-size: 12px;
+            opacity: 0.8;
         }
 
-        .admin-header {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 12px;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .sidebar-menu a i {
+            width: 24px;
+            text-align: center;
+            margin-right: 12px;
+        }
+
+        .sidebar-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .user-profile {
+            text-align: center;
             margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .admin-header h1 {
-            color: var(--primary);
-            font-size: 1.8em;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: white;
-            padding: 5px;
+            font-size: 12px;
         }
 
         .logout-btn {
-            background: var(--danger);
+            width: 100%;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border: none;
-            padding: 12px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
         }
 
         .logout-btn:hover {
-            background: #dc2626;
-            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        .dashboard-grid {
+        /* MAIN CONTENT */
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h2 {
+            color: #1f2937;
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        /* DASHBOARD */
+        .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
@@ -99,1101 +150,789 @@
 
         .stat-card {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
 
-        .stat-card h3 {
-            color: #6b7280;
-            font-size: 0.9em;
-            margin-bottom: 10px;
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            margin: 10px 0;
         }
 
-        .stat-card .value {
-            color: var(--primary);
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .stat-card .change {
-            font-size: 0.85em;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .stat-card .change.positive {
-            color: var(--success);
-        }
-
-        .stat-card .change.negative {
-            color: var(--danger);
-        }
-
-        .admin-section {
+        /* TABLES */
+        .table-container {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .admin-section h2 {
-            color: var(--primary);
-            font-size: 1.5em;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--light);
-        }
-
-        .tab {
-            padding: 12px 24px;
-            background: transparent;
-            border: none;
-            border-bottom: 3px solid transparent;
-            cursor: pointer;
-            font-weight: 600;
-            color: #6b7280;
-            transition: all 0.3s;
-        }
-
-        .tab.active {
-            color: var(--secondary);
-            border-bottom-color: var(--secondary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.3s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--dark);
-            font-weight: 600;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #d1d5db;
-            border-radius: 8px;
-            font-size: 1em;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--secondary);
-        }
-
-        .btn {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .btn-primary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-        }
-
-        .btn-success {
-            background: var(--success);
-            color: white;
-        }
-
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #dc2626;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--light);
         }
 
         th {
-            background: var(--light);
-            color: var(--primary);
+            background: #f8f9fa;
+            padding: 16px;
+            text-align: left;
             font-weight: 600;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
         }
 
         tr:hover {
             background: #f9fafb;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 10px;
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .btn-icon {
-            background: transparent;
-            border: none;
-            font-size: 1.2em;
-            cursor: pointer;
-            padding: 5px;
+        .badge-admin {
+            background: #dcfce7;
+            color: #166534;
         }
 
-        .alert {
-            padding: 15px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .badge-user {
+            background: #dbeafe;
+            color: #0c4a6e;
         }
 
-        .alert-success {
+        .badge-online {
             background: #d1fae5;
-            color: var(--success);
-            border-left: 4px solid var(--success);
+            color: #065f46;
         }
 
-        .alert-warning {
-            background: #fef3c7;
-            color: var(--accent);
-            border-left: 4px solid var(--accent);
-        }
-
-        .alert-danger {
+        .badge-offline {
             background: #fee2e2;
-            color: var(--danger);
-            border-left: 4px solid var(--danger);
+            color: #991b1b;
         }
 
-        .config-section {
-            background: var(--light);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .actions {
+            display: flex;
+            gap: 8px;
         }
 
-        .config-section h3 {
-            color: var(--primary);
-            margin-bottom: 15px;
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
         }
 
-        .code-block {
-            background: #1f2937;
-            color: #10b981;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            overflow-x: auto;
-            margin-top: 10px;
+        .btn-edit {
+            background: #3b82f6;
+            color: white;
         }
 
-        .loading {
+        .btn-edit:hover {
+            background: #2563eb;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #dc2626;
+        }
+
+        /* MODALS */
+        .modal {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
         }
 
-        .loading.active {
+        .modal.active {
             display: flex;
         }
 
-        .spinner {
-            width: 50px;
-            height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top-color: white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
         }
 
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e5e7eb;
         }
 
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e5e7eb;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            justify-content: flex-end;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn-primary {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            background: #e5e7eb;
+            color: #374151;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-secondary:hover {
+            background: #d1d5db;
+        }
+
+        /* SEARCH */
+        .search-box {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-add {
+            padding: 12px 20px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-add:hover {
+            background: #059669;
+        }
+
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
             }
 
-            .admin-header {
-                flex-direction: column;
-                gap: 20px;
-                text-align: center;
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                gap: 10px;
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            td, th {
+                padding: 8px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <!-- LOGIN FORM -->
-    <div id="loginContainer" class="login-container">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <img src="logo-esig.png" alt="ESIG Logo" style="width: 80px; height: 80px; border-radius: 50%; background: var(--primary); padding: 10px; margin-bottom: 15px;">
-            <h1 style="color: var(--primary); margin-bottom: 5px;">Administration ESIG</h1>
-            <p style="color: #6b7280;">Connectez-vous pour accéder au panneau</p>
-        </div>
-
-        <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label>👤 Nom d'utilisateur</label>
-                <input type="text" id="username" required autofocus>
+    <div class="admin-wrapper">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1><i class="fas fa-cogs"></i></h1>
+                <p>Panneau Admin</p>
             </div>
 
-            <div class="form-group">
-                <label>🔒 Mot de passe</label>
-                <input type="password" id="password" required>
-            </div>
+            <ul class="sidebar-menu">
+                <li><a class="menu-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a class="menu-link" data-page="users"><i class="fas fa-users"></i> Utilisateurs</a></li>
+                <li><a class="menu-link" data-page="tp"><i class="fas fa-flask"></i> TP</a></li>
+                <li><a class="menu-link" data-page="machines"><i class="fas fa-cog"></i> Machines</a></li>
+                <li><a class="menu-link" data-page="stock"><i class="fas fa-box"></i> Stock</a></li>
+                <li><a class="menu-link" data-page="activities"><i class="fas fa-history"></i> Activités</a></li>
+            </ul>
 
-            <button type="submit" class="btn btn-primary" style="width: 100%;">
-                🔐 Se connecter
-            </button>
-        </form>
-
-        <div style="margin-top: 20px; padding: 15px; background: var(--light); border-radius: 8px; text-align: center; font-size: 0.85em; color: #6b7280;">
-            <strong>Identifiants par défaut :</strong><br>
-            Utilisateur: <code>admin</code><br>
-            Mot de passe: <code>esig2025</code>
-        </div>
-    </div>
-
-    <!-- ADMIN PANEL -->
-    <div id="adminContainer" class="admin-container">
-        <!-- HEADER -->
-        <div class="admin-header">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <img src="logo-esig.png" alt="ESIG Logo" class="logo-img">
-                <div>
-                    <h1>⚙️ Panneau d'Administration</h1>
-                    <p style="color: #6b7280; margin-top: 5px;">ESIG Global Success - Gestion Atelier</p>
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div id="adminName">Chargement...</div>
+                    <div style="opacity: 0.8;">Admin</div>
                 </div>
-            </div>
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <a href="index.html" class="btn btn-primary" style="text-decoration: none;">
-                    🏠 Retour à l'app
-                </a>
                 <button class="logout-btn" onclick="logout()">
-                    🚪 Déconnexion
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
                 </button>
             </div>
         </div>
 
-        <!-- DASHBOARD STATS -->
-        <div class="dashboard-grid">
-            <div class="stat-card">
-                <h3>📊 TOTAL MACHINES</h3>
-                <div class="value" id="adminTotalMachines">12</div>
-                <div class="change positive">↑ 2 ce mois</div>
-            </div>
-
-            <div class="stat-card">
-                <h3>📝 TP RÉALISÉS</h3>
-                <div class="value" id="adminTotalTP">0</div>
-                <div class="change positive">↑ 0 cette semaine</div>
-            </div>
-
-            <div class="stat-card">
-                <h3>👥 UTILISATEURS ACTIFS</h3>
-                <div class="value" id="adminActiveUsers">0</div>
-                <div class="change positive">↑ 0 aujourd'hui</div>
-            </div>
-
-            <div class="stat-card">
-                <h3>🔧 MAINTENANCES EN COURS</h3>
-                <div class="value" id="adminMaintenanceCount">3</div>
-                <div class="change">⏳ 2 planifiées</div>
-            </div>
-        </div>
-
-        <!-- TABS NAVIGATION -->
-        <div class="admin-section">
-            <div class="tabs">
-                <button class="tab active" onclick="switchTab('machines')">🏭 Machines</button>
-                <button class="tab" onclick="switchTab('stock')">📦 Stock</button>
-                <button class="tab" onclick="switchTab('users')">👥 Utilisateurs</button>
-                <button class="tab" onclick="switchTab('tp')">📝 Travaux Pratiques</button>
-                <button class="tab" onclick="switchTab('settings')">⚙️ Paramètres</button>
-            </div>
-
-            <!-- MACHINES TAB -->
-            <div id="machinesTab" class="tab-content active">
-                <h2>🏭 Gestion des Machines</h2>
-                
-                <button class="btn btn-primary" onclick="showAddMachineForm()" style="margin-bottom: 20px;">
-                    ➕ Ajouter une machine
-                </button>
-
-                <div id="addMachineForm" style="display: none; background: var(--light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">Nouvelle Machine</h3>
-                    <form onsubmit="handleAddMachine(event)">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                            <div class="form-group">
-                                <label>Nom de la machine</label>
-                                <input type="text" id="newMachineName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Référence</label>
-                                <input type="text" id="newMachineRef" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Puissance</label>
-                                <input type="text" id="newMachinePower" placeholder="Ex: 3kW" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Statut initial</label>
-                                <select id="newMachineStatus">
-                                    <option value="available">Disponible</option>
-                                    <option value="busy">En cours</option>
-                                    <option value="maintenance">Maintenance</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
-                            <button type="submit" class="btn btn-success">💾 Enregistrer</button>
-                            <button type="button" class="btn btn-danger" onclick="hideAddMachineForm()">❌ Annuler</button>
-                        </div>
-                    </form>
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- DASHBOARD -->
+            <div id="dashboard" class="page active">
+                <div class="header">
+                    <h2>Dashboard</h2>
                 </div>
 
-                <table id="machinesTable">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Référence</th>
-                            <th>Puissance</th>
-                            <th>Statut</th>
-                            <th>Heures</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="machinesTableBody"></tbody>
-                </table>
-            </div>
-
-            <!-- STOCK TAB -->
-            <div id="stockTab" class="tab-content">
-                <h2>📦 Gestion du Stock</h2>
-                
-                <button class="btn btn-primary" onclick="showAddStockForm()" style="margin-bottom: 20px;">
-                    ➕ Ajouter un article
-                </button>
-
-                <div id="addStockForm" style="display: none; background: var(--light); padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-                    <h3 style="margin-bottom: 15px; color: var(--primary);">Nouvel Article</h3>
-                    <form onsubmit="handleAddStockItem(event)">
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-                            <div class="form-group">
-                                <label>Nom de l'article</label>
-                                <input type="text" id="newStockName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Quantité minimale</label>
-                                <input type="number" id="newStockMin" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Quantité actuelle</label>
-                                <input type="number" id="newStockActual" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Catégorie</label>
-                                <select id="newStockCategory">
-                                    <option value="outils">Outils</option>
-                                    <option value="materiaux">Matériaux</option>
-                                    <option value="consommables">Consommables</option>
-                                    <option value="epi">EPI</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-top: 15px;">
-                            <button type="submit" class="btn btn-success">💾 Enregistrer</button>
-                            <button type="button" class="btn btn-danger" onclick="hideAddStockForm()">❌ Annuler</button>
-                        </div>
-                    </form>
-                </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Article</th>
-                            <th>Min</th>
-                            <th>Actuel</th>
-                            <th>Catégorie</th>
-                            <th>État</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="stockTableBody"></tbody>
-                </table>
-            </div>
-
-            <!-- USERS TAB -->
-            <div id="usersTab" class="tab-content">
-                <h2>👥 Gestion des Utilisateurs</h2>
-                
-                <div class="alert alert-success">
-                    <span>✓</span>
-                    <div><strong>Système d'authentification activé</strong><br>Les utilisateurs peuvent se connecter avec leurs identifiants ESIG</div>
-                </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Nom</th>
-                            <th>Email</th>
-                            <th>Niveau</th>
-                            <th>Dernière connexion</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTableBody">
-                        <tr>
-                            <td colspan="6" style="text-align: center; padding: 40px; color: #6b7280;">
-                                Aucun utilisateur enregistré pour le moment
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- TP TAB -->
-            <div id="tpTab" class="tab-content">
-                <h2>📝 Historique des Travaux Pratiques</h2>
-                
-                <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                    <div class="form-group" style="flex: 1; margin: 0;">
-                        <label>Période</label>
-                        <select id="tpPeriodFilter" onchange="filterTP()">
-                            <option value="all">Tous</option>
-                            <option value="today">Aujourd'hui</option>
-                            <option value="week">Cette semaine</option>
-                            <option value="month" selected>Ce mois</option>
-                        </select>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-users"></i> Utilisateurs</div>
+                        <div class="stat-value" id="statUsers">0</div>
                     </div>
-                    <div class="form-group" style="flex: 1; margin: 0;">
-                        <label>Statut</label>
-                        <select id="tpStatusFilter" onchange="filterTP()">
-                            <option value="all">Tous</option>
-                            <option value="termine">Terminé</option>
-                            <option value="en_cours">En cours</option>
-                            <option value="incomplet">Incomplet</option>
-                        </select>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-flask"></i> TP</div>
+                        <div class="stat-value" id="statTP">0</div>
                     </div>
-                    <button class="btn btn-primary" onclick="exportTPData()" style="margin-top: 24px;">
-                        📑 Exporter
-                    </button>
-                </div>
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Date</th>
-                            <th>Horaire</th>
-                            <th>Machine</th>
-                            <th>Type</th>
-                            <th>Membres</th>
-                            <th>État</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tpTableBody">
-                        <tr>
-                            <td colspan="8" style="text-align: center; padding: 40px; color: #6b7280;">
-                                Aucun TP enregistré pour le moment
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- SETTINGS TAB -->
-            <div id="settingsTab" class="tab-content">
-                <h2>⚙️ Paramètres et Configuration</h2>
-
-                <!-- Google Sheets Configuration -->
-                <div class="config-section">
-                    <h3>📊 Configuration Google Sheets</h3>
-                    
-                    <div class="alert alert-warning">
-                        <span>⚠️</span>
-                        <div><strong>Configuration requise</strong><br>Configurez votre intégration Google Sheets pour sauvegarder automatiquement toutes les données</div>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-cog"></i> Machines</div>
+                        <div class="stat-value" id="statMachines">0</div>
                     </div>
-
-                    <div class="form-group">
-                        <label>Spreadsheet ID</label>
-                        <input type="text" id="spreadsheetId" placeholder="Collez l'ID de votre Google Sheet">
-                        <small style="color: #6b7280; display: block; margin-top: 5px;">
-                            Trouvez l'ID dans l'URL : https://docs.google.com/spreadsheets/d/<strong>SPREADSHEET_ID</strong>/edit
-                        </small>
-                    </div>
-
-                    <div class="form-group">
-                        <label>API Key (optionnel pour démarrer)</label>
-                        <input type="password" id="apiKey" placeholder="Votre clé API Google Sheets">
-                        <small style="color: #6b7280; display: block; margin-top: 5px;">
-                            Obtenez une clé API sur <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a>
-                        </small>
-                    </div>
-
-                    <button class="btn btn-success" onclick="saveGoogleSheetsConfig()">
-                        💾 Enregistrer la configuration
-                    </button>
-
-                    <button class="btn btn-primary" onclick="testGoogleSheetsConnection()" style="margin-left: 10px;">
-                        🔗 Tester la connexion
-                    </button>
-                </div>
-
-                <!-- Usage Limits -->
-                <div class="config-section">
-                    <h3>⏰ Temps d'utilisation des machines</h3>
-                    
-                    <div class="form-group">
-                        <label>Durée maximale par TP (heures)</label>
-                        <input type="number" id="maxTPDuration" value="4" min="1" max="24">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Nombre maximum de membres par groupe</label>
-                        <input type="number" id="maxMembers" value="6" min="1" max="10">
-                    </div>
-
-                    <button class="btn btn-success" onclick="saveUsageLimits()">
-                        💾 Enregistrer
-                    </button>
-                </div>
-
-                <!-- App Settings -->
-                <div class="config-section">
-                    <h3>🎨 Paramètres de l'application</h3>
-                    
-                    <div class="form-group">
-                        <label>Nom de l'établissement</label>
-                        <input type="text" id="appName" value="ESIG Global Success">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Email de contact</label>
-                        <input type="email" id="contactEmail" value="atelier@esig-globalsuccess.tg">
-                    </div>
-
-                    <div class="form-group">
-                        <label>Téléphone de contact</label>
-                        <input type="tel" id="contactPhone" value="+228 XX XX XX XX">
-                    </div>
-
-                    <button class="btn btn-success" onclick="saveAppSettings()">
-                        💾 Enregistrer
-                    </button>
-                </div>
-
-                <!-- Export/Import -->
-                <div class="config-section">
-                    <h3>💾 Sauvegarde et Restauration</h3>
-                    
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="exportAllData()">
-                            📥 Exporter toutes les données
-                        </button>
-                        <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">
-                            📤 Importer des données
-                        </button>
-                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
-                        <button class="btn btn-danger" onclick="clearAllData()">
-                            🗑️ Effacer toutes les données
-                        </button>
+                    <div class="stat-card">
+                        <div class="stat-label"><i class="fas fa-box"></i> Articles Stock</div>
+                        <div class="stat-value" id="statStock">0</div>
                     </div>
                 </div>
 
-                <!-- System Info -->
-                <div class="config-section">
-                    <h3>ℹ️ Informations Système</h3>
-                    <div class="code-block">
-Version: 1.0.0<br>
-Navigateur: <span id="browserInfo"></span><br>
-Stockage utilisé: <span id="storageInfo"></span><br>
-Dernière mise à jour: <span id="lastUpdate"></span>
-                    </div>
+                <div class="table-container" style="margin-top: 30px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dernières activités</th>
+                                <th>Utilisateur</th>
+                                <th>Heure</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentActivities">
+                            <tr><td colspan="3" style="text-align: center; color: #999;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- UTILISATEURS -->
+            <div id="users" class="page">
+                <div class="header">
+                    <h2>Gestion des Utilisateurs</h2>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="userSearch" placeholder="Chercher un utilisateur...">
+                    <button class="btn-add" onclick="openUserModal()"><i class="fas fa-plus"></i> Ajouter</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Rôle</th>
+                                <th>Niveau</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TP -->
+            <div id="tp" class="page">
+                <div class="header">
+                    <h2>Gestion des TP</h2>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="tpSearch" placeholder="Chercher un TP...">
+                    <button class="btn-add" onclick="openTPModal()"><i class="fas fa-plus"></i> Ajouter</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Créateur</th>
+                                <th>Type</th>
+                                <th>Date de début</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tpTable">
+                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MACHINES -->
+            <div id="machines" class="page">
+                <div class="header">
+                    <h2>Gestion des Machines</h2>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="machineSearch" placeholder="Chercher une machine...">
+                    <button class="btn-add" onclick="openMachineModal()"><i class="fas fa-plus"></i> Ajouter</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Type</th>
+                                <th>Statut</th>
+                                <th>Lieu</th>
+                                <th>Heures utilisées</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="machinesTable">
+                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- STOCK -->
+            <div id="stock" class="page">
+                <div class="header">
+                    <h2>Gestion du Stock</h2>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="stockSearch" placeholder="Chercher un article...">
+                    <button class="btn-add" onclick="openStockModal()"><i class="fas fa-plus"></i> Ajouter</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Article</th>
+                                <th>Catégorie</th>
+                                <th>Quantité</th>
+                                <th>Min</th>
+                                <th>Prix (€)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTable">
+                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ACTIVITÉS -->
+            <div id="activities" class="page">
+                <div class="header">
+                    <h2>Journal d'Activités</h2>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Action</th>
+                                <th>Utilisateur</th>
+                                <th>Type</th>
+                                <th>Détails</th>
+                                <th>Date/Heure</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activitiesTable">
+                            <tr><td colspan="5" style="text-align: center; color: #999;">Chargement...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- LOADING -->
-    <div id="loading" class="loading">
-        <div class="spinner"></div>
+    <!-- MODALS -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Modifier Utilisateur</h3>
+                <button class="close-btn" onclick="closeModal('userModal')">&times;</button>
+            </div>
+            <form id="userForm" onsubmit="saveUser(event)">
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="userNom" required>
+                </div>
+                <div class="form-group">
+                    <label>Prénom</label>
+                    <input type="text" id="userPrenom" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Rôle</label>
+                    <select id="userRole" required>
+                        <option value="etudiant">Étudiant</option>
+                        <option value="enseignant">Enseignant</option>
+                        <option value="technicien">Technicien</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('userModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
 
     <script>
-        // ADMIN CREDENTIALS
-        const ADMIN_CREDENTIALS = {
-            username: 'admin',
-            password: 'esig2025'
-        };
+        let currentUser = null;
+        let currentUserData = null;
+        let allUsers = [];
+        let allTP = [];
+        let allMachines = [];
+        let allStock = [];
+        let allActivities = [];
 
-        // Check if already logged in
-        window.onload = function() {
-            checkAdminAccess();
-        };
-
-        function checkAdminAccess() {
-            const isAdminLoggedIn = localStorage.getItem('esig_admin_logged_in') === 'true';
-            const currentUser = JSON.parse(localStorage.getItem('esig_current_user'));
-
-            // Si connecté via le système d'utilisateurs et admin
-            if (currentUser && currentUser.role === 'admin') {
-                localStorage.setItem('esig_admin_logged_in', 'true');
-                showAdminPanel();
+        // Vérifier l'authentification
+        window.addEventListener('load', async () => {
+            const user = AuthManager.getCurrentUser();
+            if (!user) {
+                window.location.href = 'login.html';
                 return;
             }
 
-            // Si connecté via l'ancien système
-            if (isAdminLoggedIn) {
-                showAdminPanel();
+            currentUser = user;
+            currentUserData = await AuthManager.getCurrentUserData();
+
+            if (currentUserData.role !== 'admin') {
+                window.location.href = 'index.html';
                 return;
             }
 
-            // Sinon, afficher le login
-            document.getElementById('loginContainer').style.display = 'block';
+            document.getElementById('adminName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
+            loadAllData();
+        });
+
+        // Gestion des menus
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', function() {
+                const pageId = this.dataset.page;
+                showPage(pageId);
+
+                document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+
+            if (pageId === 'users') loadUsers();
+            else if (pageId === 'tp') loadTP();
+            else if (pageId === 'machines') loadMachines();
+            else if (pageId === 'stock') loadStock();
+            else if (pageId === 'activities') loadActivities();
+            else if (pageId === 'dashboard') loadDashboard();
         }
 
-        // Check if already logged in (OLD CODE - REMOVE THIS)
-        /*
-        if (localStorage.getItem('esig_admin_logged_in') === 'true') {
-            showAdminPanel();
-        }
-        */
-
-        // LOGIN
-        function handleLogin(event) {
-            event.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-                localStorage.setItem('esig_admin_logged_in', 'true');
-                showAdminPanel();
-            } else {
-                alert('❌ Identifiants incorrects!\n\nVérifiez votre nom d\'utilisateur et mot de passe.');
-            }
+        async function loadAllData() {
+            await Promise.all([
+                loadUsers(),
+                loadTP(),
+                loadMachines(),
+                loadStock(),
+                loadActivities(),
+                loadDashboard()
+            ]);
         }
 
-        function showAdminPanel() {
-            document.getElementById('loginContainer').style.display = 'none';
-            document.getElementById('adminContainer').classList.add('active');
-            loadAdminData();
-        }
+        async function loadDashboard() {
+            document.getElementById('statUsers').textContent = allUsers.length;
+            document.getElementById('statTP').textContent = allTP.length;
+            document.getElementById('statMachines').textContent = allMachines.length;
+            document.getElementById('statStock').textContent = allStock.length;
 
-        function logout() {
-            if (confirm('Voulez-vous vraiment vous déconnecter?')) {
-                localStorage.removeItem('esig_admin_logged_in');
-                location.reload();
-            }
-        }
-
-        // TAB SWITCHING
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-
-            event.target.classList.add('active');
-            document.getElementById(tabName + 'Tab').classList.add('active');
-        }
-
-        // LOAD ADMIN DATA
-        function loadAdminData() {
-            const machines = JSON.parse(localStorage.getItem('esig_machines')) || [];
-            const stock = JSON.parse(localStorage.getItem('esig_stock')) || [];
-            const tp = JSON.parse(localStorage.getItem('esig_tp')) || [];
-            const maintenance = JSON.parse(localStorage.getItem('esig_maintenance')) || [];
-
-            // Update stats
-            document.getElementById('adminTotalMachines').textContent = machines.length;
-            document.getElementById('adminTotalTP').textContent = tp.length;
-            document.getElementById('adminMaintenanceCount').textContent = maintenance.length;
-
-            // Load tables
-            loadMachinesTable(machines);
-            loadStockTable(stock);
-            loadTPTable(tp);
-
-            // System info
-            document.getElementById('browserInfo').textContent = navigator.userAgent.split(') ')[0] + ')';
-            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('fr-FR');
-        }
-
-        // MACHINES TABLE
-        function loadMachinesTable(machines) {
-            const tbody = document.getElementById('machinesTableBody');
-            
-            if (machines.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #6b7280;">Aucune machine enregistrée</td></tr>';
-                return;
-            }
-
-            tbody.innerHTML = machines.map(m => `
+            const recentHTML = allActivities.slice(0, 5).map(a => `
                 <tr>
-                    <td>${m.id}</td>
-                    <td>${m.nom}</td>
-                    <td>${m.ref}</td>
-                    <td>${m.puissance}</td>
-                    <td><span style="color: ${m.statut === 'available' ? 'var(--success)' : m.statut === 'busy' ? 'var(--accent)' : 'var(--danger)'}">●</span> ${m.statut}</td>
-                    <td>${m.heuresUtilisation || 0}h</td>
-                    <td class="action-buttons">
-                        <button class="btn-icon" onclick="editMachine(${m.id})" title="Modifier">✏️</button>
-                        <button class="btn-icon" onclick="deleteMachine(${m.id})" title="Supprimer">🗑️</button>
-                    </td>
+                    <td><strong>${a.action}</strong></td>
+                    <td>${a.userName}</td>
+                    <td>${a.type}</td>
                 </tr>
             `).join('');
+
+            document.getElementById('recentActivities').innerHTML = recentHTML || '<tr><td colspan="3" style="text-align: center;">Pas d\'activité</td></tr>';
         }
 
-        // STOCK TABLE
-        function loadStockTable(stock) {
-            const tbody = document.getElementById('stockTableBody');
-            
-            if (stock.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 40px; color: #6b7280;">Aucun article en stock</td></tr>';
-                return;
-            }
+        async function loadUsers() {
+            const result = await DataManager.users.getAll();
+            allUsers = result.data || [];
 
-            tbody.innerHTML = stock.map(item => {
-                const status = item.actuel < (item.min * 0.5) ? '🚨 Urgent' : item.actuel < item.min ? '⚠️ Bas' : '✓ OK';
-                const statusColor = item.actuel < (item.min * 0.5) ? 'var(--danger)' : item.actuel < item.min ? 'var(--accent)' : 'var(--success)';
-                
-                return `
-                    <tr>
-                        <td>${item.id}</td>
-                        <td>${item.nom}</td>
-                        <td>${item.min}</td>
-                        <td>${item.actuel}</td>
-                        <td>${item.categorie}</td>
-                        <td style="color: ${statusColor}">${status}</td>
-                        <td class="action-buttons">
-                            <button class="btn-icon" onclick="editStock(${item.id})" title="Modifier">✏️</button>
-                            <button class="btn-icon" onclick="deleteStock(${item.id})" title="Supprimer">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            const html = allUsers.map(u => `
+                <tr>
+                    <td>${u.nom} ${u.prenom}</td>
+                    <td>${u.email}</td>
+                    <td><span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role}</span></td>
+                    <td>${u.niveau || '-'}</td>
+                    <td><span class="badge ${u.actif ? 'badge-online' : 'badge-offline'}">${u.actif ? 'Actif' : 'Inactif'}</span></td>
+                    <td><button class="btn-sm btn-edit" onclick="editUser('${u.id}')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('usersTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'utilisateurs</td></tr>';
         }
 
-        // TP TABLE
-        function loadTPTable(tpData) {
-            const tbody = document.getElementById('tpTableBody');
-            
-            if (tpData.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #6b7280;">Aucun TP enregistré</td></tr>';
-                return;
-            }
+        async function loadTP() {
+            const result = await DataManager.tp.getAll();
+            allTP = result.data || [];
 
-            const machines = JSON.parse(localStorage.getItem('esig_machines')) || [];
-            
-            tbody.innerHTML = tpData.map(tp => {
-                const machine = machines.find(m => m.id == tp.machineId);
-                const etatBadge = tp.etat === 'termine' ? '✓ Terminé' : tp.etat === 'en_cours' ? '⚡ En cours' : '⚠️ Incomplet';
-                const etatColor = tp.etat === 'termine' ? 'var(--success)' : tp.etat === 'en_cours' ? 'var(--accent)' : 'var(--danger)';
-                
-                return `
-                    <tr>
-                        <td>TP-${tp.id.toString().slice(-6)}</td>
-                        <td>${tp.date}</td>
-                        <td>${tp.heureDebut}-${tp.heureFin}</td>
-                        <td>${machine ? machine.nom : 'N/A'}</td>
-                        <td>${tp.typeTP}</td>
-                        <td>${tp.membres.length} personnes</td>
-                        <td style="color: ${etatColor}">${etatBadge}</td>
-                        <td class="action-buttons">
-                            <button class="btn-icon" onclick="viewTP(${tp.id})" title="Voir détails">👁️</button>
-                            <button class="btn-icon" onclick="deleteTP(${tp.id})" title="Supprimer">🗑️</button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
+            const html = allTP.map(t => `
+                <tr>
+                    <td>${t.titre}</td>
+                    <td>${t.creatorName || 'N/A'}</td>
+                    <td>${t.type}</td>
+                    <td>${new Date(t.dateDebut?.toDate?.() || t.dateDebut).toLocaleDateString('fr-FR')}</td>
+                    <td><span class="badge badge-online">${t.statut || 'En cours'}</span></td>
+                    <td><button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas de TP</td></tr>';
         }
 
-        // MACHINE MANAGEMENT
-        function showAddMachineForm() {
-            document.getElementById('addMachineForm').style.display = 'block';
+        async function loadMachines() {
+            const result = await DataManager.machines.getAll();
+            allMachines = result.data || [];
+
+            const html = allMachines.map(m => `
+                <tr>
+                    <td>${m.nom}</td>
+                    <td>${m.type}</td>
+                    <td><span class="badge ${m.statut === 'disponible' ? 'badge-online' : 'badge-offline'}">${m.statut}</span></td>
+                    <td>${m.lieu}</td>
+                    <td>${m.nombreHeuresUtilisation || 0}h</td>
+                    <td><button class="btn-sm btn-delete" onclick="deleteMachine('${m.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('machinesTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas de machines</td></tr>';
         }
 
-        function hideAddMachineForm() {
-            document.getElementById('addMachineForm').style.display = 'none';
+        async function loadStock() {
+            const result = await DataManager.stocks.getAll();
+            allStock = result.data || [];
+
+            const html = allStock.map(s => `
+                <tr>
+                    <td>${s.nom}</td>
+                    <td>${s.categorie}</td>
+                    <td>${s.quantite}</td>
+                    <td>${s.quantiteMinimale}</td>
+                    <td>${s.prix || 0}€</td>
+                    <td><button class="btn-sm btn-delete" onclick="deleteStock('${s.id}')"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('stockTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'articles</td></tr>';
         }
 
-        function handleAddMachine(event) {
-            event.preventDefault();
-            
-            const machines = JSON.parse(localStorage.getItem('esig_machines')) || [];
-            
-            const newMachine = {
-                id: Date.now(),
-                nom: document.getElementById('newMachineName').value,
-                ref: document.getElementById('newMachineRef').value,
-                puissance: document.getElementById('newMachinePower').value,
-                statut: document.getElementById('newMachineStatus').value,
-                heuresUtilisation: 0
-            };
+        async function loadActivities() {
+            const result = await db.collection('activities').orderBy('timestamp', 'desc').limit(100).get();
+            allActivities = result.docs.map(d => ({id: d.id, ...d.data()}));
 
-            machines.push(newMachine);
-            localStorage.setItem('esig_machines', JSON.stringify(machines));
-            
-            loadMachinesTable(machines);
-            hideAddMachineForm();
-            event.target.reset();
-            alert('✓ Machine ajoutée avec succès!');
+            const html = allActivities.map(a => `
+                <tr>
+                    <td>${a.action}</td>
+                    <td>${a.userName}</td>
+                    <td>${a.type}</td>
+                    <td>${a.details || '-'}</td>
+                    <td>${new Date(a.timestamp?.toDate?.() || a.timestamp).toLocaleString('fr-FR')}</td>
+                </tr>
+            `).join('');
+
+            document.getElementById('activitiesTable').innerHTML = html || '<tr><td colspan="5" style="text-align: center;">Pas d\'activités</td></tr>';
         }
 
-        function deleteMachine(id) {
-            if (confirm('Supprimer cette machine?')) {
-                let machines = JSON.parse(localStorage.getItem('esig_machines')) || [];
-                machines = machines.filter(m => m.id !== id);
-                localStorage.setItem('esig_machines', JSON.stringify(machines));
-                loadMachinesTable(machines);
-                alert('✓ Machine supprimée!');
-            }
+        function openUserModal() {
+            document.getElementById('userModal').classList.add('active');
         }
 
-        // STOCK MANAGEMENT
-        function showAddStockForm() {
-            document.getElementById('addStockForm').style.display = 'block';
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
         }
 
-        function hideAddStockForm() {
-            document.getElementById('addStockForm').style.display = 'none';
+        function openTPModal() {
+            alert('À implémenter: ajout de TP');
         }
 
-        function handleAddStockItem(event) {
-            event.preventDefault();
-            
-            const stock = JSON.parse(localStorage.getItem('esig_stock')) || [];
-            
-            const newItem = {
-                id: Date.now(),
-                nom: document.getElementById('newStockName').value,
-                min: parseInt(document.getElementById('newStockMin').value),
-                actuel: parseInt(document.getElementById('newStockActual').value),
-                categorie: document.getElementById('newStockCategory').value,
-                urgent: false
-            };
-
-            newItem.urgent = newItem.actuel < (newItem.min * 0.5);
-
-            stock.push(newItem);
-            localStorage.setItem('esig_stock', JSON.stringify(stock));
-            
-            loadStockTable(stock);
-            hideAddStockForm();
-            event.target.reset();
-            alert('✓ Article ajouté avec succès!');
+        function openMachineModal() {
+            alert('À implémenter: ajout de machine');
         }
 
-        function deleteStock(id) {
-            if (confirm('Supprimer cet article?')) {
-                let stock = JSON.parse(localStorage.getItem('esig_stock')) || [];
-                stock = stock.filter(s => s.id !== id);
-                localStorage.setItem('esig_stock', JSON.stringify(stock));
-                loadStockTable(stock);
-                alert('✓ Article supprimé!');
+        function openStockModal() {
+            alert('À implémenter: ajout d\'article');
+        }
+
+        function saveUser(e) {
+            e.preventDefault();
+            alert('À implémenter: sauvegarde');
+        }
+
+        function editUser(uid) {
+            const user = allUsers.find(u => u.id === uid);
+            if (user) {
+                document.getElementById('userNom').value = user.nom;
+                document.getElementById('userPrenom').value = user.prenom;
+                document.getElementById('userEmail').value = user.email;
+                document.getElementById('userRole').value = user.role;
+                openUserModal();
             }
         }
 
-        // SETTINGS
-        function saveGoogleSheetsConfig() {
-            const config = {
-                spreadsheetId: document.getElementById('spreadsheetId').value,
-                apiKey: document.getElementById('apiKey').value,
-                enabled: true
-            };
-
-            localStorage.setItem('esig_sheets_config', JSON.stringify(config));
-            alert('✓ Configuration Google Sheets enregistrée!');
-        }
-
-        function testGoogleSheetsConnection() {
-            alert('🔗 Test de connexion...\n\nCette fonctionnalité sera activée après configuration complète de l\'API Google Sheets.');
-        }
-
-        function saveUsageLimits() {
-            const limits = {
-                maxTPDuration: document.getElementById('maxTPDuration').value,
-                maxMembers: document.getElementById('maxMembers').value
-            };
-
-            localStorage.setItem('esig_usage_limits', JSON.stringify(limits));
-            alert('✓ Limites enregistrées!');
-        }
-
-        function saveAppSettings() {
-            const settings = {
-                appName: document.getElementById('appName').value,
-                contactEmail: document.getElementById('contactEmail').value,
-                contactPhone: document.getElementById('contactPhone').value
-            };
-
-            localStorage.setItem('esig_app_settings', JSON.stringify(settings));
-            alert('✓ Paramètres enregistrés!');
-        }
-
-        // DATA EXPORT/IMPORT
-        function exportAllData() {
-            const data = {
-                machines: JSON.parse(localStorage.getItem('esig_machines')) || [],
-                stock: JSON.parse(localStorage.getItem('esig_stock')) || [],
-                tp: JSON.parse(localStorage.getItem('esig_tp')) || [],
-                maintenance: JSON.parse(localStorage.getItem('esig_maintenance')) || [],
-                exportDate: new Date().toISOString()
-            };
-
-            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `esig-backup-${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
-
-            alert('✓ Données exportées avec succès!');
-        }
-
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const data = JSON.parse(e.target.result);
-                    
-                    if (confirm('Importer ces données? Cela écrasera les données existantes.')) {
-                        if (data.machines) localStorage.setItem('esig_machines', JSON.stringify(data.machines));
-                        if (data.stock) localStorage.setItem('esig_stock', JSON.stringify(data.stock));
-                        if (data.tp) localStorage.setItem('esig_tp', JSON.stringify(data.tp));
-                        if (data.maintenance) localStorage.setItem('esig_maintenance', JSON.stringify(data.maintenance));
-                        
-                        alert('✓ Données importées avec succès!');
-                        loadAdminData();
-                    }
-                } catch (error) {
-                    alert('❌ Erreur lors de l\'importation: fichier invalide');
-                }
-            };
-            reader.readAsText(file);
-        }
-
-        function clearAllData() {
-            if (confirm('⚠️ ATTENTION!\n\nCela supprimera TOUTES les données de l\'application.\n\nVoulez-vous continuer?')) {
-                if (confirm('Êtes-vous VRAIMENT sûr? Cette action est IRRÉVERSIBLE!')) {
-                    localStorage.removeItem('esig_machines');
-                    localStorage.removeItem('esig_stock');
-                    localStorage.removeItem('esig_tp');
-                    localStorage.removeItem('esig_maintenance');
-                    
-                    alert('✓ Toutes les données ont été supprimées!');
-                    loadAdminData();
-                }
+        async function deleteTP(id) {
+            if (confirm('Supprimer ce TP ?')) {
+                await DataManager.tp.delete(id);
+                loadTP();
             }
         }
 
-        function exportTPData() {
-            alert('📑 Export des données TP en cours...\n\nLe fichier sera téléchargé dans quelques instants.');
-        }
-
-        function filterTP() {
-            // Implement TP filtering logic
-            alert('🔍 Filtrage en cours...');
-        }
-
-        function viewTP(id) {
-            const tp = (JSON.parse(localStorage.getItem('esig_tp')) || []).find(t => t.id === id);
-            if (tp) {
-                alert(`📝 Détails du TP\n\n` +
-                      `ID: TP-${tp.id.toString().slice(-6)}\n` +
-                      `Date: ${tp.date}\n` +
-                      `Horaire: ${tp.heureDebut} - ${tp.heureFin}\n` +
-                      `Type: ${tp.typeTP}\n` +
-                      `Membres: ${tp.membres.map(m => m.nom).join(', ')}\n` +
-                      `État: ${tp.etat}\n` +
-                      `Description: ${tp.description}`);
+        async function deleteMachine(id) {
+            if (confirm('Supprimer cette machine ?')) {
+                await DataManager.machines.delete(id);
+                loadMachines();
             }
         }
 
-        function deleteTP(id) {
-            if (confirm('Supprimer ce TP?')) {
-                let tp = JSON.parse(localStorage.getItem('esig_tp')) || [];
-                tp = tp.filter(t => t.id !== id);
-                localStorage.setItem('esig_tp', JSON.stringify(tp));
-                loadTPTable(tp);
-                alert('✓ TP supprimé!');
+        async function deleteStock(id) {
+            if (confirm('Supprimer cet article ?')) {
+                await DataManager.stocks.delete(id);
+                loadStock();
             }
         }
 
-        // Load saved settings
-        window.onload = function() {
-            const sheetsConfig = JSON.parse(localStorage.getItem('esig_sheets_config') || '{}');
-            const usageLimits = JSON.parse(localStorage.getItem('esig_usage_limits') || '{}');
-            const appSettings = JSON.parse(localStorage.getItem('esig_app_settings') || '{}');
-
-            if (sheetsConfig.spreadsheetId) document.getElementById('spreadsheetId').value = sheetsConfig.spreadsheetId;
-            if (usageLimits.maxTPDuration) document.getElementById('maxTPDuration').value = usageLimits.maxTPDuration;
-            if (usageLimits.maxMembers) document.getElementById('maxMembers').value = usageLimits.maxMembers;
-            if (appSettings.appName) document.getElementById('appName').value = appSettings.appName;
-            if (appSettings.contactEmail) document.getElementById('contactEmail').value = appSettings.contactEmail;
-            if (appSettings.contactPhone) document.getElementById('contactPhone').value = appSettings.contactPhone;
-        };
+        async function logout() {
+            await AuthManager.logout();
+            window.location.href = 'login.html';
+        }
     </script>
 </body>
 </html>

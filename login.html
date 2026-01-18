@@ -26,7 +26,7 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 400px;
+            max-width: 450px;
             width: 100%;
             padding: 40px;
         }
@@ -117,8 +117,7 @@
             font-size: 14px;
         }
 
-        input,
-        select {
+        input, select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e5e7eb;
@@ -128,8 +127,7 @@
             transition: all 0.3s;
         }
 
-        input:focus,
-        select:focus {
+        input:focus, select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -190,20 +188,6 @@
             border-left: 4px solid #ef4444;
         }
 
-        .alert i {
-            margin-right: 8px;
-        }
-
-        .demo-note {
-            background: #fef3c7;
-            color: #92400e;
-            padding: 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid #f59e0b;
-        }
-
         .loading {
             display: inline-block;
             width: 16px;
@@ -228,10 +212,17 @@
             text-decoration: none;
             font-size: 13px;
             font-weight: 500;
+            cursor: pointer;
         }
 
         .forgot-password a:hover {
             text-decoration: underline;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
         }
     </style>
 </head>
@@ -248,17 +239,12 @@
 
         <!-- Onglets -->
         <div class="tabs">
-            <button class="tab active" data-tab="login">Connexion</button>
-            <button class="tab" data-tab="register">Inscription</button>
+            <button class="tab active" data-tab="login"><i class="fas fa-sign-in-alt"></i> Connexion</button>
+            <button class="tab" data-tab="register"><i class="fas fa-user-plus"></i> Inscription</button>
         </div>
 
         <!-- Onglet Connexion -->
         <div id="login" class="tab-content active">
-            <div class="demo-note">
-                <i class="fas fa-info-circle"></i>
-                Test: admin@esig.tg / password
-            </div>
-
             <div class="alert" id="loginAlert"></div>
 
             <form id="loginForm">
@@ -278,7 +264,7 @@
             </form>
 
             <div class="forgot-password">
-                <a href="#" onclick="resetPassword(); return false;">Mot de passe oublié ?</a>
+                <a onclick="resetPassword()">Mot de passe oublié ?</a>
             </div>
         </div>
 
@@ -287,7 +273,7 @@
             <div class="alert" id="registerAlert"></div>
 
             <form id="registerForm">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div class="form-row">
                     <div class="form-group">
                         <label for="regPrenom">Prénom</label>
                         <input type="text" id="regPrenom" placeholder="Jean" required>
@@ -308,21 +294,22 @@
                     <input type="password" id="regPassword" placeholder="Min. 6 caractères" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="regNiveau">Niveau d'étude</label>
-                    <select id="regNiveau" required>
-                        <option value="">Sélectionner...</option>
-                        <option value="L1">Licence 1</option>
-                        <option value="L2">Licence 2</option>
-                        <option value="L3">Licence 3</option>
-                        <option value="M1">Master 1</option>
-                        <option value="M2">Master 2</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="regGroupe">Groupe (optionnel)</label>
-                    <input type="text" id="regGroupe" placeholder="Groupe A">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="regNiveau">Niveau</label>
+                        <select id="regNiveau" required>
+                            <option value="">Sélectionner...</option>
+                            <option value="L1">L1</option>
+                            <option value="L2">L2</option>
+                            <option value="L3">L3</option>
+                            <option value="M1">M1</option>
+                            <option value="M2">M2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="regGroupe">Groupe</label>
+                        <input type="text" id="regGroupe" placeholder="G1">
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary">
@@ -332,37 +319,43 @@
         </div>
     </div>
 
-    <!-- Firebase (version compatible navigateur classique) -->
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="firebase-config.js"></script>
 
     <script>
-        // Flag pour éviter les redirects pendant les opérations
-        let isProcessing = false;
+        let isRegistering = false;
+        let pageLoadCheck = false;
+
+        // Attendre le chargement complet
+        setTimeout(() => {
+            pageLoadCheck = true;
+            const currentUser = AuthManager.getCurrentUser();
+            if (currentUser && !isRegistering) {
+                AuthManager.getCurrentUserData().then(userData => {
+                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
+                }).catch(err => console.error('Erreur:', err));
+            }
+        }, 800);
 
         // Gestion des onglets
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
+                if (isRegistering) return;
                 const tabName = this.dataset.tab;
-
-                // Désactiver les autres onglets
                 document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-
-                // Activer l'onglet sélectionné
                 this.classList.add('active');
                 document.getElementById(tabName).classList.add('active');
             });
         });
 
-        // FORMULAIRE DE CONNEXION
+        // CONNEXION
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-
-            if (isProcessing) return;
-            isProcessing = true;
+            if (isRegistering || !pageLoadCheck) return;
 
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -375,10 +368,8 @@
             const result = await AuthManager.login(email, password);
 
             if (result.success) {
-                // Vérifier si admin
                 const userData = await AuthManager.getCurrentUserData();
-                showAlert(alertEl, 'success', '✅ Connexion réussie ! Redirection...');
-
+                showAlert(alertEl, 'success', '✅ Connexion réussie !');
                 setTimeout(() => {
                     window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
                 }, 1000);
@@ -386,16 +377,16 @@
                 showAlert(alertEl, 'error', '❌ ' + result.error);
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
-                isProcessing = false;
             }
         });
 
-        // FORMULAIRE D'INSCRIPTION
+        // INSCRIPTION
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            if (isRegistering || !pageLoadCheck) return;
 
-            if (isProcessing) return;
-            isProcessing = true;
+            isRegistering = true;
+            document.querySelectorAll('.tab').forEach(t => t.style.pointerEvents = 'none');
 
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
@@ -406,10 +397,10 @@
             const btn = e.target.querySelector('.btn-primary');
             const alertEl = document.getElementById('registerAlert');
 
-            // Vérifier la longueur du mot de passe
             if (password.length < 6) {
-                showAlert(alertEl, 'error', '❌ Le mot de passe doit contenir au moins 6 caractères');
-                isProcessing = false;
+                showAlert(alertEl, 'error', '❌ Mot de passe: min. 6 caractères');
+                isRegistering = false;
+                document.querySelectorAll('.tab').forEach(t => t.style.pointerEvents = 'auto');
                 return;
             }
 
@@ -421,8 +412,7 @@
             });
 
             if (result.success) {
-                showAlert(alertEl, 'success', '✅ Inscription réussie ! Redirection...');
-
+                showAlert(alertEl, 'success', '✅ Inscription réussie !');
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);
@@ -430,42 +420,26 @@
                 showAlert(alertEl, 'error', '❌ ' + result.error);
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-user-plus"></i> S\'inscrire';
-                isProcessing = false;
+                isRegistering = false;
+                document.querySelectorAll('.tab').forEach(t => t.style.pointerEvents = 'auto');
             }
         });
 
-        // Fonction pour afficher les alertes
         function showAlert(element, type, message) {
             element.className = `alert show ${type}`;
             element.textContent = message;
         }
 
-        // Réinitialisation du mot de passe
         function resetPassword() {
             const email = document.getElementById('loginEmail').value;
             if (!email) {
-                alert('Veuillez entrer votre email d\'abord');
+                alert('Entrez votre email');
                 return;
             }
-
-            auth.sendPasswordResetEmail(email)
-                .then(() => {
-                    alert('Email de réinitialisation envoyé ! Vérifiez votre boîte de réception.');
-                })
-                .catch((error) => {
-                    alert('Erreur : ' + error.message);
-                });
+            firebase.auth().sendPasswordResetEmail(email)
+                .then(() => alert('✅ Email envoyé'))
+                .catch(e => alert('❌ Erreur: ' + e.message));
         }
-
-        // Vérifier si l'utilisateur est déjà connecté (SAUF pendant le traitement)
-        AuthManager.onAuthStateChanged(user => {
-            if (user && !isProcessing) {
-                // Rediriger vers la page appropriée
-                AuthManager.getCurrentUserData().then(userData => {
-                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
-                });
-            }
-        });
     </script>
 </body>
 </html>
