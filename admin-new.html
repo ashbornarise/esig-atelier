@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESIG Atelier - Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --border: #e5e7eb;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100vh;
+            width: 250px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .sidebar-header {
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 20px;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .sidebar-header small {
+            opacity: 0.8;
+            font-size: 12px;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: transparent;
+            color: white;
+            text-align: left;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .sidebar-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .sidebar-item.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-left: 3px solid white;
+        }
+
+        .sidebar-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            padding: 0 20px;
+        }
+
+        .logout-btn {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .header-bar {
+            background: white;
+            padding: 20px 30px;
+            margin: -30px -30px 30px -30px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-bar h1 {
+            color: var(--primary);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* DASHBOARD GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .icon {
+            font-size: 32px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .stat-card .value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            color: #6b7280;
+            font-size: 13px;
+        }
+
+        /* TABLEAU */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 20px;
+            background: var(--light);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--light);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: var(--light);
+        }
+
+        /* BADGES */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: var(--primary);
+        }
+
+        /* BOUTONS */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-small {
+            padding: 6px 10px;
+            font-size: 12px;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6b7280;
+        }
+
+        /* FORM */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* ALERT */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 1024px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .sidebar-menu {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 16px;
+            }
+
+            .header-bar {
+                margin: -16px -16px 16px -16px;
+                padding: 16px;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- SIDEBAR -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1>ESIG Admin</h1>
+                <small>Gestion d'atelier</small>
+            </div>
+
+            <div class="sidebar-menu">
+                <button class="sidebar-item active" data-screen="dashboardScreen">
+                    <i class="fas fa-chart-bar"></i> Dashboard
+                </button>
+                <button class="sidebar-item" data-screen="tpScreen">
+                    <i class="fas fa-flask"></i> Travaux Pratiques
+                </button>
+                <button class="sidebar-item" data-screen="usersScreen">
+                    <i class="fas fa-users"></i> Utilisateurs
+                </button>
+                <button class="sidebar-item" data-screen="machinesScreen">
+                    <i class="fas fa-cog"></i> Machines
+                </button>
+                <button class="sidebar-item" data-screen="stockScreen">
+                    <i class="fas fa-box"></i> Stock
+                </button>
+                <button class="sidebar-item" data-screen="maintenanceScreen">
+                    <i class="fas fa-wrench"></i> Maintenance
+                </button>
+            </div>
+
+            <div class="sidebar-footer">
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </button>
+            </div>
+        </div>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <!-- DASHBOARD -->
+            <div id="dashboardScreen" class="screen active">
+                <div class="header-bar">
+                    <h1><i class="fas fa-chart-bar"></i> Dashboard</h1>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-flask"></i></div>
+                        <div class="value" id="dashTPCount">0</div>
+                        <div class="label">TP enregistrés</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-users"></i></div>
+                        <div class="value" id="dashUserCount">0</div>
+                        <div class="label">Utilisateurs</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-cog"></i></div>
+                        <div class="value" id="dashMachineCount">0</div>
+                        <div class="label">Machines</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon"><i class="fas fa-box"></i></div>
+                        <div class="value" id="dashStockCount">0</div>
+                        <div class="label">Articles stock</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TP -->
+            <div id="tpScreen" class="screen">
+                <div class="header-bar">
+                    <h1><i class="fas fa-flask"></i> Travaux Pratiques</h1>
+                </div>
+
+                <div id="tpAlert" class="alert"></div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Liste des TP</h3>
+                        <button class="btn btn-primary" onclick="openTPModal()">
+                            <i class="fas fa-plus"></i> Ajouter un TP
+                        </button>
+                    </div>
+                    <table id="tpTable">
+                        <thead>
+                            <tr>
+                                <th>Titre</th>
+                                <th>Type</th>
+                                <th>Créé par</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tpTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #6b7280;">
+                                    <i class="fas fa-spinner fa-spin"></i> Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- UTILISATEURS -->
+            <div id="usersScreen" class="screen">
+                <div class="header-bar">
+                    <h1><i class="fas fa-users"></i> Utilisateurs</h1>
+                </div>
+
+                <div id="usersAlert" class="alert"></div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Liste des utilisateurs</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Email</th>
+                                <th>Rôle</th>
+                                <th>Niveau</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #6b7280;">
+                                    <i class="fas fa-spinner fa-spin"></i> Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MACHINES -->
+            <div id="machinesScreen" class="screen">
+                <div class="header-bar">
+                    <h1><i class="fas fa-cog"></i> Machines</h1>
+                </div>
+
+                <div id="machinesAlert" class="alert"></div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Liste des machines</h3>
+                        <button class="btn btn-primary" onclick="openMachineModal()">
+                            <i class="fas fa-plus"></i> Ajouter une machine
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Type</th>
+                                <th>Statut</th>
+                                <th>Lieu</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="machinesTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #6b7280;">
+                                    <i class="fas fa-spinner fa-spin"></i> Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- STOCK -->
+            <div id="stockScreen" class="screen">
+                <div class="header-bar">
+                    <h1><i class="fas fa-box"></i> Stock</h1>
+                </div>
+
+                <div id="stockAlert" class="alert"></div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Inventaire</h3>
+                        <button class="btn btn-primary" onclick="openStockModal()">
+                            <i class="fas fa-plus"></i> Ajouter un article
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nom</th>
+                                <th>Catégorie</th>
+                                <th>Quantité</th>
+                                <th>Min</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #6b7280;">
+                                    <i class="fas fa-spinner fa-spin"></i> Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- MAINTENANCE -->
+            <div id="maintenanceScreen" class="screen">
+                <div class="header-bar">
+                    <h1><i class="fas fa-wrench"></i> Maintenance</h1>
+                </div>
+
+                <div id="maintenanceAlert" class="alert"></div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Tâches de maintenance</h3>
+                        <button class="btn btn-primary" onclick="openMaintenanceModal()">
+                            <i class="fas fa-plus"></i> Ajouter une tâche
+                        </button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th>Machine</th>
+                                <th>Type</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="maintenanceTableBody">
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 30px; color: #6b7280;">
+                                    <i class="fas fa-spinner fa-spin"></i> Chargement...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- Modal Ajouter TP -->
+    <div id="tpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-flask"></i> Ajouter un TP</h2>
+                <button class="close-modal" onclick="closeModal('tpModal')">&times;</button>
+            </div>
+            <form id="tpForm">
+                <div class="form-group">
+                    <label>Titre</label>
+                    <input type="text" id="tpTitreInput" placeholder="Titre du TP" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="tpTypeInput" required>
+                        <option value="">Sélectionner...</option>
+                        <option value="usinage">Usinage</option>
+                        <option value="tournage">Tournage</option>
+                        <option value="soudure">Soudure</option>
+                        <option value="cao">CAO</option>
+                        <option value="montage">Montage</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter Machine -->
+    <div id="machineModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Ajouter une machine</h2>
+                <button class="close-modal" onclick="closeModal('machineModal')">&times;</button>
+            </div>
+            <form id="machineForm">
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="machineNameInput" placeholder="Nom de la machine" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" id="machineTypeInput" placeholder="Type" required>
+                </div>
+                <div class="form-group">
+                    <label>Lieu</label>
+                    <input type="text" id="machineLocationInput" placeholder="Lieu" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter Stock -->
+    <div id="stockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-box"></i> Ajouter un article</h2>
+                <button class="close-modal" onclick="closeModal('stockModal')">&times;</button>
+            </div>
+            <form id="stockForm">
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="stockNameInput" placeholder="Nom de l'article" required>
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <select id="stockCategoryInput" required>
+                        <option value="">Sélectionner...</option>
+                        <option value="outils">Outils</option>
+                        <option value="materiaux">Matériaux</option>
+                        <option value="consommables">Consommables</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantité</label>
+                    <input type="number" id="stockQtyInput" placeholder="Quantité" required>
+                </div>
+                <div class="form-group">
+                    <label>Quantité minimale</label>
+                    <input type="number" id="stockMinInput" placeholder="Minimum" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Ajouter Maintenance -->
+    <div id="maintenanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-wrench"></i> Ajouter une tâche</h2>
+                <button class="close-modal" onclick="closeModal('maintenanceModal')">&times;</button>
+            </div>
+            <form id="maintenanceForm">
+                <div class="form-group">
+                    <label>Machine</label>
+                    <input type="text" id="maintenanceMachineInput" placeholder="ID Machine" required>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="maintenanceDescInput" placeholder="Description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="maintenanceTypeInput" required>
+                        <option value="quotidienne">Quotidienne</option>
+                        <option value="hebdo">Hebdomadaire</option>
+                        <option value="mensuelle">Mensuelle</option>
+                        <option value="corrective">Corrective</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-save"></i> Enregistrer
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        // GESTION DE LA NAVIGATION
+        document.querySelectorAll('.sidebar-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const screenId = this.dataset.screen;
+
+                // Désactiver les autres
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+
+                // Activer le sélectionné
+                document.getElementById(screenId).classList.add('active');
+                this.classList.add('active');
+
+                // Charger les données
+                if (screenId === 'dashboardScreen') loadDashboard();
+                if (screenId === 'tpScreen') loadTP();
+                if (screenId === 'usersScreen') loadUsers();
+                if (screenId === 'machinesScreen') loadMachines();
+                if (screenId === 'stockScreen') loadStocks();
+                if (screenId === 'maintenanceScreen') loadMaintenance();
+            });
+        });
+
+        // VÉRIFIER L'ACCÈS ADMIN
+        AuthManager.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login-new.html';
+                return;
+            }
+
+            const userData = await AuthManager.getCurrentUserData();
+            if (userData.role !== 'admin') {
+                alert('Accès refusé. Vous n\'êtes pas administrateur.');
+                window.location.href = 'index-new.html';
+                return;
+            }
+
+            // Charger le dashboard
+            loadDashboard();
+        });
+
+        // DÉCONNEXION
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const result = await AuthManager.logout();
+            if (result.success) {
+                window.location.href = 'login-new.html';
+            }
+        });
+
+        // FONCTIONS DE CHARGEMENT
+        async function loadDashboard() {
+            const tpResult = await DataManager.tp.getAll(false);
+            const usersResult = await DataManager.users.getAll();
+            const machinesResult = await DataManager.machines.getAll();
+            const stocksResult = await DataManager.stocks.getAll();
+
+            document.getElementById('dashTPCount').textContent = tpResult.data.length;
+            document.getElementById('dashUserCount').textContent = usersResult.data.length;
+            document.getElementById('dashMachineCount').textContent = machinesResult.data.length;
+            document.getElementById('dashStockCount').textContent = stocksResult.data.length;
+        }
+
+        async function loadTP() {
+            const result = await DataManager.tp.getAll(false);
+            const tbody = document.getElementById('tpTableBody');
+
+            if (result.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b7280; padding: 30px;">Aucun TP</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = result.data.map(tp => `
+                <tr>
+                    <td><strong>${tp.titre}</strong></td>
+                    <td>${tp.type}</td>
+                    <td>${tp.createdBy}</td>
+                    <td><span class="badge badge-info">${tp.statut}</span></td>
+                    <td>
+                        <button class="btn btn-small" onclick="editTP('${tp.id}')"><i class="fas fa-edit"></i> Éditer</button>
+                        <button class="btn btn-small btn-danger" onclick="deleteTP('${tp.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadUsers() {
+            const result = await DataManager.users.getAll();
+            const tbody = document.getElementById('usersTableBody');
+
+            if (result.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b7280; padding: 30px;">Aucun utilisateur</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = result.data.map(user => `
+                <tr>
+                    <td><strong>${user.prenom} ${user.nom}</strong></td>
+                    <td>${user.email}</td>
+                    <td><span class="badge badge-info">${user.role}</span></td>
+                    <td>${user.niveau}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="editUser('${user.uid}')"><i class="fas fa-edit"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadMachines() {
+            const result = await DataManager.machines.getAll();
+            const tbody = document.getElementById('machinesTableBody');
+
+            if (result.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b7280; padding: 30px;">Aucune machine</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = result.data.map(machine => `
+                <tr>
+                    <td><strong>${machine.nom}</strong></td>
+                    <td>${machine.type}</td>
+                    <td><span class="badge badge-success">${machine.statut}</span></td>
+                    <td>${machine.lieu || 'N/A'}</td>
+                    <td>
+                        <button class="btn btn-small" onclick="editMachine('${machine.id}')"><i class="fas fa-edit"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        async function loadStocks() {
+            const result = await DataManager.stocks.getAll();
+            const tbody = document.getElementById('stockTableBody');
+
+            if (result.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b7280; padding: 30px;">Aucun article</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = result.data.map(stock => {
+                const statusBadge = stock.quantite <= stock.quantiteMinimale ? 'badge-danger' : 'badge-success';
+                return `
+                    <tr>
+                        <td><strong>${stock.nom}</strong></td>
+                        <td>${stock.categorie}</td>
+                        <td><span class="badge ${statusBadge}">${stock.quantite}</span></td>
+                        <td>${stock.quantiteMinimale}</td>
+                        <td>
+                            <button class="btn btn-small" onclick="editStock('${stock.id}')"><i class="fas fa-edit"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadMaintenance() {
+            const result = await DataManager.maintenance.getAll();
+            const tbody = document.getElementById('maintenanceTableBody');
+
+            if (result.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #6b7280; padding: 30px;">Aucune tâche</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = result.data.map(task => `
+                <tr>
+                    <td><strong>${task.description}</strong></td>
+                    <td>${task.machineId}</td>
+                    <td>${task.type}</td>
+                    <td><span class="badge badge-info">${task.statut}</span></td>
+                    <td>
+                        <button class="btn btn-small" onclick="editMaintenance('${task.id}')"><i class="fas fa-edit"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // MODALS
+        function openTPModal() {
+            document.getElementById('tpModal').classList.add('active');
+        }
+
+        function openMachineModal() {
+            document.getElementById('machineModal').classList.add('active');
+        }
+
+        function openStockModal() {
+            document.getElementById('stockModal').classList.add('active');
+        }
+
+        function openMaintenanceModal() {
+            document.getElementById('maintenanceModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Soumettre TP
+        document.getElementById('tpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const result = await DataManager.tp.create({
+                titre: document.getElementById('tpTitreInput').value,
+                type: document.getElementById('tpTypeInput').value
+            });
+
+            if (result.success) {
+                closeModal('tpModal');
+                loadTP();
+                document.getElementById('tpForm').reset();
+            }
+        });
+
+        // Soumettre Machine
+        document.getElementById('machineForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const result = await DataManager.machines.create({
+                nom: document.getElementById('machineNameInput').value,
+                type: document.getElementById('machineTypeInput').value,
+                lieu: document.getElementById('machineLocationInput').value,
+                statut: 'disponible'
+            });
+
+            if (result.success) {
+                closeModal('machineModal');
+                loadMachines();
+                document.getElementById('machineForm').reset();
+            }
+        });
+
+        // Soumettre Stock
+        document.getElementById('stockForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const result = await DataManager.stocks.create({
+                nom: document.getElementById('stockNameInput').value,
+                categorie: document.getElementById('stockCategoryInput').value,
+                quantite: parseFloat(document.getElementById('stockQtyInput').value),
+                quantiteMinimale: parseFloat(document.getElementById('stockMinInput').value),
+                unite: 'piece'
+            });
+
+            if (result.success) {
+                closeModal('stockModal');
+                loadStocks();
+                document.getElementById('stockForm').reset();
+            }
+        });
+
+        // Soumettre Maintenance
+        document.getElementById('maintenanceForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const result = await DataManager.maintenance.create({
+                machineId: document.getElementById('maintenanceMachineInput').value,
+                description: document.getElementById('maintenanceDescInput').value,
+                type: document.getElementById('maintenanceTypeInput').value,
+                datePrevu: new Date()
+            });
+
+            if (result.success) {
+                closeModal('maintenanceModal');
+                loadMaintenance();
+                document.getElementById('maintenanceForm').reset();
+            }
+        });
+
+        // Supprimer TP
+        async function deleteTP(tpId) {
+            if (confirm('Êtes-vous sûr ?')) {
+                const result = await DataManager.tp.delete(tpId);
+                if (result.success) {
+                    loadTP();
+                }
+            }
+        }
+
+        // Fermer les modals en cliquant dehors
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

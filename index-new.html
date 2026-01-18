@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="ESIG Atelier - Application de gestion d'atelier">
+    <meta name="theme-color" content="#667eea">
+    <title>ESIG Atelier - Accueil</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f9fafb;
+            --dark: #1f2937;
+            --border: #e5e7eb;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            padding-bottom: 70px;
+        }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-title h1 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .header-title small {
+            opacity: 0.9;
+            font-size: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .user-menu:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* CONTENU PRINCIPAL */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* CARTE */
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            font-size: 20px;
+        }
+
+        /* GRILLE DE STATISTIQUES */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stat-card .icon {
+            font-size: 28px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        /* FORMULAIRES */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* BOUTONS */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+
+        /* LISTE D'ÉLÉMENTS */
+        .item-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .item {
+            background: var(--light);
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-info h3 {
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .item-info small {
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: var(--success);
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: var(--warning);
+        }
+
+        .badge-danger {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        /* NAVIGATION INFÉRIEURE */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 0;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+            z-index: 99;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 8px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .nav-item.active {
+            color: var(--primary);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        /* ALERTE */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert.show {
+            display: flex;
+        }
+
+        .alert.success {
+            background: #d1fae5;
+            color: var(--success);
+            border-left: 4px solid var(--success);
+        }
+
+        .alert.error {
+            background: #fee2e2;
+            color: var(--danger);
+            border-left: 4px solid var(--danger);
+        }
+
+        /* LOADER */
+        .loader {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .header-title small {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 16px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
+
+        /* MENU DÉROULANT */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            min-width: 200px;
+            display: none;
+            flex-direction: column;
+            z-index: 1000;
+            border: 1px solid var(--border);
+            margin-top: 8px;
+        }
+
+        .dropdown-menu.active {
+            display: flex;
+        }
+
+        .dropdown-menu a,
+        .dropdown-menu button {
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            text-align: left;
+            cursor: pointer;
+            color: var(--dark);
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-menu a:hover,
+        .dropdown-menu button:hover {
+            background: var(--light);
+            color: var(--primary);
+        }
+
+        .dropdown-menu hr {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <i class="fas fa-cogs" style="font-size: 24px;"></i>
+                <div>
+                    <h1>ESIG Atelier</h1>
+                    <small id="userNameDisplay">Chargement...</small>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="user-menu" id="userMenuBtn">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userEmail">Menu</span>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="#" id="profileLink"><i class="fas fa-user"></i> Mon profil</a>
+                        <a href="#" id="settingsLink"><i class="fas fa-cog"></i> Paramètres</a>
+                        <hr>
+                        <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTENU PRINCIPAL -->
+    <div class="container">
+        <!-- Écran Accueil -->
+        <div id="homeScreen" class="screen active">
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card">
+                    <div class="icon"><i class="fas fa-flask"></i></div>
+                    <div class="value" id="tpCount">0</div>
+                    <div class="label">TP enregistrés</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fas fa-cog"></i></div>
+                    <div class="value" id="machineCount">0</div>
+                    <div class="label">Machines</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fas fa-box"></i></div>
+                    <div class="value" id="stockCount">0</div>
+                    <div class="label">Articles stock</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon"><i class="fas fa-wrench"></i></div>
+                    <div class="value" id="maintenanceCount">0</div>
+                    <div class="label">Maintenances</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-plus-circle"></i> Créer un TP</h2>
+                <div id="tpFormAlert"></div>
+                <form id="tpForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label for="tpTitre">Titre du TP</label>
+                            <input type="text" id="tpTitre" placeholder="Ex: Usinage - Pièce mécanique" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tpType">Type</label>
+                            <select id="tpType" required>
+                                <option value="">Sélectionner...</option>
+                                <option value="usinage">Usinage</option>
+                                <option value="tournage">Tournage</option>
+                                <option value="soudure">Soudure</option>
+                                <option value="cao">CAO</option>
+                                <option value="montage">Montage</option>
+                                <option value="autre">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="form-group">
+                            <label for="tpDateDebut">Date de début</label>
+                            <input type="datetime-local" id="tpDateDebut" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tpDuree">Durée (heures)</label>
+                            <input type="number" id="tpDuree" placeholder="2" min="0.5" step="0.5" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tpDescription">Description</label>
+                        <textarea id="tpDescription" placeholder="Détails du TP..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Enregistrer le TP
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2><i class="fas fa-list"></i> Mes TP</h2>
+                <div id="myTPList" class="item-list">
+                    <div style="text-align: center; color: #6b7280; padding: 20px;">
+                        <p><i class="fas fa-inbox"></i></p>
+                        <p>Aucun TP enregistré</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran Machines -->
+        <div id="machinesScreen" class="screen">
+            <div class="card">
+                <h2><i class="fas fa-cog"></i> Machines disponibles</h2>
+                <div id="machinesList" class="item-list">
+                    <div style="text-align: center; color: #6b7280; padding: 20px;">
+                        <p><i class="fas fa-spinner"></i> Chargement...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran Stocks -->
+        <div id="stocksScreen" class="screen">
+            <div class="card">
+                <h2><i class="fas fa-box"></i> Inventaire</h2>
+                <div id="stockList" class="item-list">
+                    <div style="text-align: center; color: #6b7280; padding: 20px;">
+                        <p><i class="fas fa-spinner"></i> Chargement...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Écran Maintenance -->
+        <div id="maintenanceScreen" class="screen">
+            <div class="card">
+                <h2><i class="fas fa-wrench"></i> Maintenance machines</h2>
+                <div id="maintenanceList" class="item-list">
+                    <div style="text-align: center; color: #6b7280; padding: 20px;">
+                        <p><i class="fas fa-spinner"></i> Chargement...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NAVIGATION INFÉRIEURE -->
+    <div class="bottom-nav">
+        <button class="nav-item active" data-screen="homeScreen">
+            <i class="fas fa-home"></i>
+            <span>Accueil</span>
+        </button>
+        <button class="nav-item" data-screen="machinesScreen">
+            <i class="fas fa-cog"></i>
+            <span>Machines</span>
+        </button>
+        <button class="nav-item" data-screen="stocksScreen">
+            <i class="fas fa-box"></i>
+            <span>Stock</span>
+        </button>
+        <button class="nav-item" data-screen="maintenanceScreen">
+            <i class="fas fa-wrench"></i>
+            <span>Maintenance</span>
+        </button>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <script>
+        // GESTION DE LA NAVIGATION
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const screenId = this.dataset.screen;
+
+                // Désactiver les autres écrans
+                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+
+                // Activer l'écran sélectionné
+                document.getElementById(screenId).classList.add('active');
+                this.classList.add('active');
+            });
+        });
+
+        // GESTION DU MENU UTILISATEUR
+        document.getElementById('userMenuBtn').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userDropdown').classList.toggle('active');
+        });
+
+        document.addEventListener('click', () => {
+            document.getElementById('userDropdown').classList.remove('active');
+        });
+
+        // DÉCONNEXION
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            const result = await AuthManager.logout();
+            if (result.success) {
+                window.location.href = 'login-new.html';
+            }
+        });
+
+        // VÉRIFIER L'AUTHENTIFICATION
+        AuthManager.onAuthStateChanged(async (user) => {
+            if (!user) {
+                window.location.href = 'login-new.html';
+                return;
+            }
+
+            // Charger les données utilisateur
+            const userData = await AuthManager.getCurrentUserData();
+            document.getElementById('userEmail').textContent = userData.prenom + ' ' + userData.nom;
+            document.getElementById('userNameDisplay').textContent = userData.niveau + ' - Groupe ' + userData.groupe;
+
+            // Charger les données
+            loadDashboard();
+            loadMachines();
+            loadStocks();
+            loadMaintenance();
+            loadMyTP();
+        });
+
+        // SOUMETTRE UN TP
+        document.getElementById('tpForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = e.target.querySelector('.btn-primary');
+            const alert = document.getElementById('tpFormAlert');
+            btn.disabled = true;
+
+            const tpData = {
+                titre: document.getElementById('tpTitre').value,
+                type: document.getElementById('tpType').value,
+                dateDebut: new Date(document.getElementById('tpDateDebut').value),
+                duree: parseFloat(document.getElementById('tpDuree').value),
+                description: document.getElementById('tpDescription').value,
+                statut: 'planifie'
+            };
+
+            const result = await DataManager.tp.create(tpData);
+
+            if (result.success) {
+                showAlert(alert, 'success', '✅ TP enregistré avec succès!');
+                document.getElementById('tpForm').reset();
+                setTimeout(() => loadMyTP(), 1500);
+            } else {
+                showAlert(alert, 'error', '❌ Erreur: ' + result.error);
+            }
+
+            btn.disabled = false;
+        });
+
+        // CHARGER LE DASHBOARD
+        async function loadDashboard() {
+            const tpResult = await DataManager.tp.getAll(false);
+            const machinesResult = await DataManager.machines.getAll();
+            const stocksResult = await DataManager.stocks.getAll();
+            const maintenanceResult = await DataManager.maintenance.getAll();
+
+            document.getElementById('tpCount').textContent = tpResult.data.length;
+            document.getElementById('machineCount').textContent = machinesResult.data.length;
+            document.getElementById('stockCount').textContent = stocksResult.data.length;
+            document.getElementById('maintenanceCount').textContent = maintenanceResult.data.length;
+        }
+
+        // CHARGER LES TP DE L'UTILISATEUR
+        async function loadMyTP() {
+            const result = await DataManager.tp.getAll(true);
+            const list = document.getElementById('myTPList');
+
+            if (result.data.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 20px;"><p><i class="fas fa-inbox"></i></p><p>Aucun TP enregistré</p></div>';
+                return;
+            }
+
+            list.innerHTML = result.data.map(tp => `
+                <div class="item">
+                    <div class="item-info">
+                        <h3>${tp.titre}</h3>
+                        <small><i class="fas fa-clock"></i> ${tp.duree}h - Type: ${tp.type}</small>
+                    </div>
+                    <span class="badge badge-success">${tp.statut}</span>
+                </div>
+            `).join('');
+        }
+
+        // CHARGER LES MACHINES
+        async function loadMachines() {
+            const result = await DataManager.machines.getAll();
+            const list = document.getElementById('machinesList');
+
+            if (result.data.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 20px;"><p>Aucune machine</p></div>';
+                return;
+            }
+
+            list.innerHTML = result.data.map(machine => {
+                const statusBadge = {
+                    'disponible': 'badge-success',
+                    'occupee': 'badge-warning',
+                    'maintenance': 'badge-danger'
+                }[machine.statut] || 'badge-success';
+
+                return `
+                    <div class="item">
+                        <div class="item-info">
+                            <h3><i class="fas fa-cog"></i> ${machine.nom}</h3>
+                            <small>Type: ${machine.type} | Lieu: ${machine.lieu || 'N/A'}</small>
+                        </div>
+                        <span class="badge ${statusBadge}">${machine.statut}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // CHARGER LES STOCKS
+        async function loadStocks() {
+            const result = await DataManager.stocks.getAll();
+            const list = document.getElementById('stockList');
+
+            if (result.data.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 20px;"><p>Aucun article</p></div>';
+                return;
+            }
+
+            list.innerHTML = result.data.map(stock => {
+                const alertBadge = stock.quantite <= stock.quantiteMinimale ? 'badge-danger' : 'badge-success';
+                return `
+                    <div class="item">
+                        <div class="item-info">
+                            <h3><i class="fas fa-box"></i> ${stock.nom}</h3>
+                            <small>Catégorie: ${stock.categorie} | Stock: ${stock.quantite} ${stock.unite}</small>
+                        </div>
+                        <span class="badge ${alertBadge}">${stock.quantite} ${stock.unite}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // CHARGER LA MAINTENANCE
+        async function loadMaintenance() {
+            const result = await DataManager.maintenance.getAll();
+            const list = document.getElementById('maintenanceList');
+
+            if (result.data.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 20px;"><p>Aucune tâche</p></div>';
+                return;
+            }
+
+            list.innerHTML = result.data.map(task => {
+                const statusBadge = {
+                    'planifie': 'badge-warning',
+                    'en_cours': 'badge-warning',
+                    'termine': 'badge-success'
+                }[task.statut] || 'badge-warning';
+
+                return `
+                    <div class="item">
+                        <div class="item-info">
+                            <h3><i class="fas fa-wrench"></i> ${task.description}</h3>
+                            <small>Type: ${task.type} | Machine: ${task.machineId}</small>
+                        </div>
+                        <span class="badge ${statusBadge}">${task.statut}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // AFFICHER LES ALERTES
+        function showAlert(element, type, message) {
+            element.className = `alert show ${type}`;
+            element.innerHTML = message;
+        }
+
+        // Enregistrer le Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => {});
+        }
+    </script>
+</body>
+</html>
