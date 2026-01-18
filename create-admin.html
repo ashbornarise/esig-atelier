@@ -130,49 +130,102 @@
             color: #6b7280;
             font-size: 13px;
         }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🔐 Créer Document Admin</h1>
-        <p class="subtitle">Ajouter le rôle admin à votre compte Firestore</p>
-
-        <div class="info-box">
-            ✅ Cette page créera automatiquement le document Firestore nécessaire pour que votre compte admin fonctionne correctement.
-        </div>
+        <h1>🔐 Admin ESIG Atelier</h1>
+        <p class="subtitle">Créer le document admin dans Firestore</p>
 
         <div id="alertBox" class="alert"></div>
 
-        <form id="createAdminForm">
-            <div class="form-group">
-                <label for="adminUid">UID Firebase:</label>
-                <input 
-                    type="text" 
-                    id="adminUid" 
-                    placeholder="Entrez l'UID du compte admin" 
-                    value="auecEPxgHDdViQ0KLIS28Ubak522"
-                    readonly
-                >
+        <!-- SECTION 1: CONNEXION -->
+        <div id="loginSection" class="section active">
+            <div class="info-box">
+                🔑 Connectez-vous avec vos identifiants admin
             </div>
 
-            <div class="form-group">
-                <label for="adminEmail">Email Admin:</label>
-                <input 
-                    type="email" 
-                    id="adminEmail" 
-                    placeholder="admin@esig.tg" 
-                    value="admin@esig.tg"
-                    readonly
-                >
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email:</label>
+                    <input 
+                        type="email" 
+                        id="loginEmail" 
+                        placeholder="admin@esig.tg" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Mot de passe:</label>
+                    <input 
+                        type="password" 
+                        id="loginPassword" 
+                        placeholder="Esig2026" 
+                        required
+                    >
+                </div>
+
+                <button type="submit" id="loginBtn">
+                    Se Connecter
+                </button>
+            </form>
+        </div>
+
+        <!-- SECTION 2: CRÉATION DOCUMENT -->
+        <div id="createSection" class="section">
+            <div class="info-box">
+                ✅ Vous êtes connecté ! Créez maintenant le document admin.
             </div>
 
-            <button type="submit" id="submitBtn">
-                <i class="fas fa-plus"></i> Créer Document Admin
+            <form id="createAdminForm">
+            <form id="createAdminForm">
+                <div class="form-group">
+                    <label for="adminUid">UID Firebase:</label>
+                    <input 
+                        type="text" 
+                        id="adminUid" 
+                        placeholder="Entrez l'UID du compte admin" 
+                        value="auecEPxgHDdViQ0KLIS28Ubak522"
+                        readonly
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="adminEmail">Email Admin:</label>
+                    <input 
+                        type="email" 
+                        id="adminEmail" 
+                        placeholder="admin@esig.tg" 
+                        value="admin@esig.tg"
+                        readonly
+                    >
+                </div>
+
+                <button type="submit" id="submitBtn">
+                    <i class="fas fa-plus"></i> Créer Document Admin
+                </button>
+            </form>
+
+            <div class="loading" id="loading">
+                <p>⏳ Création en cours...</p>
+            </div>
+
+            <button onclick="logout()" style="width: 100%; margin-top: 20px; background: #ef4444;">
+                Déconnexion
             </button>
-        </form>
-
-        <div class="loading" id="loading">
-            <p>⏳ Création en cours...</p>
         </div>
     </div>
 
@@ -185,8 +238,10 @@
     <script src="firebase-config.js"></script>
 
     <script>
-        const form = document.getElementById('createAdminForm');
         const alertBox = document.getElementById('alertBox');
+        const loginForm = document.getElementById('loginForm');
+        const createAdminForm = document.getElementById('createAdminForm');
+        const loginBtn = loginForm.querySelector('button');
         const submitBtn = document.getElementById('submitBtn');
         const loading = document.getElementById('loading');
 
@@ -194,9 +249,43 @@
             alertBox.className = `alert ${type}`;
             alertBox.textContent = message;
             alertBox.style.display = 'block';
+            window.scrollTo(0, 0);
         }
 
-        form.addEventListener('submit', async (e) => {
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // CONNEXION
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = '⏳ Connexion...';
+
+            try {
+                await AuthManager.login(email, password);
+                showAlert('✅ Connexion réussie !', 'success');
+                
+                setTimeout(() => {
+                    showSection('createSection');
+                    loginBtn.disabled = false;
+                    loginBtn.textContent = 'Se Connecter';
+                }, 1000);
+
+            } catch (error) {
+                showAlert(`❌ Erreur: ${error.message}`, 'error');
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Se Connecter';
+            }
+        });
+
+        // CRÉATION DOCUMENT ADMIN
+        createAdminForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const adminUid = document.getElementById('adminUid').value.trim();
@@ -222,7 +311,7 @@
                     statut: 'Actif'
                 }, { merge: true });
 
-                showAlert('✅ Document admin créé avec succès ! Vous pouvez maintenant vous connecter.', 'success');
+                showAlert('✅ Document admin créé avec succès ! Redirection vers la connexion...', 'success');
                 
                 setTimeout(() => {
                     window.location.href = 'login.html';
@@ -236,16 +325,22 @@
             }
         });
 
-        // Vérifier l'authentification
+        // Vérifier l'authentification au chargement
         window.addEventListener('load', () => {
             const user = auth.currentUser;
             if (user) {
-                showAlert('✅ Vous êtes connecté. Cliquez sur "Créer Document Admin" pour continuer.', 'success');
-            } else {
-                showAlert('⚠️ Vous devez être connecté à Firebase pour exécuter cette action. Authentifiez-vous d\'abord.', 'error');
-                submitBtn.disabled = true;
+                showAlert(`✅ Connecté en tant que ${user.email}`, 'success');
+                showSection('createSection');
             }
         });
+
+        // Déconnexion
+        function logout() {
+            AuthManager.logout();
+            showSection('loginSection');
+            loginForm.reset();
+            showAlert('✅ Déconnecté', 'success');
+        }
     </script>
 </body>
 </html>
