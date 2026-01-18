@@ -487,13 +487,18 @@
         }
 
         // Au chargement, vérifier si l'utilisateur est connecté ou en mode visiteur
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
             const user = AuthManager.getCurrentUser();
             if (user) {
                 // Déjà connecté, aller au dashboard
-                AuthManager.getCurrentUserData().then(userData => {
-                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
-                });
+                try {
+                    const userData = await AuthManager.getCurrentUserData();
+                    const destination = (userData && userData.role === 'admin') ? 'admin.html' : 'index.html';
+                    window.location.href = destination;
+                } catch (e) {
+                    console.error('Erreur:', e);
+                    window.location.href = 'index.html';
+                }
             } else if (localStorage.getItem('visitMode') === 'true') {
                 // Mode visiteur, aller à index
                 window.location.href = 'index.html';
@@ -525,12 +530,22 @@
             const result = await AuthManager.login(email, password);
 
             if (result.success) {
-                const userData = await AuthManager.getCurrentUserData();
                 showAlert(alertEl, 'success', 'Connexion réussie ! Redirection...');
-
-                setTimeout(() => {
-                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
-                }, 1500);
+                
+                // Récupérer le rôle et rediriger rapidement
+                try {
+                    const userData = await AuthManager.getCurrentUserData();
+                    const destination = (userData && userData.role === 'admin') ? 'admin.html' : 'index.html';
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 800);
+                } catch (e) {
+                    // En cas d'erreur, aller à index.html
+                    console.error('Erreur récupération données:', e);
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 800);
+                }
             } else {
                 showAlert(alertEl, 'error', result.error);
                 btn.disabled = false;
@@ -567,10 +582,20 @@
             if (result.success) {
                 showAlert(alertEl, 'success', 'Inscription réussie ! Redirection...');
 
-                setTimeout(async () => {
+                // Redirection rapide
+                try {
                     const userData = await AuthManager.getCurrentUserData();
-                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
-                }, 1500);
+                    const destination = (userData && userData.role === 'admin') ? 'admin.html' : 'index.html';
+                    setTimeout(() => {
+                        window.location.href = destination;
+                    }, 800);
+                } catch (e) {
+                    // En cas d'erreur, aller à index.html
+                    console.error('Erreur récupération données:', e);
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 800);
+                }
             } else {
                 showAlert(alertEl, 'error', result.error);
                 btn.disabled = false;
