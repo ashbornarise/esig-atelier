@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESIG Atelier - Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         * {
             margin: 0;
@@ -328,11 +328,11 @@
             <!-- STATS -->
             <div class="stats-grid" id="statsSection">
                 <div class="stat-card">
-                    <div class="stat-label"><i class="fas fa-flask-vial"></i> Mes TP</div>
+                    <div class="stat-label"><i class="fas fa-book"></i> Mes TP</div>
                     <div class="stat-value" id="statTP">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label"><i class="fas fa-cog"></i> Machines</div>
+                    <div class="stat-label"><i class="fas fa-wrench"></i> Machines</div>
                     <div class="stat-value" id="statMachines">0</div>
                 </div>
                 <div class="stat-card">
@@ -348,7 +348,7 @@
             <!-- TP SECTION -->
             <div id="tpSection" class="section active">
                 <div class="section-title">
-                    <i class="fas fa-flask-vial"></i> Créer un TP
+                    <i class="fas fa-book"></i> Créer un TP
                 </div>
                 <div id="tpAlert" class="alert"></div>
                 <form id="tpForm">
@@ -398,7 +398,7 @@
             <!-- MACHINES SECTION -->
             <div id="machinesSection" class="section">
                 <div class="section-title">
-                    <i class="fas fa-cog"></i> Machines disponibles
+                    <i class="fas fa-wrench"></i> Machines disponibles
                 </div>
                 <div id="machinesContent"></div>
             </div>
@@ -423,10 +423,10 @@
         <!-- BOTTOM NAVIGATION -->
         <div class="bottom-nav">
             <button class="nav-item active" data-nav="tp" onclick="switchSection('tp')">
-                <i class="fas fa-flask-vial"></i> TP
+                <i class="fas fa-book"></i> TP
             </button>
             <button class="nav-item" data-nav="machines" onclick="switchSection('machines')">
-                <i class="fas fa-cog"></i> Machines
+                <i class="fas fa-wrench"></i> Machines
             </button>
             <button class="nav-item" data-nav="stock" onclick="switchSection('stock')">
                 <i class="fas fa-box"></i> Stock
