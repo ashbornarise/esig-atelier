@@ -535,7 +535,17 @@
                 // Récupérer le rôle et rediriger rapidement
                 try {
                     const userData = await AuthManager.getCurrentUserData();
-                    const destination = (userData && userData.role === 'admin') ? 'admin.html' : 'index.html';
+                    console.log('Données utilisateur:', userData);
+                    console.log('Rôle détecté:', userData?.role);
+                    
+                    let destination = 'index.html';
+                    if (userData && userData.role && userData.role.toLowerCase() === 'admin') {
+                        destination = 'admin.html';
+                        console.log('Admin détecté! Redirection vers admin.html');
+                    } else {
+                        console.log('Utilisateur normal, redirection vers index.html');
+                    }
+                    
                     setTimeout(() => {
                         window.location.href = destination;
                     }, 800);
