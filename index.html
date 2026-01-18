@@ -574,24 +574,35 @@
             const user = AuthManager.getCurrentUser();
             const visitMode = localStorage.getItem('visitMode') === 'true';
 
+            console.log('🔍 Vérification auth:', { user: user?.email, visitMode });
+
             if (!user && !visitMode) {
+                console.log('❌ Pas de user et pas en mode visiteur -> redirection login');
                 window.location.href = 'login.html';
                 return;
             }
 
             if (user) {
+                console.log('✅ User trouvé:', user.email);
                 currentUser = user;
-                currentUserData = await AuthManager.getCurrentUserData();
-                document.getElementById('userName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
-                if (currentUserData.role === 'admin') {
-                    document.getElementById('adminBtn').style.display = 'flex';
+                try {
+                    currentUserData = await AuthManager.getCurrentUserData();
+                    console.log('✅ User data:', currentUserData);
+                    document.getElementById('userName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
+                    if (currentUserData.role === 'admin') {
+                        document.getElementById('adminBtn').style.display = 'flex';
+                    }
+                } catch (err) {
+                    console.error('❌ Erreur récupération données user:', err);
                 }
             } else {
+                console.log('👥 Mode visiteur activé');
                 document.getElementById('userName').textContent = 'Visiteur';
                 document.getElementById('tpForm').style.display = 'none';
                 document.getElementById('statsSection').innerHTML = '<div style="grid-column: 1/-1; background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; color: #1e40af;"><strong>Mode visiteur:</strong> Consultez les données. Connectez-vous pour créer des TP.</div>';
             }
 
+            console.log('📊 Chargement des données...');
             loadData();
         });
 
