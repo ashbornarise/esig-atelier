@@ -125,15 +125,19 @@
                 createBtn.innerHTML = '⏳ Création en cours...';
 
                 // Vérifier si le compte existe déjà
-                const adminQuery = await db.collection('users')
-                    .where('email', '==', 'admin@esig.tg')
-                    .get();
+                try {
+                    const adminQuery = await db.collection('users')
+                        .where('email', '==', 'admin@esig.tg')
+                        .get();
 
-                if (!adminQuery.empty) {
-                    showStatus('✅ Le compte admin existe déjà!', 'success');
-                    backBtn.style.display = 'inline-block';
-                    createBtn.style.display = 'none';
-                    return;
+                    if (!adminQuery.empty) {
+                        showStatus('✅ Le compte admin existe déjà!', 'success');
+                        backBtn.style.display = 'inline-block';
+                        createBtn.style.display = 'none';
+                        return;
+                    }
+                } catch (queryError) {
+                    console.log('Vérification de compte échouée (c\'est normal):', queryError.code);
                 }
 
                 // Créer le compte Firebase Auth
@@ -143,21 +147,28 @@
                 );
 
                 const uid = userCredential.user.uid;
+                console.log('Compte Auth créé:', uid);
 
-                // Créer le document utilisateur
-                await db.collection('users').doc(uid).set({
+                // Attendre un peu que l'authentification soit propagée
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Créer le document utilisateur en étant connecté
+                const userData = {
                     email: 'admin@esig.tg',
                     nom: 'Admin',
                     prenom: 'Système',
                     role: 'admin',
                     niveau: 'Admin',
                     groupe: 'Admin',
-                    dateCreation: new Date(),
+                    dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
                     actif: true,
                     photoURL: null,
                     phone: '',
                     adresse: ''
-                });
+                };
+
+                await db.collection('users').doc(uid).set(userData);
+                console.log('Document utilisateur créé');
 
                 showStatus('✅ Compte admin créé avec succès!\n\nVous pouvez maintenant vous connecter avec:\nEmail: admin@esig.tg\nMot de passe: Esig2026', 'success');
                 
@@ -174,6 +185,10 @@
                     showStatus('✅ Le compte admin existe déjà!', 'success');
                     backBtn.style.display = 'inline-block';
                     createBtn.style.display = 'none';
+                } else if (error.code === 'permission-denied') {
+                    showStatus('❌ Erreur permission Firestore. Vérifiez les règles de sécurité.\n\nLes règles doivent permettre: \n- Créer: users/{document=**}', 'error');
+                    createBtn.disabled = false;
+                    createBtn.innerHTML = 'Réessayer';
                 } else {
                     showStatus(`❌ Erreur: ${error.message}`, 'error');
                     createBtn.disabled = false;
