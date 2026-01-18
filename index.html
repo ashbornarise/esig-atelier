@@ -209,6 +209,20 @@
             box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
         }
 
+        /* SEARCH & FILTER */
+        .filter-bar {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .filter-bar input, .filter-bar select {
+            padding: 10px 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
         /* BOTTOM NAVIGATION */
         .bottom-nav {
             display: grid;
@@ -277,6 +291,54 @@
             border-left-color: #ef4444;
         }
 
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            margin: 40px auto;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            color: #1e40af;
+            font-size: 18px;
+            margin: 0;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #6b7280;
+            cursor: pointer;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
             .form-row {
@@ -285,6 +347,14 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .filter-bar {
+                flex-direction: column;
+            }
+
+            .filter-bar input, .filter-bar select {
+                width: 100%;
             }
 
             .header-title {
@@ -340,7 +410,7 @@
                     <div class="stat-value" id="statStock">0</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label"><i class="fas fa-wrench"></i> Maintenance</div>
+                    <div class="stat-label"><i class="fas fa-tools"></i> Maintenance</div>
                     <div class="stat-value" id="statMaintenance">0</div>
                 </div>
             </div>
@@ -388,17 +458,22 @@
                         <i class="fas fa-plus"></i> Créer le TP
                     </button>
                 </form>
-
-                <div id="myTPList" style="margin-top: 30px; display: none;">
-                    <h3 style="color: #1e40af; margin-bottom: 16px;">Mes TP</h3>
-                    <div id="tpListContent"></div>
-                </div>
             </div>
 
             <!-- MACHINES SECTION -->
             <div id="machinesSection" class="section">
                 <div class="section-title">
-                    <i class="fas fa-wrench"></i> Machines disponibles
+                    <i class="fas fa-wrench"></i> Machines
+                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span id="machinesCount">0</span></span>
+                </div>
+                <div class="filter-bar">
+                    <input type="text" id="machinesSearch" placeholder="🔍 Rechercher..." style="flex: 1;">
+                    <select id="machinesFilter" style="width: auto;">
+                        <option value="">Tous</option>
+                        <option value="disponible">Disponible</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="panne">Panne</option>
+                    </select>
                 </div>
                 <div id="machinesContent"></div>
             </div>
@@ -407,6 +482,16 @@
             <div id="stockSection" class="section">
                 <div class="section-title">
                     <i class="fas fa-box"></i> Inventaire
+                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span id="stockCount">0</span></span>
+                </div>
+                <div class="filter-bar">
+                    <input type="text" id="stockSearch" placeholder="🔍 Rechercher..." style="flex: 1;">
+                    <select id="stockFilter" style="width: auto;">
+                        <option value="">Tous</option>
+                        <option value="critique">Critique</option>
+                        <option value="faible">Faible</option>
+                        <option value="normal">Normal</option>
+                    </select>
                 </div>
                 <div id="stockContent"></div>
             </div>
@@ -414,9 +499,31 @@
             <!-- MAINTENANCE SECTION -->
             <div id="maintenanceSection" class="section">
                 <div class="section-title">
-                    <i class="fas fa-wrench"></i> Maintenance
+                    <i class="fas fa-tools"></i> Maintenance
+                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span id="maintenanceCount">0</span></span>
+                </div>
+                <div class="filter-bar">
+                    <input type="text" id="maintenanceSearch" placeholder="🔍 Rechercher..." style="flex: 1;">
+                    <select id="maintenanceFilter" style="width: auto;">
+                        <option value="">Tous</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="en cours">En cours</option>
+                        <option value="planifiée">Planifiée</option>
+                    </select>
                 </div>
                 <div id="maintenanceContent"></div>
+            </div>
+        </div>
+
+        <!-- MODAL -->
+        <div id="modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title" id="modalTitle"></h2>
+                    <button class="modal-close" onclick="closeModal()">✕</button>
+                </div>
+                <div id="modalBody"></div>
+                <button onclick="closeModal()" class="btn-primary" style="width: 100%; margin-top: 16px;">Fermer</button>
             </div>
         </div>
 
@@ -432,7 +539,7 @@
                 <i class="fas fa-box"></i> Stock
             </button>
             <button class="nav-item" data-nav="maintenance" onclick="switchSection('maintenance')">
-                <i class="fas fa-wrench"></i> Maintenance
+                <i class="fas fa-tools"></i> Maintenance
             </button>
         </div>
     </div>
@@ -447,7 +554,22 @@
         let currentUser = null;
         let currentUserData = null;
 
-        // Vérifier auth au chargement
+        // Modal
+        function openModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = content;
+            document.getElementById('modal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        document.getElementById('modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal')) closeModal();
+        });
+
+        // Auth
         window.addEventListener('load', async () => {
             const user = AuthManager.getCurrentUser();
             const visitMode = localStorage.getItem('visitMode') === 'true';
@@ -461,25 +583,22 @@
                 currentUser = user;
                 currentUserData = await AuthManager.getCurrentUserData();
                 document.getElementById('userName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
-
                 if (currentUserData.role === 'admin') {
                     document.getElementById('adminBtn').style.display = 'flex';
                 }
             } else {
                 document.getElementById('userName').textContent = 'Visiteur';
-                // Hide form section for visiteurs
                 document.getElementById('tpForm').style.display = 'none';
-                document.getElementById('statsSection').innerHTML = '<div style="grid-column: 1/-1; background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; color: #1e40af;"><strong>Mode visiteur:</strong> Vous pouvez consulter les données. Connectez-vous pour créer des TP.</div>';
+                document.getElementById('statsSection').innerHTML = '<div style="grid-column: 1/-1; background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; color: #1e40af;"><strong>Mode visiteur:</strong> Consultez les données. Connectez-vous pour créer des TP.</div>';
             }
 
             loadData();
         });
 
-        // Changer de section
+        // Navigation
         function switchSection(section) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-
             document.getElementById(section + 'Section').classList.add('active');
             document.querySelector('[data-nav="' + section + '"]').classList.add('active');
 
@@ -488,27 +607,25 @@
             else if (section === 'maintenance') loadMaintenance();
         }
 
-        // Charger les données
+        // Load stats
         async function loadData() {
-            const result = await DataManager.tp.getAll();
-            document.getElementById('statTP').textContent = result.data ? result.data.length : 0;
+            const tp = await DataManager.tp.getAll();
+            const mach = await DataManager.machines.getAll();
+            const stock = await DataManager.stocks.getAll();
+            const maint = await DataManager.maintenance.getAll();
 
-            const machResult = await DataManager.machines.getAll();
-            document.getElementById('statMachines').textContent = machResult.data ? machResult.data.length : 0;
-
-            const stockResult = await DataManager.stocks.getAll();
-            document.getElementById('statStock').textContent = stockResult.data ? stockResult.data.length : 0;
-
-            const maintResult = await DataManager.maintenance.getAll();
-            document.getElementById('statMaintenance').textContent = maintResult.data ? maintResult.data.length : 0;
+            document.getElementById('statTP').textContent = tp.data ? tp.data.length : 0;
+            document.getElementById('statMachines').textContent = mach.data ? mach.data.length : 0;
+            document.getElementById('statStock').textContent = stock.data ? stock.data.length : 0;
+            document.getElementById('statMaintenance').textContent = maint.data ? maint.data.length : 0;
         }
 
-        // Créer TP
+        // TP Form
         document.getElementById('tpForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
             if (!currentUser) {
-                alert('Vous devez être connecté pour créer un TP. Redirection...');
+                alert('Connectez-vous d\'abord');
                 window.location.href = 'login.html';
                 return;
             }
@@ -537,138 +654,163 @@
             }
         });
 
+        // Machines
         async function loadMachines() {
             const result = await DataManager.machines.getAll();
-            if (!result.data || result.data.length === 0) {
-                document.getElementById('machinesContent').innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fas fa-tools" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i><p>Aucune machine disponible</p></div>';
+            const data = result.data || [];
+            document.getElementById('machinesCount').textContent = data.length;
+
+            if (data.length === 0) {
+                document.getElementById('machinesContent').innerHTML = '<p style="text-align:center; color:#9ca3af; padding:40px;">Aucune machine</p>';
                 return;
             }
 
-            const html = result.data.map(m => {
-                const statut = m.statut ? m.statut.toLowerCase() : 'inconnu';
-                let badge = '';
-                let badgeColor = '';
-                
-                if (statut === 'disponible') {
-                    badge = '✓ Disponible';
-                    badgeColor = 'background: #d1fae5; color: #065f46;';
-                } else if (statut === 'en maintenance') {
-                    badge = '⚙ Maintenance';
-                    badgeColor = 'background: #fef3c7; color: #92400e;';
-                } else {
-                    badge = '✗ Indisponible';
-                    badgeColor = 'background: #fee2e2; color: #991b1b;';
-                }
+            displayMachines(data);
+
+            document.getElementById('machinesSearch').addEventListener('input', () => displayMachines(data));
+            document.getElementById('machinesFilter').addEventListener('change', () => displayMachines(data));
+        }
+
+        function displayMachines(data) {
+            const search = document.getElementById('machinesSearch').value.toLowerCase();
+            const filter = document.getElementById('machinesFilter').value.toLowerCase();
+
+            const filtered = data.filter(m => {
+                const matchSearch = !search || m.nom?.toLowerCase().includes(search) || m.type?.toLowerCase().includes(search);
+                const matchFilter = !filter || m.statut?.toLowerCase().includes(filter);
+                return matchSearch && matchFilter;
+            });
+
+            if (filtered.length === 0) {
+                document.getElementById('machinesContent').innerHTML = '<p style="text-align:center; color:#9ca3af; padding:40px;">Aucun résultat</p>';
+                return;
+            }
+
+            document.getElementById('machinesContent').innerHTML = filtered.map(m => {
+                const statut = m.statut?.toLowerCase() || 'inconnu';
+                let badge = '✓ Disponible', color = '#d1fae5';
+                if (statut.includes('maintenance')) { badge = '⚙ Maintenance'; color = '#fef3c7'; }
+                else if (statut.includes('panne')) { badge = '✗ Panne'; color = '#fee2e2'; }
 
                 return `
-                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59, 130, 246, 0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                            <div style="font-size: 16px; font-weight: 600; color: #1e40af;">${m.nom || 'Machine'}</div>
-                            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; ${badgeColor}">${badge}</div>
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59,130,246,0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'" onclick="openModal('${m.nom}', '<p><strong>Type:</strong> ${m.type || 'N/A'}</p><p><strong>Lieu:</strong> ${m.lieu || 'N/A'}</p><p><strong>Heures:</strong> ${m.nombreHeuresUtilisation || 0}h</p>${m.description ? '<p><strong>Description:</strong> ' + m.description + '</p>' : ''}')">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="color: #1e40af; margin: 0;">${m.nom}</h4>
+                            <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${color};">${badge}</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
-                            <div><span style="font-weight: 600; color: #374151;">Type:</span> ${m.type || 'N/A'}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Lieu:</span> ${m.lieu || 'N/A'}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Heures:</span> ${m.nombreHeuresUtilisation || 0}h</div>
-                            <div><span style="font-weight: 600; color: #374151;">ID:</span> ${m.idMachine || 'N/A'}</div>
-                        </div>
-                        ${m.description ? `<div style="font-size: 13px; color: #6b7280; padding-top: 8px; border-top: 1px solid #f3f4f6;">${m.description}</div>` : ''}
+                        <p style="font-size: 13px; color: #6b7280; margin: 0;">Type: ${m.type} • Lieu: ${m.lieu} • Heures: ${m.nombreHeuresUtilisation || 0}h</p>
                     </div>
                 `;
             }).join('');
-
-            document.getElementById('machinesContent').innerHTML = html;
         }
 
+        // Stock
         async function loadStock() {
             const result = await DataManager.stocks.getAll();
-            if (!result.data || result.data.length === 0) {
-                document.getElementById('stockContent').innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fas fa-boxes" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i><p>Aucun article en stock</p></div>';
+            const data = result.data || [];
+            document.getElementById('stockCount').textContent = data.length;
+
+            if (data.length === 0) {
+                document.getElementById('stockContent').innerHTML = '<p style="text-align:center; color:#9ca3af; padding:40px;">Aucun article</p>';
                 return;
             }
 
-            const html = result.data.map(s => {
-                const quantite = parseFloat(s.quantite || 0);
-                const minimum = parseFloat(s.quantiteMinimale || 10);
-                const pourcentage = Math.min(100, (quantite / minimum) * 100);
-                let alerte = '';
-                let alerteColor = 'background: #d1fae5; color: #065f46;';
+            displayStock(data);
 
-                if (quantite <= 0) {
-                    alerte = '⚠ Rupture';
-                    alerteColor = 'background: #fee2e2; color: #991b1b;';
-                } else if (quantite <= minimum) {
-                    alerte = '⚠ Stock faible';
-                    alerteColor = 'background: #fef3c7; color: #92400e;';
-                } else {
-                    alerte = '✓ OK';
-                    alerteColor = 'background: #d1fae5; color: #065f46;';
-                }
-
-                return `
-                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59, 130, 246, 0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                            <div style="font-size: 16px; font-weight: 600; color: #1e40af;">${s.nom || 'Article'}</div>
-                            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; ${alerteColor}">${alerte}</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
-                            <div><span style="font-weight: 600; color: #374151;">Catégorie:</span> ${s.categorie || 'N/A'}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Prix:</span> ${s.prix ? s.prix.toFixed(2) : '0'}€</div>
-                            <div><span style="font-weight: 600; color: #374151;">Quantité:</span> ${quantite}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Minimum:</span> ${minimum}</div>
-                        </div>
-                        <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
-                            <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${pourcentage}%;"></div>
-                        </div>
-                        <div style="font-size: 11px; color: #9ca3af; margin-top: 8px; text-align: right;">${pourcentage.toFixed(0)}% du stock minimum</div>
-                    </div>
-                `;
-            }).join('');
-
-            document.getElementById('stockContent').innerHTML = html;
+            document.getElementById('stockSearch').addEventListener('input', () => displayStock(data));
+            document.getElementById('stockFilter').addEventListener('change', () => displayStock(data));
         }
 
-        async function loadMaintenance() {
-            const result = await DataManager.maintenance.getAll();
-            if (!result.data || result.data.length === 0) {
-                document.getElementById('maintenanceContent').innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fas fa-tools" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i><p>Aucune maintenance programmée</p></div>';
+        function displayStock(data) {
+            const search = document.getElementById('stockSearch').value.toLowerCase();
+            const filter = document.getElementById('stockFilter').value.toLowerCase();
+
+            const filtered = data.filter(s => {
+                const matchSearch = !search || s.nom?.toLowerCase().includes(search) || s.categorie?.toLowerCase().includes(search);
+                const q = parseFloat(s.quantite || 0);
+                const min = parseFloat(s.quantiteMinimale || 10);
+                let status = 'normal';
+                if (q <= 0) status = 'critique';
+                else if (q <= min) status = 'faible';
+                const matchFilter = !filter || status.includes(filter);
+                return matchSearch && matchFilter;
+            });
+
+            if (filtered.length === 0) {
+                document.getElementById('stockContent').innerHTML = '<p style="text-align:center; color:#9ca3af; padding:40px;">Aucun résultat</p>';
                 return;
             }
 
-            const html = result.data.map(m => {
-                const statut = m.statut ? m.statut.toLowerCase() : 'planifiée';
-                let priorite = '';
-                let prioriteColor = '';
-
-                if (statut === 'urgent') {
-                    priorite = '🔴 Urgent';
-                    prioriteColor = 'background: #fee2e2; color: #991b1b;';
-                } else if (statut === 'en cours') {
-                    priorite = '🟠 En cours';
-                    prioriteColor = 'background: #fef3c7; color: #92400e;';
-                } else {
-                    priorite = '🔵 Planifiée';
-                    prioriteColor = 'background: #dbeafe; color: #0c4a6e;';
-                }
+            document.getElementById('stockContent').innerHTML = filtered.map(s => {
+                const q = parseFloat(s.quantite || 0);
+                const min = parseFloat(s.quantiteMinimale || 10);
+                let badge = '✓ OK', color = '#d1fae5';
+                if (q <= 0) { badge = '⚠ Rupture'; color = '#fee2e2'; }
+                else if (q <= min) { badge = '⚠ Faible'; color = '#fef3c7'; }
 
                 return `
-                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59, 130, 246, 0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
-                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                            <div style="font-size: 16px; font-weight: 600; color: #1e40af;">${m.machineId || 'Maintenance'}</div>
-                            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; ${prioriteColor}">${priorite}</div>
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59,130,246,0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'" onclick="openModal('${s.nom}', '<p><strong>Catégorie:</strong> ${s.categorie || 'N/A'}</p><p><strong>Quantité:</strong> ${q}</p><p><strong>Minimum:</strong> ${min}</p><p><strong>Prix:</strong> ${s.prix ? s.prix.toFixed(2) : '0'}€</p>')">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="color: #1e40af; margin: 0;">${s.nom}</h4>
+                            <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${color};">${badge}</span>
                         </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
-                            <div><span style="font-weight: 600; color: #374151;">Type:</span> ${m.type || 'N/A'}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Statut:</span> ${m.statut || 'N/A'}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Durée:</span> ${m.dureePrevue || 'N/A'}</div>
-                            <div><span style="font-weight: 600; color: #374151;">Date:</span> ${m.dateDebut ? new Date(m.dateDebut).toLocaleDateString('fr-FR') : 'N/A'}</div>
+                        <p style="font-size: 13px; color: #6b7280; margin: 0;">Catégorie: ${s.categorie} • Quantité: ${q}/${min} • Prix: ${s.prix || 0}€</p>
+                        <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; margin-top: 8px; overflow: hidden;">
+                            <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${Math.min(100, (q/min)*100)}%;"></div>
                         </div>
-                        ${m.description ? `<div style="font-size: 13px; color: #6b7280; padding-top: 8px; border-top: 1px solid #f3f4f6;">📝 ${m.description}</div>` : ''}
                     </div>
                 `;
             }).join('');
+        }
 
-            document.getElementById('maintenanceContent').innerHTML = html;
+        // Maintenance
+        async function loadMaintenance() {
+            const result = await DataManager.maintenance.getAll();
+            const data = result.data || [];
+            document.getElementById('maintenanceCount').textContent = data.length;
+
+            if (data.length === 0) {
+                document.getElementById('maintenanceContent').innerHTML = '<p style="text-align:center; color:#9ca3af; padding:40px;">Aucune maintenance</p>';
+                return;
+            }
+
+            displayMaintenance(data);
+
+            document.getElementById('maintenanceSearch').addEventListener('input', () => displayMaintenance(data));
+            document.getElementById('maintenanceFilter').addEventListener('change', () => displayMaintenance(data));
+        }
+
+        function displayMaintenance(data) {
+            const search = document.getElementById('maintenanceSearch').value.toLowerCase();
+            const filter = document.getElementById('maintenanceFilter').value.toLowerCase();
+
+            const filtered = data.filter(m => {
+                const matchSearch = !search || m.machineId?.toLowerCase().includes(search) || m.type?.toLowerCase().includes(search);
+                const matchFilter = !filter || m.statut?.toLowerCase().includes(filter);
+                return matchSearch && matchFilter;
+            });
+
+            if (filtered.length === 0) {
+                document.getElementById('maintenanceContent').innerHTML = '<p style="text-align:center; color:#9ca3af; padding:40px;">Aucun résultat</p>';
+                return;
+            }
+
+            document.getElementById('maintenanceContent').innerHTML = filtered.map(m => {
+                const statut = m.statut?.toLowerCase() || 'planifiée';
+                let badge = '🔵 Planifiée', color = '#dbeafe';
+                if (statut.includes('urgent')) { badge = '🔴 Urgent'; color = '#fee2e2'; }
+                else if (statut.includes('cours')) { badge = '🟠 En cours'; color = '#fef3c7'; }
+
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59,130,246,0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'" onclick="openModal('Maintenance', '<p><strong>Machine:</strong> ${m.machineId || 'N/A'}</p><p><strong>Type:</strong> ${m.type || 'N/A'}</p><p><strong>Statut:</strong> ${m.statut || 'N/A'}</p><p><strong>Durée:</strong> ${m.dureePrevue || 'N/A'}</p><p><strong>Date:</strong> ${m.dateDebut ? new Date(m.dateDebut).toLocaleDateString('fr-FR') : 'N/A'}</p>${m.description ? '<p><strong>Description:</strong> ' + m.description + '</p>' : ''}')">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                            <h4 style="color: #1e40af; margin: 0;">Maintenance</h4>
+                            <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${color};">${badge}</span>
+                        </div>
+                        <p style="font-size: 13px; color: #6b7280; margin: 0;">Machine: ${m.machineId} • Type: ${m.type} • Date: ${m.dateDebut ? new Date(m.dateDebut).toLocaleDateString('fr-FR') : 'N/A'}</p>
+                    </div>
+                `;
+            }).join('');
         }
 
         function adminPanel() {
