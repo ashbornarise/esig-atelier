@@ -103,7 +103,12 @@
         <div id="status" class="status info" style="display: none;"></div>
 
         <label style="text-align: left; display: block; margin-top: 20px;">
-            <strong>Email admin:</strong>
+            <strong>ID Firebase (UID):</strong>
+            <input type="text" id="adminId" placeholder="auecEPxgHDdViQ0KLIS28Ubak522" value="" style="width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #e5e7eb; border-radius: 8px;">
+        </label>
+
+        <label style="text-align: left; display: block; margin-top: 20px;">
+            <strong>Email:</strong>
             <input type="email" id="adminEmail" placeholder="admin@esig.tg" value="admin@esig.tg" style="width: 100%; padding: 10px; margin: 10px 0; border: 2px solid #e5e7eb; border-radius: 8px;">
         </label>
 
@@ -140,44 +145,88 @@
 
         async function fixAdminRole() {
             try {
-                const adminEmail = emailInput.value.trim();
+                const adminId = document.getElementById('adminId').value.trim();
+                const adminEmail = document.getElementById('adminEmail').value.trim();
                 
-                if (!adminEmail) {
-                    showStatus('❌ Veuillez entrer un email', 'error');
+                if (!adminId && !adminEmail) {
+                    showStatus('❌ Veuillez entrer un ID ou un email', 'error');
                     return;
                 }
 
                 fixBtn.disabled = true;
                 fixBtn.innerHTML = '⏳ Correction en cours...';
 
-                // Trouver l'utilisateur avec cet email
-                const userQuery = await db.collection('users')
-                    .where('email', '==', adminEmail)
-                    .get();
+                let userId = adminId;
+                let userData = null;
 
-                if (userQuery.empty) {
-                    showStatus(`❌ Aucun utilisateur trouvé avec l'email: ${adminEmail}`, 'error');
-                    fixBtn.disabled = false;
-                    fixBtn.innerHTML = 'Corriger le Rôle';
-                    return;
+                // Si on a un ID, utiliser directement
+                if (adminId) {
+                    console.log('Cherche par ID:', adminId);
+                    const userDoc = await db.collection('users').doc(adminId).get();
+                    
+                    if (userDoc.exists) {
+                        userData = userDoc.data();
+                        userId = adminId;
+                        console.log('Utilisateur trouvé par ID:', userData);
+                    } else {
+                        console.log('Document n\'existe pas, création...');
+                        // Créer le document s'il n'existe pas
+                        userData = {
+                            email: adminEmail || 'admin@esig.tg',
+                            nom: 'Admin',
+                            prenom: 'Système',
+                            role: 'admin',
+                            niveau: 'Admin',
+                            groupe: 'Admin',
+                            dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
+                            actif: true,
+                            photoURL: null,
+                            phone: '',
+                            adresse: ''
+                        };
+                    }
+                } else {
+                    // Chercher par email
+                    console.log('Cherche par email:', adminEmail);
+                    const userQuery = await db.collection('users')
+                        .where('email', '==', adminEmail)
+                        .get();
+
+                    if (userQuery.empty) {
+                        showStatus(`❌ Aucun utilisateur trouvé avec l'email: ${adminEmail}<br><br>Utilisez plutôt l'ID Firebase (UID):<br><strong>${adminId || 'Entrez votre UID'}</strong>`, 'error');
+                        fixBtn.disabled = false;
+                        fixBtn.innerHTML = 'Corriger le Rôle';
+                        return;
+                    }
+
+                    const userDoc = userQuery.docs[0];
+                    userId = userDoc.id;
+                    userData = userDoc.data();
                 }
 
-                const userDoc = userQuery.docs[0];
-                const userId = userDoc.id;
-                const userData = userDoc.data();
+                console.log('Utilisateur final:', userData);
+                console.log('Rôle actuel:', userData?.role);
 
-                console.log('Utilisateur trouvé:', userData);
-                console.log('Rôle actuel:', userData.role);
+                // Mettre à jour le document avec le rôle admin
+                await db.collection('users').doc(userId).set({
+                    email: userData?.email || adminEmail || 'admin@esig.tg',
+                    nom: userData?.nom || 'Admin',
+                    prenom: userData?.prenom || 'Système',
+                    role: 'admin',
+                    niveau: userData?.niveau || 'Admin',
+                    groupe: userData?.groupe || 'Admin',
+                    dateCreation: userData?.dateCreation || firebase.firestore.FieldValue.serverTimestamp(),
+                    actif: userData?.actif !== false ? true : userData.actif,
+                    photoURL: userData?.photoURL || null,
+                    phone: userData?.phone || '',
+                    adresse: userData?.adresse || ''
+                }, { merge: true });
 
-                // Mettre à jour le rôle à 'admin'
-                await db.collection('users').doc(userId).update({
-                    role: 'admin'
-                });
-
-                console.log('Rôle mis à jour à admin');
+                console.log('Rôle mis à jour à admin pour ID:', userId);
 
                 showStatus(`✅ Rôle corrigé avec succès!<br><br>
-                    <strong>Email:</strong> ${adminEmail}<br>
+                    <strong>ID:</strong> ${userId}<br>
+                    <strong>Email:</strong> ${adminEmail || userData?.email || 'admin@esig.tg'}<br>
                     <strong>Nouveau rôle:</strong> admin<br><br>
                     Vous pouvez maintenant vous connecter et vous serez redirigé vers admin.html`, 'success');
                 
