@@ -339,6 +339,9 @@
     <script src="firebase-config.js"></script>
 
     <script>
+        // Flag pour éviter les redirects pendant les opérations
+        let isProcessing = false;
+
         // Gestion des onglets
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
@@ -357,6 +360,9 @@
         // FORMULAIRE DE CONNEXION
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (isProcessing) return;
+            isProcessing = true;
 
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
@@ -380,12 +386,16 @@
                 showAlert(alertEl, 'error', '❌ ' + result.error);
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
+                isProcessing = false;
             }
         });
 
         // FORMULAIRE D'INSCRIPTION
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+
+            if (isProcessing) return;
+            isProcessing = true;
 
             const email = document.getElementById('regEmail').value;
             const password = document.getElementById('regPassword').value;
@@ -399,6 +409,7 @@
             // Vérifier la longueur du mot de passe
             if (password.length < 6) {
                 showAlert(alertEl, 'error', '❌ Le mot de passe doit contenir au moins 6 caractères');
+                isProcessing = false;
                 return;
             }
 
@@ -419,6 +430,7 @@
                 showAlert(alertEl, 'error', '❌ ' + result.error);
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-user-plus"></i> S\'inscrire';
+                isProcessing = false;
             }
         });
 
@@ -445,9 +457,9 @@
                 });
         }
 
-        // Vérifier si l'utilisateur est déjà connecté
+        // Vérifier si l'utilisateur est déjà connecté (SAUF pendant le traitement)
         AuthManager.onAuthStateChanged(user => {
-            if (user) {
+            if (user && !isProcessing) {
                 // Rediriger vers la page appropriée
                 AuthManager.getCurrentUserData().then(userData => {
                     window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
