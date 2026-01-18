@@ -321,9 +321,7 @@
     <!-- PAGE D'ACCUEIL -->
     <div class="welcome-container" id="welcomePage">
         <div class="logo">
-            <div class="logo-icon">
-                <i class="fas fa-tools"></i>
-            </div>
+            <img src="logo-esig.png" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;">
             <h1>ESIG Atelier</h1>
             <p class="tagline">Plateforme de gestion d'atelier universitaire</p>
         </div>
@@ -366,6 +364,7 @@
         </button>
 
         <div class="logo" style="margin-bottom: 25px;">
+            <img src="logo-esig.png" style="width: 60px; height: 60px; margin: 0 auto 15px; display: block;">
             <h1 style="font-size: 24px;">ESIG Atelier</h1>
         </div>
 
@@ -482,6 +481,27 @@
             document.getElementById('authPage').classList.remove('active');
         }
 
+        // Mode visiteur (accès direct à index.html)
+        function visitMode() {
+            localStorage.setItem('visitMode', 'true');
+            window.location.href = 'index.html';
+        }
+
+        // Au chargement, vérifier si l'utilisateur est connecté ou en mode visiteur
+        window.addEventListener('load', () => {
+            const user = AuthManager.getCurrentUser();
+            if (user) {
+                // Déjà connecté, aller au dashboard
+                AuthManager.getCurrentUserData().then(userData => {
+                    window.location.href = userData.role === 'admin' ? 'admin.html' : 'index.html';
+                });
+            } else if (localStorage.getItem('visitMode') === 'true') {
+                // Mode visiteur, aller à index
+                window.location.href = 'index.html';
+            }
+            // Sinon rester sur la page d'accueil
+        });
+
         // Changer d'onglet
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -489,12 +509,6 @@
 
             event.target.closest('.tab').classList.add('active');
             document.getElementById(tabName).classList.add('active');
-        }
-
-        // Mode visiteur
-        function visitMode() {
-            localStorage.setItem('visitMode', 'true');
-            window.location.href = 'index.html';
         }
 
         // CONNEXION

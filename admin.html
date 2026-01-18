@@ -448,8 +448,9 @@
         <!-- SIDEBAR -->
         <div class="sidebar">
             <div class="sidebar-header">
-                <h1><i class="fas fa-cogs"></i></h1>
-                <p>Panneau Admin</p>
+                <img src="logo-esig.png" style="width: 50px; height: 50px; margin-bottom: 10px;">
+                <h1 style="font-size: 16px;">Admin Panel</h1>
+                <p>Gestion ESIG Atelier</p>
             </div>
 
             <ul class="sidebar-menu">
@@ -548,11 +549,11 @@
             <!-- TP -->
             <div id="tp" class="page">
                 <div class="header">
-                    <h2>Gestion des TP</h2>
+                    <h2>Tous les TP Organisés</h2>
                 </div>
 
                 <div class="search-box">
-                    <input type="text" id="tpSearch" placeholder="Chercher un TP...">
+                    <input type="text" id="tpSearch" placeholder="Chercher un TP (titre, créateur, type)...">
                     <button class="btn-add" onclick="openTPModal()"><i class="fas fa-plus"></i> Ajouter</button>
                 </div>
 
@@ -562,14 +563,17 @@
                             <tr>
                                 <th>Titre</th>
                                 <th>Créateur</th>
+                                <th>Email Créateur</th>
                                 <th>Type</th>
-                                <th>Date de début</th>
+                                <th>Date début</th>
+                                <th>Durée</th>
                                 <th>Statut</th>
+                                <th>Participants</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="tpTable">
-                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr><td colspan="9" style="text-align: center; color: #999;">Chargement...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -806,18 +810,32 @@
             const result = await DataManager.tp.getAll();
             allTP = result.data || [];
 
+            // Enrich with creator info
+            for (let tp of allTP) {
+                const userResult = await DataManager.users.getById(tp.creatorId);
+                if (userResult.success && userResult.data) {
+                    tp.creatorEmail = userResult.data.email;
+                }
+            }
+
             const html = allTP.map(t => `
                 <tr>
-                    <td>${t.titre}</td>
+                    <td><strong>${t.titre}</strong></td>
                     <td>${t.creatorName || 'N/A'}</td>
+                    <td>${t.creatorEmail || '-'}</td>
                     <td>${t.type}</td>
                     <td>${new Date(t.dateDebut?.toDate?.() || t.dateDebut).toLocaleDateString('fr-FR')}</td>
+                    <td>${t.duree || '-'} jours</td>
                     <td><span class="badge badge-online">${t.statut || 'En cours'}</span></td>
-                    <td><button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button></td>
+                    <td>${(t.participants || []).length} participant(s)</td>
+                    <td>
+                        <button class="btn-sm btn-edit" onclick="viewTPDetails('${t.id}')"><i class="fas fa-eye"></i></button>
+                        <button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
                 </tr>
             `).join('');
 
-            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas de TP</td></tr>';
+            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="9" style="text-align: center;">Pas de TP</td></tr>';
         }
 
         async function loadMachines() {
@@ -906,6 +924,23 @@
                 document.getElementById('userEmail').value = user.email;
                 document.getElementById('userRole').value = user.role;
                 openUserModal();
+            }
+        }
+
+        function viewTPDetails(tpId) {
+            const tp = allTP.find(t => t.id === tpId);
+            if (tp) {
+                const details = `
+TP: ${tp.titre}
+Créateur: ${tp.creatorName} (${tp.creatorEmail})
+Type: ${tp.type}
+Durée: ${tp.duree || '-'} jours
+Date de début: ${new Date(tp.dateDebut?.toDate?.() || tp.dateDebut).toLocaleDateString('fr-FR')}
+Description: ${tp.description || '-'}
+Participants: ${(tp.participants || []).length}
+Statut: ${tp.statut || 'En cours'}
+                `;
+                alert(details);
             }
         }
 

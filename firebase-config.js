@@ -451,13 +451,29 @@ const DataManager = {
                 const users = [];
 
                 snapshot.forEach(doc => {
-                    users.push({ uid: doc.id, ...doc.data() });
+                    users.push({ id: doc.id, uid: doc.id, ...doc.data() });
                 });
 
                 return { success: true, data: users };
             } catch (error) {
                 console.error('❌ Erreur lecture utilisateurs:', error.message);
                 return { success: false, error: error.message, data: [] };
+            }
+        },
+
+        /**
+         * Obtenir un utilisateur par ID
+         */
+        async getById(uid) {
+            try {
+                const docSnap = await db.collection('users').doc(uid).get();
+                if (docSnap.exists) {
+                    return { success: true, data: { id: docSnap.id, ...docSnap.data() } };
+                }
+                return { success: false, error: 'Utilisateur non trouvé', data: null };
+            } catch (error) {
+                console.error('❌ Erreur lecture utilisateur:', error.message);
+                return { success: false, error: error.message, data: null };
             }
         },
 
