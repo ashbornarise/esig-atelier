@@ -539,41 +539,136 @@
 
         async function loadMachines() {
             const result = await DataManager.machines.getAll();
-            const html = (result.data || []).map(m => `
-                <div style="padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px;">
-                    <h4 style="color: #1e40af; margin-bottom: 8px;">${m.nom}</h4>
-                    <p style="font-size: 13px; color: #6b7280;">Type: <strong>${m.type}</strong> | Statut: <strong>${m.statut}</strong></p>
-                    <p style="font-size: 13px; color: #6b7280;">Lieu: ${m.lieu} | Heures: ${m.nombreHeuresUtilisation || 0}h</p>
-                </div>
-            `).join('');
+            if (!result.data || result.data.length === 0) {
+                document.getElementById('machinesContent').innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fas fa-tools" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i><p>Aucune machine disponible</p></div>';
+                return;
+            }
 
-            document.getElementById('machinesContent').innerHTML = html || '<p style="color: #6b7280;">Aucune machine</p>';
+            const html = result.data.map(m => {
+                const statut = m.statut ? m.statut.toLowerCase() : 'inconnu';
+                let badge = '';
+                let badgeColor = '';
+                
+                if (statut === 'disponible') {
+                    badge = '✓ Disponible';
+                    badgeColor = 'background: #d1fae5; color: #065f46;';
+                } else if (statut === 'en maintenance') {
+                    badge = '⚙ Maintenance';
+                    badgeColor = 'background: #fef3c7; color: #92400e;';
+                } else {
+                    badge = '✗ Indisponible';
+                    badgeColor = 'background: #fee2e2; color: #991b1b;';
+                }
+
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59, 130, 246, 0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #1e40af;">${m.nom || 'Machine'}</div>
+                            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; ${badgeColor}">${badge}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
+                            <div><span style="font-weight: 600; color: #374151;">Type:</span> ${m.type || 'N/A'}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Lieu:</span> ${m.lieu || 'N/A'}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Heures:</span> ${m.nombreHeuresUtilisation || 0}h</div>
+                            <div><span style="font-weight: 600; color: #374151;">ID:</span> ${m.idMachine || 'N/A'}</div>
+                        </div>
+                        ${m.description ? `<div style="font-size: 13px; color: #6b7280; padding-top: 8px; border-top: 1px solid #f3f4f6;">${m.description}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('machinesContent').innerHTML = html;
         }
 
         async function loadStock() {
             const result = await DataManager.stocks.getAll();
-            const html = (result.data || []).map(s => `
-                <div style="padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px;">
-                    <h4 style="color: #1e40af; margin-bottom: 8px;">${s.nom}</h4>
-                    <p style="font-size: 13px; color: #6b7280;">Catégorie: <strong>${s.categorie}</strong> | Quantité: <strong>${s.quantite}</strong></p>
-                    <p style="font-size: 13px; color: #6b7280;">Min: ${s.quantiteMinimale} | Prix: ${s.prix || 0}€</p>
-                </div>
-            `).join('');
+            if (!result.data || result.data.length === 0) {
+                document.getElementById('stockContent').innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fas fa-boxes" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i><p>Aucun article en stock</p></div>';
+                return;
+            }
 
-            document.getElementById('stockContent').innerHTML = html || '<p style="color: #6b7280;">Aucun article</p>';
+            const html = result.data.map(s => {
+                const quantite = parseFloat(s.quantite || 0);
+                const minimum = parseFloat(s.quantiteMinimale || 10);
+                const pourcentage = Math.min(100, (quantite / minimum) * 100);
+                let alerte = '';
+                let alerteColor = 'background: #d1fae5; color: #065f46;';
+
+                if (quantite <= 0) {
+                    alerte = '⚠ Rupture';
+                    alerteColor = 'background: #fee2e2; color: #991b1b;';
+                } else if (quantite <= minimum) {
+                    alerte = '⚠ Stock faible';
+                    alerteColor = 'background: #fef3c7; color: #92400e;';
+                } else {
+                    alerte = '✓ OK';
+                    alerteColor = 'background: #d1fae5; color: #065f46;';
+                }
+
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59, 130, 246, 0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #1e40af;">${s.nom || 'Article'}</div>
+                            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; ${alerteColor}">${alerte}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
+                            <div><span style="font-weight: 600; color: #374151;">Catégorie:</span> ${s.categorie || 'N/A'}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Prix:</span> ${s.prix ? s.prix.toFixed(2) : '0'}€</div>
+                            <div><span style="font-weight: 600; color: #374151;">Quantité:</span> ${quantite}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Minimum:</span> ${minimum}</div>
+                        </div>
+                        <div style="width: 100%; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden;">
+                            <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${pourcentage}%;"></div>
+                        </div>
+                        <div style="font-size: 11px; color: #9ca3af; margin-top: 8px; text-align: right;">${pourcentage.toFixed(0)}% du stock minimum</div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('stockContent').innerHTML = html;
         }
 
         async function loadMaintenance() {
             const result = await DataManager.maintenance.getAll();
-            const html = (result.data || []).map(m => `
-                <div style="padding: 16px; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 12px;">
-                    <h4 style="color: #1e40af; margin-bottom: 8px;">Maintenance Machine</h4>
-                    <p style="font-size: 13px; color: #6b7280;">Type: <strong>${m.type}</strong> | Statut: <strong>${m.statut}</strong></p>
-                    <p style="font-size: 13px; color: #6b7280;">Description: ${m.description || 'N/A'}</p>
-                </div>
-            `).join('');
+            if (!result.data || result.data.length === 0) {
+                document.getElementById('maintenanceContent').innerHTML = '<div style="text-align:center; padding:40px; color:#9ca3af;"><i class="fas fa-tools" style="font-size:48px; margin-bottom:16px; opacity:0.5;"></i><p>Aucune maintenance programmée</p></div>';
+                return;
+            }
 
-            document.getElementById('maintenanceContent').innerHTML = html || '<p style="color: #6b7280;">Aucune maintenance</p>';
+            const html = result.data.map(m => {
+                const statut = m.statut ? m.statut.toLowerCase() : 'planifiée';
+                let priorite = '';
+                let prioriteColor = '';
+
+                if (statut === 'urgent') {
+                    priorite = '🔴 Urgent';
+                    prioriteColor = 'background: #fee2e2; color: #991b1b;';
+                } else if (statut === 'en cours') {
+                    priorite = '🟠 En cours';
+                    prioriteColor = 'background: #fef3c7; color: #92400e;';
+                } else {
+                    priorite = '🔵 Planifiée';
+                    prioriteColor = 'background: #dbeafe; color: #0c4a6e;';
+                }
+
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 16px; transition: all 0.3s;" onmouseover="this.style.boxShadow='0 8px 16px rgba(59, 130, 246, 0.1)'; this.style.borderColor='#3b82f6'" onmouseout="this.style.boxShadow='none'; this.style.borderColor='#e5e7eb'">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div style="font-size: 16px; font-weight: 600; color: #1e40af;">${m.machineId || 'Maintenance'}</div>
+                            <div style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; ${prioriteColor}">${priorite}</div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
+                            <div><span style="font-weight: 600; color: #374151;">Type:</span> ${m.type || 'N/A'}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Statut:</span> ${m.statut || 'N/A'}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Durée:</span> ${m.dureePrevue || 'N/A'}</div>
+                            <div><span style="font-weight: 600; color: #374151;">Date:</span> ${m.dateDebut ? new Date(m.dateDebut).toLocaleDateString('fr-FR') : 'N/A'}</div>
+                        </div>
+                        ${m.description ? `<div style="font-size: 13px; color: #6b7280; padding-top: 8px; border-top: 1px solid #f3f4f6;">📝 ${m.description}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('maintenanceContent').innerHTML = html;
         }
 
         function adminPanel() {
