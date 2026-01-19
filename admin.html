@@ -1220,6 +1220,10 @@ Statut: ${tp.statut || 'En cours'}
 
         // --- NOUVELLES FONCTIONS DE MODALES ---
 
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
         function openTPModal() {
             document.getElementById('tpForm').reset();
             document.getElementById('tpModal').classList.add('active');
