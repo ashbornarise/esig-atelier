@@ -31,9 +31,9 @@
             /* Vertical White to Vivid Blue */
             background-attachment: fixed;
             color: #1e293b;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            overflow-x: hidden;
         }
 
         .admin-wrapper {
@@ -171,8 +171,11 @@
         /* MAIN CONTENT */
         .main-content {
             flex: 1;
-            margin-left: 280px;
+            margin-left: 0;
             padding: 30px;
+            overflow-x: hidden;
+            overflow-y: auto;
+            max-width: 100%;
         }
 
         .header {
@@ -289,6 +292,16 @@
         .badge-offline {
             background: #fee2e2;
             color: #991b1b;
+        }
+
+        .badge-enseignant {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-technicien {
+            background: #e0e7ff;
+            color: #3730a3;
         }
 
         .actions {
@@ -473,35 +486,215 @@
             background: #059669;
         }
 
+        /* TABLE RESPONSIVE */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            min-width: 600px;
+        }
+
         /* RESPONSIVE */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .admin-wrapper {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
             .sidebar {
                 width: 100%;
                 height: auto;
-                position: relative;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                flex-shrink: 0;
             }
 
-            .main-content {
-                margin-left: 0;
+            .sidebar-header {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 0;
+                padding-bottom: 10px;
+            }
+
+            .sidebar-header img {
+                width: 35px !important;
+                height: 35px !important;
+                margin-bottom: 0 !important;
+            }
+
+            .sidebar-header h1 {
+                font-size: 14px !important;
+            }
+
+            .sidebar-header p {
+                display: none;
             }
 
             .sidebar-menu {
                 display: flex;
-                gap: 10px;
+                flex-wrap: nowrap;
                 overflow-x: auto;
+                gap: 5px;
+                padding: 10px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .sidebar-menu::-webkit-scrollbar {
+                display: none;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                flex-shrink: 0;
+            }
+
+            .sidebar-menu a {
+                padding: 8px 12px;
+                white-space: nowrap;
+                font-size: 12px;
+            }
+
+            .sidebar-menu a i {
+                margin-right: 6px;
+            }
+
+            .sidebar-footer {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px 15px;
+                margin-top: 0;
+                border-top: none;
+            }
+
+            .sidebar-footer .user-profile {
+                margin-bottom: 0;
+                text-align: left;
+            }
+
+            .logout-btn {
+                width: auto;
+                padding: 8px 16px;
+            }
+
+            .main-content {
+                padding: 15px;
+                overflow-x: hidden;
+            }
+
+            .header {
+                padding: 15px;
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .header h2 {
+                font-size: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .btn-add {
+                width: 100%;
             }
 
             table {
                 font-size: 12px;
             }
 
-            td,
-            th {
-                padding: 8px;
+            td, th {
+                padding: 10px 8px;
+            }
+
+            .actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 20px auto;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
             }
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .sidebar-menu a span {
+                display: none;
+            }
+
+            .sidebar-menu a {
+                padding: 10px;
+            }
+
+            .sidebar-menu a i {
+                margin-right: 0;
+                font-size: 18px;
+            }
+
+            .header h2 {
+                font-size: 18px;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+
+            table {
+                font-size: 11px;
+            }
+
+            td, th {
+                padding: 8px 6px;
+            }
+
+            .badge {
+                padding: 4px 8px;
+                font-size: 10px;
             }
         }
     </style>
@@ -586,11 +779,19 @@
             <!-- UTILISATEURS -->
             <div id="users" class="page">
                 <div class="header">
-                    <h2>Gestion des Utilisateurs</h2>
+                    <h2><i class="fas fa-users" style="margin-right: 10px;"></i>Gestion des Utilisateurs</h2>
+                    <span id="usersCountHeader" style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 20px; font-size: 14px;">0 utilisateurs</span>
                 </div>
 
                 <div class="search-box">
-                    <input type="text" id="userSearch" placeholder="Chercher un utilisateur...">
+                    <input type="text" id="userSearch" placeholder="Chercher par nom, email ou UID..." oninput="filterUsers()">
+                    <select id="userRoleFilter" onchange="filterUsers()" style="padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px;">
+                        <option value="">Tous les rôles</option>
+                        <option value="admin">Admin</option>
+                        <option value="enseignant">Enseignant</option>
+                        <option value="etudiant">Étudiant</option>
+                        <option value="technicien">Technicien</option>
+                    </select>
                     <button class="btn-add" onclick="openUserModal()"><i class="fas fa-plus"></i> Ajouter</button>
                 </div>
 
@@ -598,20 +799,31 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>Nom</th>
+                                <th style="width: 180px;">Nom complet</th>
                                 <th>Email</th>
+                                <th style="width: 120px;">UID</th>
                                 <th>Rôle</th>
                                 <th>Niveau</th>
+                                <th>Dernière connexion</th>
                                 <th>Statut</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody id="usersTable">
                             <tr>
-                                <td colspan="6" style="text-align: center; color: #999;">Chargement...</td>
+                                <td colspan="8" style="text-align: center; color: #999;">Chargement...</td>
                             </tr>
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Info panel -->
+                <div style="margin-top: 20px; padding: 16px; background: #f0f9ff; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                    <p style="margin: 0; color: #1e40af; font-size: 14px;">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Info:</strong> Les utilisateurs sont synchronisés en temps réel avec Firebase.
+                        Tout nouvel utilisateur inscrit apparaîtra automatiquement ici.
+                    </p>
                 </div>
             </div>
 
@@ -1081,18 +1293,150 @@
         }
 
         // Fonctions de rendu des tableaux (séparées du chargement)
-        function renderUsersTable() {
-            const html = allUsers.map(u => `
+        function renderUsersTable(usersToRender = null) {
+            const users = usersToRender || allUsers;
+
+            // Mettre à jour le compteur
+            const countEl = document.getElementById('usersCountHeader');
+            if (countEl) {
+                countEl.textContent = users.length + ' utilisateur' + (users.length > 1 ? 's' : '');
+            }
+
+            const html = users.map(u => {
+                // Formater la dernière connexion
+                let lastLogin = '-';
+                if (u.derniereConnexion) {
+                    try {
+                        const date = u.derniereConnexion.toDate ? u.derniereConnexion.toDate() : new Date(u.derniereConnexion);
+                        lastLogin = date.toLocaleDateString('fr-FR') + ' ' + date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute:'2-digit'});
+                    } catch(e) {
+                        lastLogin = '-';
+                    }
+                }
+
+                // Badge de rôle coloré
+                let roleBadge = 'badge-user';
+                if (u.role === 'admin') roleBadge = 'badge-admin';
+                else if (u.role === 'enseignant') roleBadge = 'badge-enseignant';
+                else if (u.role === 'technicien') roleBadge = 'badge-technicien';
+
+                // UID tronqué
+                const shortUid = u.id ? u.id.substring(0, 8) + '...' : '-';
+
+                return `
                 <tr>
-                    <td>${u.nom || ''} ${u.prenom || ''}</td>
-                    <td>${u.email || ''}</td>
-                    <td><span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role || 'user'}</span></td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                ${(u.prenom || 'U').charAt(0).toUpperCase()}${(u.nom || '').charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                                <strong>${u.prenom || ''} ${u.nom || ''}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="color: #3b82f6;">${u.email || ''}</td>
+                    <td><code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${shortUid}</code></td>
+                    <td><span class="badge ${roleBadge}">${(u.role || 'user').toUpperCase()}</span></td>
                     <td>${u.niveau || '-'}</td>
+                    <td style="font-size: 12px; color: #6b7280;">${lastLogin}</td>
                     <td><span class="badge ${u.actif !== false ? 'badge-online' : 'badge-offline'}">${u.actif !== false ? 'Actif' : 'Inactif'}</span></td>
-                    <td><button class="btn-sm btn-edit" onclick="editUser('${u.id}')"><i class="fas fa-edit"></i></button></td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-sm btn-edit" onclick="editUser('${u.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm" style="background: #6366f1; color: white;" onclick="viewUserDetails('${u.id}')" title="Détails"><i class="fas fa-eye"></i></button>
+                        </div>
+                    </td>
                 </tr>
-            `).join('');
-            document.getElementById('usersTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'utilisateurs</td></tr>';
+            `;}).join('');
+            document.getElementById('usersTable').innerHTML = html || '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #999;"><i class="fas fa-users" style="font-size: 40px; margin-bottom: 10px; display: block;"></i>Aucun utilisateur trouvé</td></tr>';
+        }
+
+        // Filtrer les utilisateurs
+        function filterUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const roleFilter = document.getElementById('userRoleFilter').value.toLowerCase();
+
+            const filtered = allUsers.filter(u => {
+                const matchSearch = !searchTerm ||
+                    (u.nom || '').toLowerCase().includes(searchTerm) ||
+                    (u.prenom || '').toLowerCase().includes(searchTerm) ||
+                    (u.email || '').toLowerCase().includes(searchTerm) ||
+                    (u.id || '').toLowerCase().includes(searchTerm);
+
+                const matchRole = !roleFilter || (u.role || '').toLowerCase() === roleFilter;
+
+                return matchSearch && matchRole;
+            });
+
+            renderUsersTable(filtered);
+        }
+
+        // Voir les détails d'un utilisateur
+        function viewUserDetails(uid) {
+            const user = allUsers.find(u => u.id === uid);
+            if (!user) return;
+
+            // Compter les TP de cet utilisateur
+            const userTP = allTP.filter(t => t.createdBy === uid || t.creatorId === uid);
+
+            let lastLogin = '-';
+            if (user.derniereConnexion) {
+                try {
+                    const date = user.derniereConnexion.toDate ? user.derniereConnexion.toDate() : new Date(user.derniereConnexion);
+                    lastLogin = date.toLocaleDateString('fr-FR') + ' à ' + date.toLocaleTimeString('fr-FR');
+                } catch(e) {}
+            }
+
+            let dateCreation = '-';
+            if (user.dateCreation) {
+                try {
+                    const date = user.dateCreation.toDate ? user.dateCreation.toDate() : new Date(user.dateCreation);
+                    dateCreation = date.toLocaleDateString('fr-FR');
+                } catch(e) {}
+            }
+
+            const content = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-size: 28px; font-weight: bold; margin: 0 auto 10px;">
+                        ${(user.prenom || 'U').charAt(0).toUpperCase()}${(user.nom || '').charAt(0).toUpperCase()}
+                    </div>
+                    <h3 style="margin: 0; color: #1e40af;">${user.prenom || ''} ${user.nom || ''}</h3>
+                    <p style="margin: 5px 0; color: #6b7280;">${user.email}</p>
+                </div>
+                <div style="background: #f8fafc; padding: 16px; border-radius: 12px;">
+                    <p style="margin: 8px 0;"><strong>UID:</strong> <code style="background: #e5e7eb; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${user.id}</code></p>
+                    <p style="margin: 8px 0;"><strong>Rôle:</strong> <span class="badge badge-${user.role === 'admin' ? 'admin' : 'user'}">${(user.role || 'user').toUpperCase()}</span></p>
+                    <p style="margin: 8px 0;"><strong>Niveau:</strong> ${user.niveau || 'Non défini'}</p>
+                    <p style="margin: 8px 0;"><strong>Groupe:</strong> ${user.groupe || 'Non défini'}</p>
+                    <p style="margin: 8px 0;"><strong>Date d'inscription:</strong> ${dateCreation}</p>
+                    <p style="margin: 8px 0;"><strong>Dernière connexion:</strong> ${lastLogin}</p>
+                    <p style="margin: 8px 0;"><strong>TP créés:</strong> ${userTP.length}</p>
+                    <p style="margin: 8px 0;"><strong>Statut:</strong> <span class="badge ${user.actif !== false ? 'badge-online' : 'badge-offline'}">${user.actif !== false ? 'Actif' : 'Inactif'}</span></p>
+                </div>
+            `;
+
+            // Afficher dans un modal personnalisé
+            const modalHTML = `
+                <div id="userDetailsModal" class="modal active" onclick="if(event.target === this) closeModal('userDetailsModal')">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Détails de l'utilisateur</h3>
+                            <button class="close-btn" onclick="closeModal('userDetailsModal')">&times;</button>
+                        </div>
+                        ${content}
+                        <div class="modal-footer">
+                            <button class="btn-secondary" onclick="closeModal('userDetailsModal')">Fermer</button>
+                            <button class="btn-primary" onclick="closeModal('userDetailsModal'); editUser('${uid}')"><i class="fas fa-edit"></i> Modifier</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Ajouter le modal au body
+            const existingModal = document.getElementById('userDetailsModal');
+            if (existingModal) existingModal.remove();
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
         }
 
         function renderMachinesTable() {

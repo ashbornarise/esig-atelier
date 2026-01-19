@@ -177,14 +177,20 @@ const DataManager = {
          */
         async create(tpData) {
             try {
-                const user = AuthManager.getCurrentUser();
-                if (!user) throw new Error('Utilisateur non connecté');
+                // Utiliser directement window.auth.currentUser pour éviter les problèmes de sync
+                const user = window.auth?.currentUser || AuthManager.getCurrentUser();
+                if (!user) {
+                    console.error('❌ Utilisateur non connecté - window.auth.currentUser:', window.auth?.currentUser);
+                    throw new Error('Utilisateur non connecté. Veuillez vous reconnecter.');
+                }
 
-                const docRef = await db.collection('TP').add({
+                console.log('📝 Création TP par utilisateur:', user.uid);
+
+                const docRef = await window.db.collection('TP').add({
                     ...tpData,
                     createdBy: user.uid,
-                    dateCreation: new Date(),
-                    statut: 'planifie',
+                    dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
+                    statut: tpData.statut || 'planifie',
                     membres: tpData.membres || [user.uid],
                     machinesUtilisees: tpData.machinesUtilisees || [],
                     remarques: tpData.remarques || ''
@@ -193,7 +199,7 @@ const DataManager = {
                 console.log('✅ TP créé:', docRef.id);
                 return { success: true, id: docRef.id };
             } catch (error) {
-                console.error('❌ Erreur création TP:', error.message);
+                console.error('❌ Erreur création TP:', error.message, error);
                 return { success: false, error: error.message };
             }
         },
@@ -203,15 +209,19 @@ const DataManager = {
          */
         async getAll(filterByUser = false) {
             try {
-                let query = db.collection('TP');
+                let query = window.db.collection('TP');
 
                 if (filterByUser) {
-                    const user = AuthManager.getCurrentUser();
-                    if (!user) throw new Error('Utilisateur non connecté');
+                    const user = window.auth?.currentUser || AuthManager.getCurrentUser();
+                    if (!user) {
+                        console.warn('⚠️ Utilisateur non connecté pour filtrer les TP');
+                        return { success: true, data: [] };
+                    }
                     query = query.where('createdBy', '==', user.uid);
                 }
 
-                const snapshot = await query.orderBy('dateDebut', 'desc').get();
+                // Utiliser dateCreation au lieu de dateDebut pour éviter les erreurs d'index
+                const snapshot = await query.orderBy('dateCreation', 'desc').get();
                 const tpList = [];
 
                 snapshot.forEach(doc => {
@@ -221,6 +231,20 @@ const DataManager = {
                 return { success: true, data: tpList };
             } catch (error) {
                 console.error('❌ Erreur lecture TP:', error.message);
+                // Si erreur d'index, essayer sans orderBy
+                if (error.message.includes('index')) {
+                    console.warn('⚠️ Index manquant, essai sans tri...');
+                    try {
+                        const snapshot = await window.db.collection('TP').get();
+                        const tpList = [];
+                        snapshot.forEach(doc => {
+                            tpList.push({ id: doc.id, ...doc.data() });
+                        });
+                        return { success: true, data: tpList };
+                    } catch (e) {
+                        return { success: false, error: e.message, data: [] };
+                    }
+                }
                 return { success: false, error: error.message, data: [] };
             }
         },

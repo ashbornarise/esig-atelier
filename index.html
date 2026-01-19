@@ -66,10 +66,8 @@
 
         /* HEADER */
         .header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
             color: white;
             padding: 16px 24px;
             display: flex;
@@ -99,8 +97,8 @@
         }
 
         .btn-icon {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             color: white;
             width: 40px;
             height: 40px;
@@ -114,7 +112,8 @@
         }
 
         .btn-icon:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
         }
 
         /* MAIN CONTENT */
@@ -137,13 +136,20 @@
             background: white;
             padding: 24px;
             border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
-            border-top: 4px solid #3b82f6;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
         }
 
         .stat-label {
-            color: #6b7280;
+            color: #374151;
             font-size: 14px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             margin-bottom: 8px;
@@ -154,13 +160,13 @@
 
         .stat-label i {
             color: #3b82f6;
-            font-size: 18px;
+            font-size: 20px;
         }
 
         .stat-value {
-            font-size: 32px;
+            font-size: 36px;
             font-weight: 700;
-            color: #3b82f6;
+            color: #1e40af;
         }
 
         /* FORM SECTIONS */
@@ -274,43 +280,48 @@
         .bottom-nav {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            padding: 16px;
+            gap: 8px;
+            padding: 12px 16px;
             background: white;
-            border-top: 1px solid #e5e7eb;
-            box-shadow: 0 -4px 12px rgba(59, 130, 246, 0.1);
+            border-top: 2px solid #e5e7eb;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
             margin: 0 auto;
             width: 100%;
+            position: sticky;
+            bottom: 0;
         }
 
         .nav-item {
             background: none;
-            border: none;
-            padding: 12px;
+            border: 2px solid transparent;
+            padding: 10px 8px;
             cursor: pointer;
             text-align: center;
             color: #6b7280;
-            font-size: 12px;
+            font-size: 11px;
+            font-weight: 600;
             transition: all 0.3s;
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
         }
 
         .nav-item i {
-            font-size: 24px;
+            font-size: 22px;
         }
 
         .nav-item.active {
-            color: #3b82f6;
-            background: #eff6ff;
+            color: #1e40af;
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-color: #3b82f6;
         }
 
-        .nav-item:hover {
+        .nav-item:hover:not(.active) {
             color: #3b82f6;
-            background: #f0f9ff;
+            background: #f8fafc;
+            border-color: #e5e7eb;
         }
 
         /* ALERT */
@@ -472,47 +483,64 @@
 
             <!-- TP SECTION -->
             <div id="tpSection" class="section active">
-                <div class="section-title">
-                    <i class="fas fa-book"></i> Créer un TP
+                <!-- MES TP - Liste -->
+                <div class="section-title" style="margin-bottom: 16px;">
+                    <i class="fas fa-book"></i> Mes Travaux Pratiques
+                    <span id="myTPCount" style="margin-left: auto; background: #3b82f6; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">0</span>
                 </div>
-                <div id="tpAlert" class="alert"></div>
-                <form id="tpForm">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Titre du TP</label>
-                            <input type="text" id="tpTitre" placeholder="Ex: TP Circuits électriques" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Type</label>
-                            <select id="tpType" required>
-                                <option value="">Sélectionner...</option>
-                                <option value="pratique">Pratique</option>
-                                <option value="theorique">Théorique</option>
-                                <option value="mixte">Mixte</option>
-                            </select>
-                        </div>
-                    </div>
 
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>Date de début</label>
-                            <input type="date" id="tpDateDebut" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Durée (heures)</label>
-                            <input type="number" id="tpDuree" min="0.5" step="0.5" placeholder="Ex: 4.5" required>
-                        </div>
-                    </div>
+                <div id="myTPList" style="margin-bottom: 24px;">
+                    <p style="text-align: center; color: #9ca3af; padding: 20px;">Chargement de vos TP...</p>
+                </div>
 
-                    <div class="form-group">
-                        <label>Description</label>
-                        <textarea id="tpDescription" placeholder="Décrivez les objectifs et déroulement..."></textarea>
+                <!-- Formulaire création -->
+                <div style="border-top: 2px solid #e5e7eb; padding-top: 24px; margin-top: 16px;">
+                    <div class="section-title">
+                        <i class="fas fa-plus-circle"></i> Créer un nouveau TP
                     </div>
+                    <div id="tpAlert" class="alert"></div>
+                    <form id="tpForm">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Titre du TP</label>
+                                <input type="text" id="tpTitre" placeholder="Ex: TP Circuits électriques" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Type</label>
+                                <select id="tpType" required>
+                                    <option value="">Sélectionner...</option>
+                                    <option value="usinage">Usinage</option>
+                                    <option value="tournage">Tournage</option>
+                                    <option value="fraisage">Fraisage</option>
+                                    <option value="soudure">Soudure</option>
+                                    <option value="electronique">Électronique</option>
+                                    <option value="maintenance">Maintenance</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                        </div>
 
-                    <button type="submit" class="btn-primary">
-                        <i class="fas fa-plus"></i> Créer le TP
-                    </button>
-                </form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Date de début</label>
+                                <input type="date" id="tpDateDebut" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Durée (heures)</label>
+                                <input type="number" id="tpDuree" min="0.5" step="0.5" placeholder="Ex: 4.5" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="tpDescription" placeholder="Décrivez les objectifs et déroulement..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-plus"></i> Créer le TP
+                        </button>
+                    </form>
+                </div>
             </div>
 
             <!-- MACHINES SECTION -->
@@ -590,40 +618,75 @@
         <div id="settingsModal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 class="modal-title">Paramètres</h2>
+                    <h2 class="modal-title"><i class="fas fa-cog"></i> Paramètres</h2>
                     <button class="modal-close" onclick="closeSettingsModal()">✕</button>
                 </div>
                 <div id="settingsBody">
-                    <div class="settings-section">
-                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px;">
-                            <i class="fas fa-user"></i> Profil
+                    <!-- COMPTE -->
+                    <div class="settings-section" style="margin-bottom: 20px;">
+                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-user-circle"></i> Mon Compte
                         </h3>
-                        <div class="profile-info" style="background: #f8fafc; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-                            <p style="margin: 8px 0;"><strong>Nom:</strong> <span id="settingsUserName">-</span></p>
-                            <p style="margin: 8px 0;"><strong>Email:</strong> <span id="settingsUserEmail">-</span></p>
-                            <p style="margin: 8px 0;"><strong>Rôle:</strong> <span id="settingsUserRole">-</span></p>
+                        <div class="profile-info" style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 16px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #bfdbfe;">
+                            <p style="margin: 8px 0; color: #1e40af;"><strong>Nom:</strong> <span id="settingsUserName" style="color: #374151;">-</span></p>
+                            <p style="margin: 8px 0; color: #1e40af;"><strong>Email:</strong> <span id="settingsUserEmail" style="color: #374151;">-</span></p>
                         </div>
-                    </div>
-                    <div class="settings-section">
-                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px;">
-                            <i class="fas fa-key"></i> Sécurité
-                        </h3>
-                        <button onclick="resetPassword()" class="btn-primary" style="width: 100%; margin-bottom: 12px;">
-                            <i class="fas fa-envelope"></i> Réinitialiser mot de passe
+                        <button onclick="resetPassword()" class="btn-settings" style="width: 100%; padding: 12px; background: #f8fafc; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; color: #374151; font-weight: 500; transition: all 0.3s;">
+                            <i class="fas fa-key"></i> Modifier mon mot de passe
                         </button>
                     </div>
-                    <div class="settings-section">
-                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px;">
-                            <i class="fas fa-info-circle"></i> À propos
+
+                    <!-- LANGUE -->
+                    <div class="settings-section" style="margin-bottom: 20px;">
+                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-globe"></i> Langue
                         </h3>
-                        <p style="color: #6b7280; font-size: 14px;">
+                        <select id="settingsLanguage" style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; cursor: pointer;">
+                            <option value="fr" selected>Français</option>
+                            <option value="en">English</option>
+                        </select>
+                    </div>
+
+                    <!-- MES DOCUMENTS -->
+                    <div class="settings-section" style="margin-bottom: 20px;">
+                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-folder-open"></i> Mes Documents
+                        </h3>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <button onclick="viewMyTP()" class="btn-settings" style="width: 100%; padding: 12px; background: #f8fafc; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #374151; font-weight: 500; transition: all 0.3s; text-align: left;">
+                                <i class="fas fa-book" style="color: #3b82f6; width: 20px;"></i> Voir mes TP
+                            </button>
+                            <button onclick="exportMyData()" class="btn-settings" style="width: 100%; padding: 12px; background: #f8fafc; border: 2px solid #e5e7eb; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 10px; color: #374151; font-weight: 500; transition: all 0.3s; text-align: left;">
+                                <i class="fas fa-download" style="color: #10b981; width: 20px;"></i> Exporter mes données
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- THEME -->
+                    <div class="settings-section" style="margin-bottom: 20px;">
+                        <h3 style="color: #1e40af; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-palette"></i> Apparence
+                        </h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button onclick="setTheme('light')" class="theme-btn" style="flex: 1; padding: 12px; background: #ffffff; border: 2px solid #3b82f6; border-radius: 8px; cursor: pointer; color: #374151; font-weight: 500;">
+                                <i class="fas fa-sun"></i> Clair
+                            </button>
+                            <button onclick="setTheme('dark')" class="theme-btn" style="flex: 1; padding: 12px; background: #1e293b; border: 2px solid #1e293b; border-radius: 8px; cursor: pointer; color: white; font-weight: 500;">
+                                <i class="fas fa-moon"></i> Sombre
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- A PROPOS -->
+                    <div class="settings-section" style="border-top: 1px solid #e5e7eb; padding-top: 16px;">
+                        <p style="color: #9ca3af; font-size: 12px; text-align: center;">
                             ESIG Atelier v2.0.0<br>
-                            © 2024 ESIG Global Success
+                            © 2026 ESIG Global Success - Lomé, Togo
                         </p>
                     </div>
                 </div>
                 <button onclick="closeSettingsModal()" class="btn-primary" style="width: 100%; margin-top: 16px;">
-                    Fermer
+                    <i class="fas fa-times"></i> Fermer
                 </button>
             </div>
         </div>
@@ -715,17 +778,25 @@
 
         // Settings Modal
         function openSettingsModal() {
+            console.log('🔧 Ouverture du modal paramètres...');
             // Mettre à jour les infos utilisateur dans le modal
-            if (currentUser) {
-                document.getElementById('settingsUserEmail').textContent = currentUser.email || '-';
+            const emailEl = document.getElementById('settingsUserEmail');
+            const nameEl = document.getElementById('settingsUserName');
+            const modal = document.getElementById('settingsModal');
+
+            if (emailEl && currentUser) {
+                emailEl.textContent = currentUser.email || '-';
             }
-            if (currentUserData) {
-                document.getElementById('settingsUserName').textContent =
-                    (currentUserData.prenom || '') + ' ' + (currentUserData.nom || '') || '-';
-                document.getElementById('settingsUserRole').textContent =
-                    (currentUserData.role || 'utilisateur').toUpperCase();
+            if (nameEl && currentUserData) {
+                const fullName = ((currentUserData.prenom || '') + ' ' + (currentUserData.nom || '')).trim();
+                nameEl.textContent = fullName || '-';
             }
-            document.getElementById('settingsModal').classList.add('active');
+            if (modal) {
+                modal.classList.add('active');
+                console.log('✅ Modal paramètres ouvert');
+            } else {
+                console.error('❌ Modal settingsModal non trouvé!');
+            }
         }
 
         function closeSettingsModal() {
@@ -750,6 +821,84 @@
                     .catch(e => alert('Erreur: ' + e.message));
             }
         }
+
+        // Voir mes TP
+        async function viewMyTP() {
+            closeSettingsModal();
+            switchSection('tp');
+            // Afficher la liste de mes TP dans un modal
+            if (!currentUser) {
+                alert('Connectez-vous pour voir vos TP');
+                return;
+            }
+            const result = await DataManager.tp.getAll(true); // true = mes TP seulement
+            const mesTP = result.data || [];
+
+            if (mesTP.length === 0) {
+                openModal('Mes TP', '<p style="text-align: center; color: #6b7280; padding: 20px;">Vous n\'avez pas encore de TP. Créez votre premier TP!</p>');
+                return;
+            }
+
+            const content = mesTP.map(tp => `
+                <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #3b82f6;">
+                    <strong style="color: #1e40af;">${tp.titre}</strong><br>
+                    <span style="font-size: 12px; color: #6b7280;">Type: ${tp.type} | Durée: ${tp.duree}h | Statut: ${tp.statut || 'En cours'}</span>
+                </div>
+            `).join('');
+            openModal('Mes TP (' + mesTP.length + ')', content);
+        }
+
+        // Exporter mes données
+        async function exportMyData() {
+            if (!currentUser) {
+                alert('Connectez-vous pour exporter vos données');
+                return;
+            }
+
+            const result = await DataManager.tp.getAll(true);
+            const mesTP = result.data || [];
+
+            const exportData = {
+                utilisateur: {
+                    nom: currentUserData?.nom || '',
+                    prenom: currentUserData?.prenom || '',
+                    email: currentUser.email
+                },
+                mesTP: mesTP,
+                dateExport: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mes-donnees-esig-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+
+            alert('Vos données ont été exportées avec succès!');
+        }
+
+        // Changer le thème
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                document.body.style.background = 'linear-gradient(to bottom, #1e293b 0%, #0f172a 100%)';
+                document.body.style.color = '#f1f5f9';
+                localStorage.setItem('esig_theme', 'dark');
+            } else {
+                document.body.style.background = 'linear-gradient(to bottom, #ffffff 0%, #2563eb 100%)';
+                document.body.style.color = '#1e293b';
+                localStorage.setItem('esig_theme', 'light');
+            }
+        }
+
+        // Charger le thème au démarrage
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('esig_theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            }
+        });
 
         // Vérifier si mode visiteur
         function isVisitorMode() {
@@ -959,9 +1108,9 @@
             else if (section === 'maintenance') loadMaintenance();
         }
 
-        // Load stats
+        // Load stats et afficher les TP de l'utilisateur
         async function loadData() {
-            const tp = await DataManager.tp.getAll(true); // Mes TP
+            const tp = await DataManager.tp.getAll(true); // Mes TP seulement
             const mach = await DataManager.machines.getAll();
             const stock = await DataManager.stocks.getAll();
             const maint = await DataManager.maintenance.getAll();
@@ -970,6 +1119,118 @@
             document.getElementById('statMachines').textContent = mach.data ? mach.data.length : 0;
             document.getElementById('statStock').textContent = stock.data ? stock.data.length : 0;
             document.getElementById('statMaintenance').textContent = maint.data ? maint.data.length : 0;
+
+            // Afficher mes TP dans la liste
+            displayMyTP(tp.data || []);
+        }
+
+        // Afficher mes TP
+        function displayMyTP(tpList) {
+            const container = document.getElementById('myTPList');
+            const countEl = document.getElementById('myTPCount');
+
+            if (countEl) {
+                countEl.textContent = tpList.length;
+            }
+
+            if (tpList.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; background: #f8fafc; border-radius: 12px; border: 2px dashed #e5e7eb;">
+                        <i class="fas fa-folder-open" style="font-size: 48px; color: #9ca3af; margin-bottom: 12px;"></i>
+                        <h4 style="color: #374151; margin-bottom: 8px;">Aucun TP pour l'instant</h4>
+                        <p style="color: #6b7280; font-size: 14px;">Créez votre premier TP en utilisant le formulaire ci-dessous</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const html = tpList.map(tp => {
+                // Formater la date
+                let dateStr = '-';
+                if (tp.dateDebut) {
+                    try {
+                        const date = tp.dateDebut.toDate ? tp.dateDebut.toDate() : new Date(tp.dateDebut);
+                        dateStr = date.toLocaleDateString('fr-FR');
+                    } catch(e) {}
+                }
+
+                // Badge de statut
+                let statusColor = '#d1fae5';
+                let statusText = 'En cours';
+                if (tp.statut === 'termine') {
+                    statusColor = '#dbeafe';
+                    statusText = 'Terminé';
+                } else if (tp.statut === 'planifie') {
+                    statusColor = '#fef3c7';
+                    statusText = 'Planifié';
+                }
+
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s; border-left: 4px solid #3b82f6;"
+                         onmouseover="this.style.boxShadow='0 8px 16px rgba(59,130,246,0.15)'; this.style.transform='translateY(-2px)'"
+                         onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'"
+                         onclick="viewTPDetail('${tp.id}')">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                            <div>
+                                <h4 style="color: #1e40af; margin: 0 0 4px 0;">${tp.titre}</h4>
+                                <p style="font-size: 13px; color: #6b7280; margin: 0;">
+                                    <i class="fas fa-tag" style="margin-right: 4px;"></i> ${tp.type || 'Non défini'}
+                                    <span style="margin: 0 8px;">•</span>
+                                    <i class="fas fa-calendar" style="margin-right: 4px;"></i> ${dateStr}
+                                    <span style="margin: 0 8px;">•</span>
+                                    <i class="fas fa-clock" style="margin-right: 4px;"></i> ${tp.duree || '-'}h
+                                </p>
+                            </div>
+                            <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${statusColor};">${statusText}</span>
+                        </div>
+                        ${tp.description ? `<p style="font-size: 13px; color: #4b5563; margin: 8px 0 0 0; line-height: 1.5;">${tp.description.substring(0, 100)}${tp.description.length > 100 ? '...' : ''}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = html;
+        }
+
+        // Voir le détail d'un TP
+        async function viewTPDetail(tpId) {
+            const result = await DataManager.tp.getById(tpId);
+            if (!result.success) {
+                alert('Erreur: ' + result.error);
+                return;
+            }
+
+            const tp = result.data;
+
+            // Formater la date
+            let dateStr = '-';
+            if (tp.dateDebut) {
+                try {
+                    const date = tp.dateDebut.toDate ? tp.dateDebut.toDate() : new Date(tp.dateDebut);
+                    dateStr = date.toLocaleDateString('fr-FR');
+                } catch(e) {}
+            }
+
+            const content = `
+                <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); padding: 16px; border-radius: 12px; margin-bottom: 16px;">
+                    <p style="margin: 8px 0;"><strong>Type:</strong> ${tp.type || 'Non défini'}</p>
+                    <p style="margin: 8px 0;"><strong>Date de début:</strong> ${dateStr}</p>
+                    <p style="margin: 8px 0;"><strong>Durée:</strong> ${tp.duree || '-'} heures</p>
+                    <p style="margin: 8px 0;"><strong>Statut:</strong> ${tp.statut || 'En cours'}</p>
+                </div>
+                ${tp.description ? `<div style="margin-bottom: 16px;"><strong>Description:</strong><p style="color: #4b5563; margin-top: 8px; line-height: 1.6;">${tp.description}</p></div>` : ''}
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button onclick="closeModal(); editMyTP('${tp.id}')" class="btn-primary" style="flex: 1;">
+                        <i class="fas fa-edit"></i> Modifier
+                    </button>
+                </div>
+            `;
+
+            openModal(tp.titre, content);
+        }
+
+        // Éditer un TP (placeholder)
+        function editMyTP(tpId) {
+            alert('Fonction d\'édition à implémenter. ID du TP: ' + tpId);
         }
 
         // TP Form
