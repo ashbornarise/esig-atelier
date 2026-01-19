@@ -10,6 +10,15 @@
         integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --background: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -17,8 +26,13 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f8f9fa;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+            color: #1e293b;
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
         }
 
         .admin-wrapper {
@@ -28,14 +42,51 @@
 
         /* SIDEBAR */
         .sidebar {
-            width: 280px;
-            background: linear-gradient(135deg, #0055ff 0%, #0033cc 100%);
+            width: 260px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 20px;
-            box-shadow: 0 0 30px rgba(0, 85, 255, 0.2);
-            position: fixed;
-            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo {
+            padding: 24px;
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .menu {
+            flex: 1;
+            padding: 20px 0;
             overflow-y: auto;
+        }
+
+        .menu-link {
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: 0.3s;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-link:hover,
+        .menu-link.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-left-color: white;
         }
 
         .sidebar-header {
