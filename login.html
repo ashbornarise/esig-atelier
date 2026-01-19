@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESIG Atelier - Accueil</title>
     <link rel="icon" type="image/png" href="logo-esig.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Font Awesome 6 - Sans intégrité pour éviter les blocages CORS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -327,6 +326,9 @@
             <button class="btn btn-login" onclick="showAuthPage()">
                 <i class="fas fa-sign-in-alt"></i> Se connecter
             </button>
+            <button class="btn btn-visitor" onclick="enterVisitorMode()" style="background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; box-shadow: 0 10px 20px rgba(107, 114, 128, 0.2);">
+                <i class="fas fa-eye"></i> Continuer en visiteur
+            </button>
         </div>
 
         <div class="features">
@@ -537,6 +539,16 @@
         function backToWelcome() {
             document.getElementById('welcomePage').style.display = 'block';
             document.getElementById('authPage').classList.remove('active');
+        }
+
+        // Mode visiteur - accès lecture seule
+        function enterVisitorMode() {
+            // Stocker le mode visiteur dans localStorage
+            localStorage.setItem('visitorMode', 'true');
+            localStorage.setItem('visitorModeTimestamp', Date.now().toString());
+            console.log('🔵 Mode visiteur activé');
+            // Rediriger vers le dashboard en mode visiteur
+            window.location.href = 'index.html?mode=visitor';
         }
 
         // Au chargement, vérifier si l'utilisateur est connecté

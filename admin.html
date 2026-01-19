@@ -6,9 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESIG Atelier - Admin</title>
     <link rel="icon" type="image/png" href="logo-esig.png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A=="
-        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <!-- Font Awesome 6 - Sans intégrité pour éviter les blocages CORS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
             --primary: #2563eb;
@@ -1004,7 +1003,14 @@
             else if (pageId === 'dashboard') loadDashboard();
         }
 
+        // Variables pour stocker les unsubscribe functions
+        let unsubscribeUsers = null;
+        let unsubscribeMachines = null;
+        let unsubscribeStock = null;
+        let unsubscribeTP = null;
+
         async function loadAllData() {
+            // Charger les données initiales
             await Promise.all([
                 loadUsers(),
                 loadTP(),
@@ -1013,7 +1019,151 @@
                 loadActivities(),
                 loadDashboard()
             ]);
+
+            // Activer les listeners temps réel
+            setupRealtimeListeners();
         }
+
+        // Configuration des listeners temps réel
+        function setupRealtimeListeners() {
+            console.log('🔄 Configuration des listeners temps réel...');
+
+            // Listener pour les utilisateurs
+            unsubscribeUsers = db.collection('users').onSnapshot(snapshot => {
+                allUsers = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                document.getElementById('statUsers').textContent = allUsers.length;
+                console.log('👥 Utilisateurs mis à jour:', allUsers.length);
+                // Ne pas recharger le tableau si on n'est pas sur cette page
+                if (document.getElementById('users').classList.contains('active')) {
+                    renderUsersTable();
+                }
+            }, error => {
+                console.error('Erreur listener users:', error);
+            });
+
+            // Listener pour les machines
+            unsubscribeMachines = db.collection('machines').onSnapshot(snapshot => {
+                allMachines = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                document.getElementById('statMachines').textContent = allMachines.length;
+                console.log('⚙️ Machines mises à jour:', allMachines.length);
+                if (document.getElementById('machines').classList.contains('active')) {
+                    renderMachinesTable();
+                }
+            }, error => {
+                console.error('Erreur listener machines:', error);
+            });
+
+            // Listener pour le stock
+            unsubscribeStock = db.collection('stocks').onSnapshot(snapshot => {
+                allStock = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                document.getElementById('statStock').textContent = allStock.length;
+                console.log('📦 Stock mis à jour:', allStock.length);
+                if (document.getElementById('stock').classList.contains('active')) {
+                    renderStockTable();
+                }
+            }, error => {
+                console.error('Erreur listener stock:', error);
+            });
+
+            // Listener pour les TP
+            unsubscribeTP = db.collection('TP').onSnapshot(snapshot => {
+                allTP = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                document.getElementById('statTP').textContent = allTP.length;
+                console.log('📚 TP mis à jour:', allTP.length);
+                if (document.getElementById('tp').classList.contains('active')) {
+                    renderTPTable();
+                }
+            }, error => {
+                console.error('Erreur listener TP:', error);
+            });
+
+            console.log('✅ Listeners temps réel activés');
+        }
+
+        // Fonctions de rendu des tableaux (séparées du chargement)
+        function renderUsersTable() {
+            const html = allUsers.map(u => `
+                <tr>
+                    <td>${u.nom || ''} ${u.prenom || ''}</td>
+                    <td>${u.email || ''}</td>
+                    <td><span class="badge ${u.role === 'admin' ? 'badge-admin' : 'badge-user'}">${u.role || 'user'}</span></td>
+                    <td>${u.niveau || '-'}</td>
+                    <td><span class="badge ${u.actif !== false ? 'badge-online' : 'badge-offline'}">${u.actif !== false ? 'Actif' : 'Inactif'}</span></td>
+                    <td><button class="btn-sm btn-edit" onclick="editUser('${u.id}')"><i class="fas fa-edit"></i></button></td>
+                </tr>
+            `).join('');
+            document.getElementById('usersTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'utilisateurs</td></tr>';
+        }
+
+        function renderMachinesTable() {
+            const html = allMachines.map(m => `
+                <tr>
+                    <td>${m.nom || ''}</td>
+                    <td>${m.type || ''}</td>
+                    <td><span class="badge ${m.statut === 'disponible' ? 'badge-online' : 'badge-offline'}">${m.statut || 'inconnu'}</span></td>
+                    <td>${m.lieu || '-'}</td>
+                    <td>${m.nombreHeuresUtilisation || 0}h</td>
+                    <td>
+                        <button class="btn-sm btn-edit" onclick="editMachine('${m.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-sm btn-delete" onclick="deleteMachine('${m.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+            document.getElementById('machinesTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas de machines</td></tr>';
+        }
+
+        function renderStockTable() {
+            const html = allStock.map(s => {
+                const q = s.quantite || 0;
+                const min = s.quantiteMinimale || 5;
+                const lowStock = q <= min;
+                return `
+                    <tr style="${lowStock ? 'background: #fef2f2;' : ''}">
+                        <td>${s.nom || ''}</td>
+                        <td>${s.categorie || ''}</td>
+                        <td style="${lowStock ? 'color: #dc2626; font-weight: bold;' : ''}">${q}</td>
+                        <td>${min}</td>
+                        <td>${s.prix || 0}€</td>
+                        <td>
+                            <button class="btn-sm btn-edit" onclick="editStock('${s.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteStock('${s.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('stockTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'articles</td></tr>';
+        }
+
+        function renderTPTable() {
+            const html = allTP.map(t => {
+                const dateStr = t.dateDebut ? new Date(t.dateDebut.toDate ? t.dateDebut.toDate() : t.dateDebut).toLocaleDateString('fr-FR') : '-';
+                return `
+                    <tr>
+                        <td><strong>${t.titre || ''}</strong></td>
+                        <td>${t.creatorName || 'N/A'}</td>
+                        <td>${t.creatorEmail || '-'}</td>
+                        <td>${t.type || ''}</td>
+                        <td>${dateStr}</td>
+                        <td>${t.duree || '-'} jours</td>
+                        <td><span class="badge badge-online">${t.statut || 'En cours'}</span></td>
+                        <td>${(t.membres || t.participants || []).length}</td>
+                        <td>
+                            <button class="btn-sm btn-edit" onclick="viewTPDetails('${t.id}')"><i class="fas fa-eye"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="9" style="text-align: center;">Pas de TP</td></tr>';
+        }
+
+        // Nettoyage des listeners à la fermeture
+        window.addEventListener('beforeunload', () => {
+            if (unsubscribeUsers) unsubscribeUsers();
+            if (unsubscribeMachines) unsubscribeMachines();
+            if (unsubscribeStock) unsubscribeStock();
+            if (unsubscribeTP) unsubscribeTP();
+        });
 
         async function loadDashboard() {
             document.getElementById('statUsers').textContent = allUsers.length;
@@ -1213,6 +1363,40 @@ Statut: ${tp.statut || 'En cours'}
             }
         }
 
+        // Variables pour l'édition
+        let editingUserId = null;
+        let editingMachineId = null;
+        let editingStockId = null;
+
+        // Fonction pour éditer une machine
+        function editMachine(id) {
+            const machine = allMachines.find(m => m.id === id);
+            if (machine) {
+                editingMachineId = id;
+                document.getElementById('machineNom').value = machine.nom || '';
+                document.getElementById('machineType').value = machine.type || '';
+                document.getElementById('machineLieu').value = machine.lieu || '';
+                document.getElementById('machineStatut').value = machine.statut || 'disponible';
+                document.querySelector('#machineModal .modal-header h3').textContent = 'Modifier Machine';
+                document.getElementById('machineModal').classList.add('active');
+            }
+        }
+
+        // Fonction pour éditer un stock
+        function editStock(id) {
+            const stock = allStock.find(s => s.id === id);
+            if (stock) {
+                editingStockId = id;
+                document.getElementById('stockNom').value = stock.nom || '';
+                document.getElementById('stockCat').value = stock.categorie || 'outils';
+                document.getElementById('stockQte').value = stock.quantite || 0;
+                document.getElementById('stockMin').value = stock.quantiteMinimale || 5;
+                document.getElementById('stockPrix').value = stock.prix || 0;
+                document.querySelector('#stockModal .modal-header h3').textContent = 'Modifier Stock';
+                document.getElementById('stockModal').classList.add('active');
+            }
+        }
+
         async function logout() {
             await auth.signOut();
             window.location.href = 'login.html';
@@ -1260,9 +1444,17 @@ Statut: ${tp.statut || 'En cours'}
                 statut: document.getElementById('machineStatut').value
             };
 
-            await DataManager.machines.create(data);
+            if (editingMachineId) {
+                // Mode édition
+                await DataManager.machines.update(editingMachineId, data);
+                editingMachineId = null;
+            } else {
+                // Mode création
+                await DataManager.machines.create(data);
+            }
             loadMachines();
             closeModal('machineModal');
+            document.querySelector('#machineModal .modal-header h3').textContent = 'Ajouter une Machine';
         }
 
         function openStockModal() {
@@ -1280,9 +1472,17 @@ Statut: ${tp.statut || 'En cours'}
                 prix: parseFloat(document.getElementById('stockPrix').value || 0)
             };
 
-            await DataManager.stocks.create(data);
+            if (editingStockId) {
+                // Mode édition
+                await DataManager.stocks.update(editingStockId, data);
+                editingStockId = null;
+            } else {
+                // Mode création
+                await DataManager.stocks.create(data);
+            }
             loadStock();
             closeModal('stockModal');
+            document.querySelector('#stockModal .modal-header h3').textContent = 'Ajouter du Stock';
         }
     </script>
 </body>

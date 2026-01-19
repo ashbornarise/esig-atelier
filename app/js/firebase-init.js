@@ -3,33 +3,41 @@
    ============================================ */
 
 /**
+ * IMPORTANT: Ce fichier est chargé APRÈS l'initialisation Firebase dans index.html
+ * Les variables window.db et window.auth sont déjà définies
+ * Ce fichier fournit des fonctions utilitaires supplémentaires
+ */
+
+// Ne PAS redéclarer db et auth - utiliser window.db et window.auth
+let firebaseInitialized = window.db && window.auth;
+
+/**
  * Fonctions globales pour accéder à Firebase
  */
 function getAuth() {
-    if (!firebase.auth()) {
-        throw new Error('Firebase Auth non initialisé');
+    if (window.auth) return window.auth;
+    if (typeof firebase !== 'undefined' && firebase.auth) {
+        return firebase.auth();
     }
-    return firebase.auth();
+    throw new Error('Firebase Auth non initialisé');
 }
 
 function getFirestore() {
-    if (!firebase.firestore()) {
-        throw new Error('Firebase Firestore non initialisé');
+    if (window.db) return window.db;
+    if (typeof firebase !== 'undefined' && firebase.firestore) {
+        return firebase.firestore();
     }
-    return firebase.firestore();
+    throw new Error('Firebase Firestore non initialisé');
 }
 
-// Variables globales pour les services Firebase
-let db = null;
-let auth = null;
-let firebaseInitialized = false;
-
 /**
- * Initialiser Firebase
+ * Initialiser Firebase (si pas déjà fait)
  */
 async function initializeFirebase() {
-    if (firebaseInitialized) {
-        return { db, auth };
+    // Si déjà initialisé via window.db et window.auth, retourner directement
+    if (window.db && window.auth) {
+        firebaseInitialized = true;
+        return { db: window.db, auth: window.auth };
     }
 
     try {
@@ -39,7 +47,7 @@ async function initializeFirebase() {
         }
 
         // Vérifier que la configuration est valide
-        if (!FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'VOTRE_API_KEY') {
+        if (typeof FIREBASE_CONFIG === 'undefined' || !FIREBASE_CONFIG.apiKey || FIREBASE_CONFIG.apiKey === 'VOTRE_API_KEY') {
             console.warn('Configuration Firebase non définie. Mode démo activé.');
             return initializeDemoMode();
         }
@@ -49,12 +57,12 @@ async function initializeFirebase() {
             firebase.initializeApp(FIREBASE_CONFIG);
         }
 
-        // Obtenir les références des services
-        db = firebase.firestore();
-        auth = firebase.auth();
+        // Obtenir les références des services et les assigner globalement
+        window.db = firebase.firestore();
+        window.auth = firebase.auth();
 
         // Configurer la persistance Firestore
-        await db.enablePersistence({ synchronizeTabs: true })
+        await window.db.enablePersistence({ synchronizeTabs: true })
             .catch(err => {
                 if (err.code === 'failed-precondition') {
                     console.warn('Persistance impossible : plusieurs onglets ouverts');
@@ -64,12 +72,12 @@ async function initializeFirebase() {
             });
 
         // Configurer la persistance Auth
-        await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        await window.auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
         firebaseInitialized = true;
         console.log('Firebase initialisé avec succès');
 
-        return { db, auth };
+        return { db: window.db, auth: window.auth };
 
     } catch (error) {
         console.error('Erreur initialisation Firebase:', error);
@@ -84,14 +92,14 @@ async function initializeFirebase() {
 function initializeDemoMode() {
     console.log('Mode démo activé - Données stockées localement');
 
-    // Créer des objets simulant Firebase
-    db = createDemoFirestore();
-    auth = createDemoAuth();
+    // Créer des objets simulant Firebase et les assigner globalement
+    window.db = createDemoFirestore();
+    window.auth = createDemoAuth();
 
     firebaseInitialized = true;
     window.DEMO_MODE = true;
 
-    return { db, auth };
+    return { db: window.db, auth: window.auth };
 }
 
 /**

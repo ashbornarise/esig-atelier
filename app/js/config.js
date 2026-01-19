@@ -343,6 +343,48 @@ const DataManager = {
                 console.error('❌ Erreur mise à jour statut:', error.message);
                 return { success: false, error: error.message };
             }
+        },
+
+        /**
+         * Mettre à jour une machine
+         */
+        async update(machineId, machineData) {
+            try {
+                const userData = await AuthManager.getCurrentUserData();
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée');
+                }
+
+                await db.collection('machines').doc(machineId).update({
+                    ...machineData,
+                    dateModification: new Date()
+                });
+
+                console.log('✅ Machine mise à jour:', machineId);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Erreur mise à jour machine:', error.message);
+                return { success: false, error: error.message };
+            }
+        },
+
+        /**
+         * Supprimer une machine (admin/technicien seulement)
+         */
+        async delete(machineId) {
+            try {
+                const userData = await AuthManager.getCurrentUserData();
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée');
+                }
+
+                await db.collection('machines').doc(machineId).delete();
+                console.log('✅ Machine supprimée:', machineId);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Erreur suppression machine:', error.message);
+                return { success: false, error: error.message };
+            }
         }
     },
 
@@ -399,6 +441,48 @@ const DataManager = {
                 return { success: true };
             } catch (error) {
                 console.error('❌ Erreur mise à jour quantité:', error.message);
+                return { success: false, error: error.message };
+            }
+        },
+
+        /**
+         * Mettre à jour un article de stock
+         */
+        async update(stockId, stockData) {
+            try {
+                const userData = await AuthManager.getCurrentUserData();
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée');
+                }
+
+                await db.collection('stocks').doc(stockId).update({
+                    ...stockData,
+                    dateModification: new Date()
+                });
+
+                console.log('✅ Stock mis à jour:', stockId);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Erreur mise à jour stock:', error.message);
+                return { success: false, error: error.message };
+            }
+        },
+
+        /**
+         * Supprimer un article de stock (admin/technicien seulement)
+         */
+        async delete(stockId) {
+            try {
+                const userData = await AuthManager.getCurrentUserData();
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée');
+                }
+
+                await db.collection('stocks').doc(stockId).delete();
+                console.log('✅ Stock supprimé:', stockId);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Erreur suppression stock:', error.message);
                 return { success: false, error: error.message };
             }
         }
@@ -461,6 +545,48 @@ const DataManager = {
                 return { success: true };
             } catch (error) {
                 console.error('❌ Erreur completion maintenance:', error.message);
+                return { success: false, error: error.message };
+            }
+        },
+
+        /**
+         * Mettre à jour une maintenance
+         */
+        async update(maintenanceId, maintenanceData) {
+            try {
+                const userData = await AuthManager.getCurrentUserData();
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée');
+                }
+
+                await db.collection('maintenance').doc(maintenanceId).update({
+                    ...maintenanceData,
+                    dateModification: new Date()
+                });
+
+                console.log('✅ Maintenance mise à jour:', maintenanceId);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Erreur mise à jour maintenance:', error.message);
+                return { success: false, error: error.message };
+            }
+        },
+
+        /**
+         * Supprimer une maintenance (admin/technicien seulement)
+         */
+        async delete(maintenanceId) {
+            try {
+                const userData = await AuthManager.getCurrentUserData();
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée');
+                }
+
+                await db.collection('maintenance').doc(maintenanceId).delete();
+                console.log('✅ Maintenance supprimée:', maintenanceId);
+                return { success: true };
+            } catch (error) {
+                console.error('❌ Erreur suppression maintenance:', error.message);
                 return { success: false, error: error.message };
             }
         }
