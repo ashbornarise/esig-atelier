@@ -310,6 +310,266 @@
         .forgot-password a:hover {
             color: #1f2937;
         }
+
+        /* RESPONSIVE - TABLETTE */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px;
+            }
+
+            .container {
+                padding: 30px 24px;
+                max-width: 100%;
+            }
+
+            .logo {
+                margin-bottom: 30px;
+            }
+
+            .logo-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 32px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 14px 24px;
+                font-size: 15px;
+            }
+
+            .features {
+                gap: 16px;
+                margin-top: 30px;
+                padding-top: 24px;
+            }
+
+            .feature-icon {
+                font-size: 20px;
+            }
+
+            .feature-text {
+                font-size: 11px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        /* RESPONSIVE - MOBILE */
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+                align-items: flex-start;
+                padding-top: 30px;
+            }
+
+            .container {
+                padding: 24px 20px;
+                border-radius: 12px;
+            }
+
+            .logo {
+                margin-bottom: 24px;
+            }
+
+            .logo-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+                border-radius: 12px;
+                margin-bottom: 16px;
+            }
+
+            h1 {
+                font-size: 22px;
+                margin-bottom: 8px;
+            }
+
+            p {
+                font-size: 13px;
+                margin-bottom: 24px;
+            }
+
+            .button-group {
+                gap: 12px;
+            }
+
+            .btn {
+                padding: 12px 20px;
+                font-size: 14px;
+                border-radius: 10px;
+            }
+
+            .features {
+                gap: 12px;
+                margin-top: 24px;
+                padding-top: 20px;
+            }
+
+            .feature-icon {
+                font-size: 18px;
+            }
+
+            .feature-text {
+                font-size: 10px;
+            }
+
+            /* Auth page responsive */
+            .tabs {
+                padding: 3px;
+                border-radius: 10px;
+                margin-bottom: 20px;
+            }
+
+            .tab {
+                padding: 10px;
+                font-size: 13px;
+                border-radius: 7px;
+            }
+
+            .back-btn {
+                font-size: 20px;
+                margin-bottom: 16px;
+            }
+
+            .form-group {
+                margin-bottom: 14px;
+            }
+
+            label {
+                font-size: 13px;
+                margin-bottom: 6px;
+            }
+
+            input, select {
+                padding: 10px 12px;
+                font-size: 14px;
+                border-radius: 6px;
+            }
+
+            .btn-submit {
+                padding: 12px;
+                font-size: 14px;
+                border-radius: 6px;
+            }
+
+            .alert {
+                padding: 10px 12px;
+                font-size: 13px;
+                border-radius: 6px;
+            }
+
+            .forgot-password a {
+                font-size: 13px;
+            }
+        }
+
+        /* RESPONSIVE - TRÈS PETIT MOBILE */
+        @media (max-width: 360px) {
+            body {
+                padding: 10px;
+                padding-top: 20px;
+            }
+
+            .container {
+                padding: 20px 16px;
+            }
+
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .feature-icon {
+                font-size: 16px;
+            }
+
+            .feature-text {
+                font-size: 9px;
+            }
+
+            .tab {
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            input, select {
+                padding: 9px 10px;
+                font-size: 13px;
+            }
+        }
+
+        /* Mode paysage pour mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+                align-items: center;
+            }
+
+            .container {
+                max-width: 500px;
+                padding: 20px 24px;
+            }
+
+            .logo {
+                margin-bottom: 16px;
+            }
+
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            p {
+                margin-bottom: 16px;
+            }
+
+            .button-group {
+                flex-direction: row;
+                gap: 12px;
+            }
+
+            .btn {
+                flex: 1;
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .features {
+                display: none;
+            }
+        }
     </style>
 </head>
 
@@ -411,8 +671,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="regEmail" placeholder="jean@email.com" required>
+                    <label>Email (ESIG uniquement)</label>
+                    <input type="email" id="regEmail" placeholder="votre.nom@etu.esig.tg" required>
                 </div>
 
                 <div class="form-group">
@@ -664,6 +924,12 @@
 
                 if (password.length < 6) {
                     showAlert(alertEl, 'error', 'Le mot de passe doit contenir au moins 6 caractères');
+                    return;
+                }
+
+                // Validation du domaine email - uniquement @etu.esig.tg
+                if (!email.endsWith('@etu.esig.tg')) {
+                    showAlert(alertEl, 'error', 'Seuls les emails @etu.esig.tg sont acceptés pour l\'inscription');
                     return;
                 }
 

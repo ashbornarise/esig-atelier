@@ -288,14 +288,21 @@ const DataManager = {
          */
         async delete(tpId) {
             try {
-                const user = AuthManager.getCurrentUser();
-                const userData = await AuthManager.getCurrentUserData();
-
-                if (userData.role !== 'admin') {
-                    throw new Error('Permission refusée');
+                // Vérifier que l'utilisateur est connecté
+                const user = window.auth?.currentUser;
+                if (!user) {
+                    throw new Error('Utilisateur non connecté');
                 }
 
-                await db.collection('TP').doc(tpId).delete();
+                // Récupérer les données utilisateur depuis Firestore
+                const userDoc = await window.db.collection('users').doc(user.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : null;
+
+                if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
+                    throw new Error('Permission refusée - Seuls les admins et techniciens peuvent supprimer');
+                }
+
+                await window.db.collection('TP').doc(tpId).delete();
                 console.log('✅ TP supprimé:', tpId);
                 return { success: true };
             } catch (error) {
@@ -397,12 +404,17 @@ const DataManager = {
          */
         async delete(machineId) {
             try {
-                const userData = await AuthManager.getCurrentUserData();
+                const user = window.auth?.currentUser;
+                if (!user) throw new Error('Utilisateur non connecté');
+
+                const userDoc = await window.db.collection('users').doc(user.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : null;
+
                 if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
                     throw new Error('Permission refusée');
                 }
 
-                await db.collection('machines').doc(machineId).delete();
+                await window.db.collection('machines').doc(machineId).delete();
                 console.log('✅ Machine supprimée:', machineId);
                 return { success: true };
             } catch (error) {
@@ -497,12 +509,17 @@ const DataManager = {
          */
         async delete(stockId) {
             try {
-                const userData = await AuthManager.getCurrentUserData();
+                const user = window.auth?.currentUser;
+                if (!user) throw new Error('Utilisateur non connecté');
+
+                const userDoc = await window.db.collection('users').doc(user.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : null;
+
                 if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
                     throw new Error('Permission refusée');
                 }
 
-                await db.collection('stocks').doc(stockId).delete();
+                await window.db.collection('stocks').doc(stockId).delete();
                 console.log('✅ Stock supprimé:', stockId);
                 return { success: true };
             } catch (error) {
@@ -601,12 +618,17 @@ const DataManager = {
          */
         async delete(maintenanceId) {
             try {
-                const userData = await AuthManager.getCurrentUserData();
+                const user = window.auth?.currentUser;
+                if (!user) throw new Error('Utilisateur non connecté');
+
+                const userDoc = await window.db.collection('users').doc(user.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : null;
+
                 if (!userData || (userData.role !== 'admin' && userData.role !== 'technicien')) {
                     throw new Error('Permission refusée');
                 }
 
-                await db.collection('maintenance').doc(maintenanceId).delete();
+                await window.db.collection('maintenance').doc(maintenanceId).delete();
                 console.log('✅ Maintenance supprimée:', maintenanceId);
                 return { success: true };
             } catch (error) {

@@ -11,17 +11,32 @@
     <style>
         :root {
             --primary: #2563eb;
+            --primary-dark: #1e40af;
             --secondary: #64748b;
             --success: #22c55e;
             --danger: #ef4444;
             --background: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1e293b;
+            --text-medium: #475569;
+            --text-light: #64748b;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100px); opacity: 0; }
         }
 
         body {
@@ -244,24 +259,38 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            background: white;
         }
 
         th {
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
             padding: 16px;
             text-align: left;
             font-weight: 600;
-            color: #1f2937;
-            border-bottom: 2px solid #e5e7eb;
+            color: white;
+            border-bottom: 2px solid #1e40af;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         td {
             padding: 16px;
             border-bottom: 1px solid #e5e7eb;
+            color: #1e293b;
+            font-size: 14px;
         }
 
         tr:hover {
-            background: #f9fafb;
+            background: #eff6ff;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tr:nth-child(even):hover {
+            background: #eff6ff;
         }
 
         .badge {
@@ -1207,10 +1236,11 @@
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
 
-            if (pageId === 'users') loadUsers();
-            else if (pageId === 'tp') loadTP();
-            else if (pageId === 'machines') loadMachines();
-            else if (pageId === 'stock') loadStock();
+            // Utiliser les fonctions de rendu (données déjà chargées par les listeners)
+            if (pageId === 'users') renderUsersTable();
+            else if (pageId === 'tp') renderTPTable();
+            else if (pageId === 'machines') renderMachinesTable();
+            else if (pageId === 'stock') renderStockTable();
             else if (pageId === 'activities') loadActivities();
             else if (pageId === 'dashboard') loadDashboard();
         }
@@ -1222,18 +1252,22 @@
         let unsubscribeTP = null;
 
         async function loadAllData() {
-            // Charger les données initiales
-            await Promise.all([
-                loadUsers(),
-                loadTP(),
-                loadMachines(),
-                loadStock(),
-                loadActivities(),
-                loadDashboard()
-            ]);
+            console.log('📊 Chargement des données admin...');
 
-            // Activer les listeners temps réel
+            // Activer les listeners temps réel (ils chargeront les données automatiquement)
             setupRealtimeListeners();
+
+            // Charger les activités séparément (pas de listener temps réel)
+            try {
+                await loadActivities();
+            } catch(e) {
+                console.warn('Activités non disponibles:', e.message);
+            }
+
+            // Afficher le dashboard après un court délai pour laisser les listeners charger
+            setTimeout(() => {
+                loadDashboard();
+            }, 500);
         }
 
         // Configuration des listeners temps réel
@@ -1687,24 +1721,80 @@ Statut: ${tp.statut || 'En cours'}
         }
 
         async function deleteTP(id) {
-            if (confirm('Supprimer ce TP ?')) {
-                await DataManager.tp.delete(id);
-                loadTP();
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce TP ?')) {
+                try {
+                    const result = await DataManager.tp.delete(id);
+                    if (result.success) {
+                        showNotification('TP supprimé avec succès', 'success');
+                    } else {
+                        showNotification('Erreur: ' + result.error, 'error');
+                    }
+                } catch(e) {
+                    showNotification('Erreur: ' + e.message, 'error');
+                }
             }
         }
 
         async function deleteMachine(id) {
-            if (confirm('Supprimer cette machine ?')) {
-                await DataManager.machines.delete(id);
-                loadMachines();
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette machine ?')) {
+                try {
+                    await window.db.collection('machines').doc(id).delete();
+                    showNotification('Machine supprimée avec succès', 'success');
+                } catch(e) {
+                    showNotification('Erreur: ' + e.message, 'error');
+                }
             }
         }
 
         async function deleteStock(id) {
-            if (confirm('Supprimer cet article ?')) {
-                await DataManager.stocks.delete(id);
-                loadStock();
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+                try {
+                    await window.db.collection('stocks').doc(id).delete();
+                    showNotification('Article supprimé avec succès', 'success');
+                } catch(e) {
+                    showNotification('Erreur: ' + e.message, 'error');
+                }
             }
+        }
+
+        // Fonction de notification
+        function showNotification(message, type = 'info') {
+            // Créer l'élément de notification
+            const notif = document.createElement('div');
+            notif.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 12px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                animation: slideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            `;
+
+            if (type === 'success') {
+                notif.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                notif.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+            } else if (type === 'error') {
+                notif.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                notif.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + message;
+            } else {
+                notif.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                notif.innerHTML = '<i class="fas fa-info-circle"></i> ' + message;
+            }
+
+            document.body.appendChild(notif);
+
+            // Supprimer après 3 secondes
+            setTimeout(() => {
+                notif.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
         }
 
         // Variables pour l'édition
