@@ -3,9 +3,21 @@
    ============================================ */
 
 /**
- * Ce fichier initialise Firebase et expose les services
- * nécessaires à l'application.
+ * Fonctions globales pour accéder à Firebase
  */
+function getAuth() {
+    if (!firebase.auth()) {
+        throw new Error('Firebase Auth non initialisé');
+    }
+    return firebase.auth();
+}
+
+function getFirestore() {
+    if (!firebase.firestore()) {
+        throw new Error('Firebase Firestore non initialisé');
+    }
+    return firebase.firestore();
+}
 
 // Variables globales pour les services Firebase
 let db = null;

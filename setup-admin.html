@@ -1,222 +1,196 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setup Admin - ESIG Atelier</title>
+    <title>Installation Admin - ESIG Atelier</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #ffffff 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #ffffff 100%);
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
             padding: 20px;
         }
+
         .container {
             background: white;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 60px rgba(0, 85, 255, 0.15);
             max-width: 500px;
             width: 100%;
+        }
+
+        h1 {
+            color: #0033cc;
+            margin-bottom: 20px;
             text-align: center;
         }
-        h1 {
-            color: #1e40af;
-            margin: 0 0 20px 0;
+
+        p {
+            color: #4b5563;
+            margin-bottom: 30px;
+            text-align: center;
         }
-        .status {
-            padding: 16px;
-            border-radius: 8px;
-            margin: 20px 0;
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
             font-weight: 600;
+            color: #374151;
         }
-        .status.success {
-            background: #d1fae5;
-            color: #065f46;
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
         }
-        .status.error {
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #0055ff;
+            color: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0033cc;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
             background: #fee2e2;
             color: #991b1b;
         }
-        .status.info {
-            background: #dbeafe;
-            color: #0c4a6e;
-        }
-        button {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 20px;
-        }
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
-        }
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-        .info-box {
-            background: #eff6ff;
-            padding: 16px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #3b82f6;
-            text-align: left;
-        }
-        .info-box strong {
-            color: #1e40af;
-        }
-        .info-box p {
-            margin: 8px 0;
-            color: #374151;
-        }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>🔧 Setup Admin</h1>
-        
-        <div class="info-box">
-            <strong>Créer le compte administrateur</strong>
-            <p>Email: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">admin@esig.tg</code></p>
-            <p>Mot de passe: <code style="background: #e5e7eb; padding: 2px 6px; border-radius: 4px;">Esig2026</code></p>
+        <h1>🛠️ Installation Admin</h1>
+        <p>Créez le compte Administrateur "Pré-installé".</p>
+
+        <div id="alertBox" class="alert"></div>
+
+        <form id="setupForm">
+            <div class="form-group">
+                <label>Email Admin</label>
+                <input type="email" id="email" value="admin@esig.tg" readonly>
+            </div>
+            <div class="form-group">
+                <label>Mot de Passe</label>
+                <input type="text" id="password" value="Esig2026" placeholder="Choisissez un mot de passe">
+            </div>
+            <button type="submit" id="btnSubmit">Créer le compte Admin</button>
+        </form>
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="login.html" style="color: #0055ff; text-decoration: none;">Retour à la connexion</a>
         </div>
-
-        <div id="status" class="status info" style="display: none;"></div>
-
-        <button id="createAdminBtn" onclick="createAdminAccount()">
-            Créer le compte Admin
-        </button>
-
-        <button id="backBtn" onclick="goToLogin()" style="background: #6b7280; margin-left: 10px; display: none;">
-            Retour à la connexion
-        </button>
     </div>
 
-    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script>
-
+    <script src="app/js/config.js"></script>
     <script>
-        const statusEl = document.getElementById('status');
-        const createBtn = document.getElementById('createAdminBtn');
-        const backBtn = document.getElementById('backBtn');
+        // Init Firebase
+        if (!firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
 
-        function showStatus(message, type) {
-            statusEl.className = `status ${type}`;
-            statusEl.textContent = message;
-            statusEl.style.display = 'block';
-        }
+        document.getElementById('setupForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('btnSubmit');
+            const alertBox = document.getElementById('alertBox');
 
-        async function createAdminAccount() {
+            btn.disabled = true;
+            btn.textContent = 'Création en cours...';
+
             try {
-                createBtn.disabled = true;
-                createBtn.innerHTML = '⏳ Création en cours...';
+                // 1. Create Auth User
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                const user = userCredential.user;
 
-                // Vérifier si le compte existe déjà
-                try {
-                    const adminQuery = await db.collection('users')
-                        .where('email', '==', 'admin@esig.tg')
-                        .get();
-
-                    if (!adminQuery.empty) {
-                        showStatus('✅ Le compte admin existe déjà!', 'success');
-                        backBtn.style.display = 'inline-block';
-                        createBtn.style.display = 'none';
-                        return;
-                    }
-                } catch (queryError) {
-                    console.log('Vérification de compte échouée (c\'est normal):', queryError.code);
-                }
-
-                // Créer le compte Firebase Auth
-                const userCredential = await auth.createUserWithEmailAndPassword(
-                    'admin@esig.tg',
-                    'Esig2026'
-                );
-
-                const uid = userCredential.user.uid;
-                console.log('Compte Auth créé:', uid);
-
-                // Attendre un peu que l'authentification soit propagée
-                await new Promise(resolve => setTimeout(resolve, 1000));
-
-                // Créer le document utilisateur en étant connecté
-                const userData = {
-                    email: 'admin@esig.tg',
-                    nom: 'Admin',
-                    prenom: 'Système',
+                // 2. Create Firestore Document
+                await db.collection('users').doc(user.uid).set({
+                    email: email,
                     role: 'admin',
-                    niveau: 'Admin',
-                    groupe: 'Admin',
+                    nom: 'Admin',
+                    prenom: 'System',
                     dateCreation: firebase.firestore.FieldValue.serverTimestamp(),
-                    actif: true,
-                    photoURL: null,
-                    phone: '',
-                    adresse: ''
-                };
+                    statut: 'Actif'
+                });
 
-                await db.collection('users').doc(uid).set(userData);
-                console.log('Document utilisateur créé');
-
-                showStatus('✅ Compte admin créé avec succès!\n\nVous pouvez maintenant vous connecter avec:\nEmail: admin@esig.tg\nMot de passe: Esig2026', 'success');
-                
-                // Déconnecter (pour que l'admin se connecte normalement)
-                await auth.signOut();
-
-                backBtn.style.display = 'inline-block';
-                createBtn.style.display = 'none';
+                alertBox.className = 'alert success';
+                alertBox.textContent = '✅ Compte Admin créé avec succès !';
+                alertBox.style.display = 'block';
+                btn.textContent = 'Terminé';
 
             } catch (error) {
-                console.error('Erreur:', error);
-                
                 if (error.code === 'auth/email-already-in-use') {
-                    showStatus('✅ Le compte admin existe déjà!', 'success');
-                    backBtn.style.display = 'inline-block';
-                    createBtn.style.display = 'none';
-                } else if (error.code === 'permission-denied') {
-                    showStatus('❌ Erreur permission Firestore. Vérifiez les règles de sécurité.\n\nLes règles doivent permettre: \n- Créer: users/{document=**}', 'error');
-                    createBtn.disabled = false;
-                    createBtn.innerHTML = 'Réessayer';
+                    // Try to promote existing user
+                    try {
+                        const signIn = await auth.signInWithEmailAndPassword(email, password);
+                        await db.collection('users').doc(signIn.user.uid).set({
+                            email: email,
+                            role: 'admin',
+                            nom: 'Admin',
+                            prenom: 'System',
+                            statut: 'Actif'
+                        }, { merge: true });
+                        alertBox.className = 'alert success';
+                        alertBox.textContent = '✅ Compte existant mis à jour en Admin !';
+                        alertBox.style.display = 'block';
+                    } catch (loginError) {
+                        alertBox.className = 'alert error';
+                        alertBox.textContent = '❌ Erreur: ' + error.message;
+                        alertBox.style.display = 'block';
+                    }
                 } else {
-                    showStatus(`❌ Erreur: ${error.message}`, 'error');
-                    createBtn.disabled = false;
-                    createBtn.innerHTML = 'Créer le compte Admin';
+                    alertBox.className = 'alert error';
+                    alertBox.textContent = '❌ Erreur: ' + error.message;
+                    alertBox.style.display = 'block';
                 }
-            }
-        }
-
-        function goToLogin() {
-            window.location.href = 'login.html';
-        }
-
-        // Au chargement, vérifier si admin existe déjà
-        window.addEventListener('load', async () => {
-            try {
-                const adminQuery = await db.collection('users')
-                    .where('email', '==', 'admin@esig.tg')
-                    .get();
-
-                if (!adminQuery.empty) {
-                    showStatus('✅ Le compte admin existe déjà! Vous pouvez vous connecter.', 'success');
-                    backBtn.style.display = 'inline-block';
-                    createBtn.style.display = 'none';
-                }
-            } catch (error) {
-                console.error('Erreur lors de la vérification:', error);
+                btn.disabled = false;
+                btn.textContent = 'Réessayer';
             }
         });
     </script>
 </body>
+
 </html>

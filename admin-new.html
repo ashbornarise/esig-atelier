@@ -854,7 +854,26 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script>
+    
+    <!-- Configuration et initialisation -->
+    <script src="app/js/config.js"></script>
+    
+    <!-- Script pour initialiser Firebase avec la config -->
+    <script>
+        if (!firebase.apps.length) {
+            firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        db.enablePersistence().catch((err) => {
+            if (err.code === 'failed-precondition') {
+                console.warn('Persistance impossible : plusieurs onglets');
+            } else if (err.code === 'unimplemented') {
+                console.warn('Persistance non supportée');
+            }
+        });
+        console.log('✅ Firebase initialisé');
+    </script>
 
     <script>
         // GESTION DE LA NAVIGATION

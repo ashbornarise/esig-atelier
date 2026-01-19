@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vérifier la correction du collection TP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .log-container {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+            border: 1px solid #dee2e6;
+        }
+        
+        .log-entry {
+            margin: 8px 0;
+            padding: 8px;
+            border-left: 3px solid #3b82f6;
+            padding-left: 12px;
+        }
+        
+        .log-entry.success {
+            border-left-color: #28a745;
+            background: #f0f8f5;
+        }
+        
+        .log-entry.error {
+            border-left-color: #dc3545;
+            background: #faf5f5;
+        }
+        
+        .log-entry.info {
+            border-left-color: #17a2b8;
+            background: #f5f9fa;
+        }
+        
+        button {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px 10px 0;
+        }
+        
+        button:hover {
+            background: #2563eb;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .tp-list {
+            margin-top: 30px;
+        }
+        
+        .tp-card {
+            background: #f9f9f9;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #3b82f6;
+            border-radius: 5px;
+        }
+        
+        .tp-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .tp-detail {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0;
+        }
+        
+        .stat {
+            display: inline-block;
+            background: white;
+            padding: 15px 25px;
+            margin: 10px 5px;
+            border-radius: 5px;
+            border-left: 4px solid #3b82f6;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Vérifier la Correction du Collection TP</h1>
+        
+        <p>Cette page vérifie que les TPs sont maintenant accessibles avec le collection name correct <strong>"TP"</strong> (uppercase).</p>
+        
+        <button onclick="testFirebaseConnection()">1. Tester Connexion Firebase</button>
+        <button onclick="testAuthentication()">2. Tester Authentification</button>
+        <button onclick="loadAllTPs()">3. Charger Tous les TPs</button>
+        <button onclick="verifyTPIds()">4. Vérifier IDs des TPs Découverts</button>
+        <button onclick="testCollectionNames()">5. Tester les Noms de Collections</button>
+        
+        <div class="log-container" id="logContainer"></div>
+        
+        <div class="tp-list" id="tpList" style="display: none;">
+            <h2>📋 TPs Chargés Avec Succès</h2>
+            <div id="tpCards"></div>
+            <div class="stat" id="tpCount"></div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    
+    <script src="app/js/config.js"></script>
+    
+    <script>
+        // Initialize Firebase
+        if (!firebase.apps.length) {
+            firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        
+        window.auth = firebase.auth();
+        window.db = firebase.firestore();
+        
+        window.db.enablePersistence().catch(() => {});
+        
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+        
+        async function testFirebaseConnection() {
+            log('🔵 Teste Connexion Firebase...', 'info');
+            
+            try {
+                // Test Firestore ping
+                await window.db.collection('users').limit(1).get();
+                log('✅ Firebase connecté avec succès', 'success');
+            } catch (error) {
+                log('❌ Erreur Firebase: ' + error.message, 'error');
+            }
+        }
+        
+        async function testAuthentication() {
+            log('🔵 Teste Authentification...', 'info');
+            
+            const user = window.auth.currentUser;
+            
+            if (user) {
+                log(`✅ Utilisateur authentifié: ${user.email}`, 'success');
+            } else {
+                log('⚠️  Aucun utilisateur authentifié. Essai connexion avec admin@esig.tg...', 'info');
+                
+                try {
+                    const result = await window.auth.signInWithEmailAndPassword('admin@esig.tg', 'Admin@123');
+                    log(`✅ Connecté en tant que: ${result.user.email}`, 'success');
+                } catch (error) {
+                    log(`❌ Impossible de se connecter: ${error.message}`, 'error');
+                }
+            }
+        }
+        
+        async function loadAllTPs() {
+            log('🔵 Chargement de tous les TPs depuis collection "TP"...', 'info');
+            
+            try {
+                const snapshot = await window.db.collection('TP').get();
+                
+                log(`✅ ${snapshot.size} TPs trouvés!`, 'success');
+                
+                const tpCards = document.getElementById('tpCards');
+                tpCards.innerHTML = '';
+                
+                const tps = [];
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    tps.push({id: doc.id, ...data});
+                    
+                    const card = document.createElement('div');
+                    card.className = 'tp-card';
+                    card.innerHTML = `
+                        <div class="tp-title">${data.titre || 'Sans titre'}</div>
+                        <div class="tp-detail">ID: ${doc.id}</div>
+                        <div class="tp-detail">Créateur: ${data.creatorName || 'N/A'}</div>
+                        <div class="tp-detail">Type: ${data.type || 'N/A'}</div>
+                        <div class="tp-detail">Statut: ${data.statut || 'N/A'}</div>
+                        <div class="tp-detail">Participants: ${(data.participants || []).length}</div>
+                    `;
+                    tpCards.appendChild(card);
+                });
+                
+                document.getElementById('tpCount').textContent = `Total: ${snapshot.size} TPs`;
+                document.getElementById('tpList').style.display = 'block';
+                
+                log(`✅ TPs affichés avec succès`, 'success');
+                
+            } catch (error) {
+                log('❌ Erreur chargement TPs: ' + error.message, 'error');
+            }
+        }
+        
+        async function verifyTPIds() {
+            log('🔵 Vérification des IDs de TPs découverts...', 'info');
+            
+            const expectedIds = [
+                'ARYX2xM1vWbaWk8DqZMo6CeBZHF2',
+                'SU3PCclWrFdnynzP5FZy8pHs3u62',
+                'TP',
+                'auecEPxgHDdViQ0KLIS28Ubak522'
+            ];
+            
+            try {
+                const snapshot = await window.db.collection('TP').get();
+                const foundIds = snapshot.docs.map(doc => doc.id);
+                
+                log(`TPs trouvés: ${foundIds.join(', ')}`, 'info');
+                
+                let allFound = true;
+                for (let id of expectedIds) {
+                    if (foundIds.includes(id)) {
+                        log(`✅ TP ${id} trouvé`, 'success');
+                    } else {
+                        log(`⚠️  TP ${id} NON trouvé`, 'error');
+                        allFound = false;
+                    }
+                }
+                
+                if (allFound) {
+                    log('✅ Tous les TPs attendus sont présents!', 'success');
+                }
+                
+            } catch (error) {
+                log('❌ Erreur vérification: ' + error.message, 'error');
+            }
+        }
+        
+        async function testCollectionNames() {
+            log('🔵 Test des noms de collections possibles...', 'info');
+            
+            const collectionsToTest = ['tp', 'TP', 'TP_Documents', 'travaux', 'travaux-pratiques'];
+            
+            for (let collName of collectionsToTest) {
+                try {
+                    const snapshot = await window.db.collection(collName).get();
+                    if (snapshot.size > 0) {
+                        log(`✅ Collection "${collName}" exists - ${snapshot.size} documents`, 'success');
+                    }
+                } catch (error) {
+                    // Collection doesn't exist, that's fine
+                }
+            }
+            
+            log('✅ Test de collections terminé', 'success');
+        }
+    </script>
+</body>
+</html>

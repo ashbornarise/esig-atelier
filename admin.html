@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESIG Atelier - Admin</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="icon" type="image/png" href="logo-esig.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         * {
             margin: 0;
@@ -25,10 +29,10 @@
         /* SIDEBAR */
         .sidebar {
             width: 280px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #0033cc 100%);
             color: white;
             padding: 20px;
-            box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 30px rgba(0, 85, 255, 0.2);
             position: fixed;
             height: 100vh;
             overflow-y: auto;
@@ -70,7 +74,8 @@
             cursor: pointer;
         }
 
-        .sidebar-menu a:hover, .sidebar-menu a.active {
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
             background: rgba(255, 255, 255, 0.2);
             transform: translateX(5px);
         }
@@ -324,7 +329,8 @@
             color: #374151;
         }
 
-        .form-group input, .form-group select {
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 10px;
             border: 2px solid #e5e7eb;
@@ -332,7 +338,8 @@
             font-size: 14px;
         }
 
-        .form-group input:focus, .form-group select:focus {
+        .form-group input:focus,
+        .form-group select:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -433,7 +440,8 @@
                 font-size: 12px;
             }
 
-            td, th {
+            td,
+            th {
                 padding: 8px;
             }
 
@@ -443,6 +451,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="admin-wrapper">
         <!-- SIDEBAR -->
@@ -454,7 +463,8 @@
             </div>
 
             <ul class="sidebar-menu">
-                <li><a class="menu-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                <li><a class="menu-link active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</a>
+                </li>
                 <li><a class="menu-link" data-page="users"><i class="fas fa-users"></i> Utilisateurs</a></li>
                 <li><a class="menu-link" data-page="tp"><i class="fas fa-flask"></i> TP</a></li>
                 <li><a class="menu-link" data-page="machines"><i class="fas fa-cog"></i> Machines</a></li>
@@ -510,7 +520,9 @@
                             </tr>
                         </thead>
                         <tbody id="recentActivities">
-                            <tr><td colspan="3" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr>
+                                <td colspan="3" style="text-align: center; color: #999;">Chargement...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -540,7 +552,9 @@
                             </tr>
                         </thead>
                         <tbody id="usersTable">
-                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #999;">Chargement...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -573,7 +587,9 @@
                             </tr>
                         </thead>
                         <tbody id="tpTable">
-                            <tr><td colspan="9" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr>
+                                <td colspan="9" style="text-align: center; color: #999;">Chargement...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -603,7 +619,9 @@
                             </tr>
                         </thead>
                         <tbody id="machinesTable">
-                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #999;">Chargement...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -633,7 +651,9 @@
                             </tr>
                         </thead>
                         <tbody id="stockTable">
-                            <tr><td colspan="6" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #999;">Chargement...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -657,7 +677,9 @@
                             </tr>
                         </thead>
                         <tbody id="activitiesTable">
-                            <tr><td colspan="5" style="text-align: center; color: #999;">Chargement...</td></tr>
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #999;">Chargement...</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -702,11 +724,170 @@
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script>
+
+    <!-- Configuration Firebase -->
+    <script src="app/js/config.js"></script>
+
+    <!-- Initialisation Firebase IMMÉDIATE -->
+    <script>
+        console.log('🔵 Initialisation Firebase en cours...');
+
+        // Vérifier que FIREBASE_CONFIG existe
+        if (typeof FIREBASE_CONFIG === 'undefined') {
+            console.error('❌ FIREBASE_CONFIG non défini!');
+        } else {
+            console.log('✅ FIREBASE_CONFIG chargé');
+
+            // Initialiser Firebase
+            if (!firebase.apps.length) {
+                firebase.initializeApp(FIREBASE_CONFIG);
+                console.log('✅ Firebase.initializeApp() appelé');
+            }
+
+            // Créer les références GLOBALES
+            window.auth = firebase.auth();
+            window.db = firebase.firestore();
+
+            console.log('✅ auth et db globaux créés');
+
+            // Activer la persistance
+            window.db.enablePersistence().catch((err) => {
+                if (err.code === 'failed-precondition') {
+                    console.warn('Persistance impossible : plusieurs onglets');
+                } else if (err.code === 'unimplemented') {
+                    console.warn('Persistance non supportée');
+                }
+            });
+
+            console.log('✅ Firebase complètement initialisé');
+        }
+    </script>
+
+    <!-- TP MODAL -->
+    <div id="tpModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un TP</h3>
+                <button class="close-btn" onclick="closeModal('tpModal')">&times;</button>
+            </div>
+            <form id="tpForm" onsubmit="saveTP(event)">
+                <div class="form-group">
+                    <label>Titre</label>
+                    <input type="text" id="tpTitre" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="tpType">
+                        <option value="usinage">Usinage</option>
+                        <option value="tournage">Tournage</option>
+                        <option value="fraisage">Fraisage</option>
+                        <option value="soudure">Soudure</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="autre">Autre</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date de début</label>
+                    <input type="date" id="tpDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Durée (jours)</label>
+                    <input type="number" id="tpDuree" min="1" value="1">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('tpModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MACHINE MODAL -->
+    <div id="machineModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter une Machine</h3>
+                <button class="close-btn" onclick="closeModal('machineModal')">&times;</button>
+            </div>
+            <form id="machineForm" onsubmit="saveMachine(event)">
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="machineNom" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <input type="text" id="machineType" required>
+                </div>
+                <div class="form-group">
+                    <label>Lieu</label>
+                    <input type="text" id="machineLieu" placeholder="Ex: Atelier A">
+                </div>
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="machineStatut">
+                        <option value="disponible">Disponible</option>
+                        <option value="maintenance">Maintenance</option>
+                        <option value="panne">En panne</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('machineModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- STOCK MODAL -->
+    <div id="stockModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter du Stock</h3>
+                <button class="close-btn" onclick="closeModal('stockModal')">&times;</button>
+            </div>
+            <form id="stockForm" onsubmit="saveStock(event)">
+                <div class="form-group">
+                    <label>Nom Article</label>
+                    <input type="text" id="stockNom" required>
+                </div>
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <select id="stockCat">
+                        <option value="outils">Outils</option>
+                        <option value="materiaux">Matériaux</option>
+                        <option value="consommables">Consommables</option>
+                        <option value="epi">EPI</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Quantité</label>
+                    <input type="number" id="stockQte" required min="0">
+                </div>
+                <div class="form-group">
+                    <label>Seuil Minimum</label>
+                    <input type="number" id="stockMin" value="5">
+                </div>
+                <div class="form-group">
+                    <label>Prix Unitaire (€)</label>
+                    <input type="number" id="stockPrix" step="0.01">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('stockModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Firebase Init helpers -->
+    <script src="app/js/firebase-init.js"></script>
+
+    <!-- Auth Manager -->
+    <script src="app/js/auth.js"></script>
 
     <script>
         let currentUser = null;
@@ -718,15 +899,24 @@
         let allActivities = [];
 
         // Vérifier l'authentification
-        window.addEventListener('load', async () => {
-            const user = AuthManager.getCurrentUser();
+        auth.onAuthStateChanged(async (user) => {
             if (!user) {
                 window.location.href = 'login.html';
                 return;
             }
 
             currentUser = user;
-            currentUserData = await AuthManager.getCurrentUserData();
+
+            // Charger les données utilisateur
+            try {
+                const docRef = db.collection(COLLECTIONS.USERS).doc(user.uid);
+                const doc = await docRef.get();
+                if (doc.exists) {
+                    currentUserData = { id: doc.id, ...doc.data() };
+                }
+            } catch (error) {
+                console.error('Erreur chargement données:', error);
+            }
 
             if (currentUserData.role !== 'admin') {
                 window.location.href = 'index.html';
@@ -736,10 +926,8 @@
             document.getElementById('adminName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
             loadAllData();
         });
-
-        // Gestion des menus
         document.querySelectorAll('.menu-link').forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function () {
                 const pageId = this.dataset.page;
                 showPage(pageId);
 
@@ -876,7 +1064,7 @@
 
         async function loadActivities() {
             const result = await db.collection('activities').orderBy('timestamp', 'desc').limit(100).get();
-            allActivities = result.docs.map(d => ({id: d.id, ...d.data()}));
+            allActivities = result.docs.map(d => ({ id: d.id, ...d.data() }));
 
             const html = allActivities.map(a => `
                 <tr>
@@ -891,29 +1079,33 @@
             document.getElementById('activitiesTable').innerHTML = html || '<tr><td colspan="5" style="text-align: center;">Pas d\'activités</td></tr>';
         }
 
+        // Gestion des modales
         function openUserModal() {
+            document.getElementById('userForm').reset();
             document.getElementById('userModal').classList.add('active');
         }
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
+        // Implementation des autres modales
+        // Ces modales doivent être ajoutées au HTML si elles n'existent pas
+        // Pour l'instant, on va utiliser des prompts simples ou rediriger vers des pages de création si nécessaire
+        // Mais l'idéal est d'avoir des modales dédiées. 
+        // Je vais ajouter la logique de sauvegarde utilisateur ici.
 
-        function openTPModal() {
-            alert('À implémenter: ajout de TP');
-        }
-
-        function openMachineModal() {
-            alert('À implémenter: ajout de machine');
-        }
-
-        function openStockModal() {
-            alert('À implémenter: ajout d\'article');
-        }
-
-        function saveUser(e) {
+        async function saveUser(e) {
             e.preventDefault();
-            alert('À implémenter: sauvegarde');
+            const nom = document.getElementById('userNom').value;
+            const prenom = document.getElementById('userPrenom').value;
+            const email = document.getElementById('userEmail').value;
+            const role = document.getElementById('userRole').value;
+
+            // Note: On ne peut pas créer de compte Auth sans mot de passe ici sans Cloud Functions
+            // On va supposer ici qu'on édite ou qu'on crée juste la fiche DB
+            alert('Pour créer un utilisateur complet, utilisez la page d\'inscription. Ici vous éditez les rôles.');
+
+            // Logique d'update si un ID existait (à gérer via un champ caché ou variable globale)
+            // Pour l'instant simple reload
+            loadUsers();
+            closeModal('userModal');
         }
 
         function editUser(uid) {
@@ -966,9 +1158,73 @@ Statut: ${tp.statut || 'En cours'}
         }
 
         async function logout() {
-            await AuthManager.logout();
+            await auth.signOut();
             window.location.href = 'login.html';
+        }
+
+        // --- NOUVELLES FONCTIONS DE MODALES ---
+
+        function openTPModal() {
+            document.getElementById('tpForm').reset();
+            document.getElementById('tpModal').classList.add('active');
+        }
+
+        async function saveTP(e) {
+            e.preventDefault();
+            const data = {
+                titre: document.getElementById('tpTitre').value,
+                type: document.getElementById('tpType').value,
+                dateDebut: new Date(document.getElementById('tpDate').value),
+                duree: parseInt(document.getElementById('tpDuree').value),
+                dateCreation: new Date(),
+                creatorId: currentUserData.id,
+                creatorName: currentUserData.nom + ' ' + currentUserData.prenom
+            };
+
+            await DataManager.tp.create(data);
+            loadTP();
+            closeModal('tpModal');
+        }
+
+        function openMachineModal() {
+            document.getElementById('machineForm').reset();
+            document.getElementById('machineModal').classList.add('active');
+        }
+
+        async function saveMachine(e) {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('machineNom').value,
+                type: document.getElementById('machineType').value,
+                lieu: document.getElementById('machineLieu').value,
+                statut: document.getElementById('machineStatut').value
+            };
+
+            await DataManager.machines.create(data);
+            loadMachines();
+            closeModal('machineModal');
+        }
+
+        function openStockModal() {
+            document.getElementById('stockForm').reset();
+            document.getElementById('stockModal').classList.add('active');
+        }
+
+        async function saveStock(e) {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('stockNom').value,
+                categorie: document.getElementById('stockCat').value,
+                quantite: parseInt(document.getElementById('stockQte').value),
+                quantiteMinimale: parseInt(document.getElementById('stockMin').value),
+                prix: parseFloat(document.getElementById('stockPrix').value || 0)
+            };
+
+            await DataManager.stocks.create(data);
+            loadStock();
+            closeModal('stockModal');
         }
     </script>
 </body>
+
 </html>

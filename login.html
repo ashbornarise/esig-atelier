@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ESIG Atelier - Accueil</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="icon" type="image/png" href="logo-esig.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         * {
             margin: 0;
@@ -14,7 +18,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #ffffff 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #ffffff 100%);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -25,8 +29,8 @@
         .welcome-container {
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 85, 255, 0.15);
+            max-width: 450px;
             width: 100%;
             padding: 60px 40px;
             text-align: center;
@@ -39,7 +43,7 @@
         .logo-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #0033cc 100%);
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -50,14 +54,14 @@
         }
 
         h1 {
-            color: #1e40af;
+            color: #0033cc;
             font-size: 32px;
             margin-bottom: 12px;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .tagline {
-            color: #1e40af;
+            color: #4b5563;
             font-size: 16px;
             margin-bottom: 40px;
             line-height: 1.6;
@@ -71,7 +75,7 @@
 
         .btn {
             padding: 16px 32px;
-            border: 2px solid #e5e7eb;
+            border: none;
             border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
@@ -85,41 +89,23 @@
         }
 
         .btn-login {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #0033cc 100%);
             color: white;
-            border: none;
+            box-shadow: 0 10px 20px rgba(0, 85, 255, 0.2);
         }
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.3);
-        }
-
-        .btn-visitor {
-            background: white;
-            color: #3b82f6;
-            border: 2px solid #bfdbfe;
-        }
-
-        .btn-visitor:hover {
-            background: #eff6ff;
-            border-color: #3b82f6;
-        }
-
-        .divider {
-            text-align: center;
-            color: #d1d5db;
-            margin: 40px 0;
-            font-size: 14px;
+            box-shadow: 0 15px 30px rgba(0, 85, 255, 0.3);
         }
 
         .features {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 20px;
-            margin-top: 30px;
+            margin-top: 40px;
             padding-top: 30px;
-            border-top: 1px solid #e5e7eb;
+            border-top: 1px solid #f3f4f6;
         }
 
         .feature {
@@ -127,15 +113,16 @@
         }
 
         .feature-icon {
-            font-size: 28px;
-            color: #3b82f6;
+            font-size: 24px;
+            color: #0055ff;
             margin-bottom: 8px;
         }
 
         .feature-text {
-            color: #1e40af;
+            color: #6b7280;
             font-size: 12px;
             line-height: 1.4;
+            font-weight: 500;
         }
 
         /* PAGE DE CONNEXION/INSCRIPTION */
@@ -187,6 +174,7 @@
                 opacity: 0;
                 transform: translateY(10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -224,7 +212,8 @@
             font-size: 14px;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 12px 14px;
             border: 2px solid #e5e7eb;
@@ -234,7 +223,8 @@
             transition: all 0.3s;
         }
 
-        input:focus, select:focus {
+        input:focus,
+        select:focus {
             outline: none;
             border-color: #6b7280;
             background: #f9fafb;
@@ -317,6 +307,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- PAGE D'ACCUEIL -->
     <div class="welcome-container" id="welcomePage">
@@ -330,12 +321,7 @@
             <button class="btn btn-login" onclick="showAuthPage()">
                 <i class="fas fa-sign-in-alt"></i> Se connecter
             </button>
-            <button class="btn btn-visitor" onclick="visitMode()">
-                <i class="fas fa-eye"></i> Mode visiteur
-            </button>
         </div>
-
-        <div class="divider">ou</div>
 
         <div class="features">
             <div class="feature">
@@ -461,11 +447,78 @@
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script>
+
+    <!-- Configuration Firebase -->
+    <script src="app/js/config.js"></script>
+
+    <!-- Initialisation Firebase IMMÉDIATE -->
+    <script>
+        console.log('🔵 ÉTAPE 1: Vérification Firebase SDK');
+
+        if (typeof firebase === 'undefined') {
+            console.error('❌ Firebase SDK non trouvé!');
+        } else {
+            console.log('✅ Firebase SDK présent');
+        }
+
+        if (typeof FIREBASE_CONFIG === 'undefined') {
+            console.error('❌ FIREBASE_CONFIG non défini!');
+        } else {
+            console.log('✅ FIREBASE_CONFIG trouvé:', FIREBASE_CONFIG.projectId);
+        }
+
+        // Initialiser Firebase
+        console.log('🔵 ÉTAPE 2: Initialisation Firebase');
+        try {
+            if (!firebase.apps.length) {
+                firebase.initializeApp(FIREBASE_CONFIG);
+                console.log('✅ firebase.initializeApp() success');
+            } else {
+                console.log('⚠️ Firebase déjà initialisé');
+            }
+
+            // Créer les références GLOBALES
+            console.log('🔵 ÉTAPE 3: Création des références globales');
+            window.auth = firebase.auth();
+            window.db = firebase.firestore();
+
+            if (!window.auth) {
+                console.error('❌ window.auth est null!');
+            } else {
+                console.log('✅ window.auth créé');
+            }
+
+            if (!window.db) {
+                console.error('❌ window.db est null!');
+            } else {
+                console.log('✅ window.db créé');
+            }
+
+            // Activer la persistance
+            console.log('🔵 ÉTAPE 4: Activation persistance');
+            window.db.enablePersistence().catch((err) => {
+                if (err.code === 'failed-precondition') {
+                    console.warn('⚠️ Persistance impossible : plusieurs onglets');
+                } else if (err.code === 'unimplemented') {
+                    console.warn('⚠️ Persistance non supportée');
+                }
+            });
+
+            console.log('✅ Firebase COMPLÈTEMENT INITIALISÉ');
+        } catch (err) {
+            console.error('❌ ERREUR initialisation Firebase:', err);
+        }
+    </script>
+
+    <!-- Firebase Init helpers -->
+    <script src="app/js/firebase-init.js"></script>
+
+    <!-- Auth Manager -->
+    <script src="app/js/auth.js"></script>
 
     <script>
         // Afficher page d'authentification
@@ -480,13 +533,7 @@
             document.getElementById('authPage').classList.remove('active');
         }
 
-        // Mode visiteur (accès direct à index.html)
-        function visitMode() {
-            localStorage.setItem('visitMode', 'true');
-            window.location.href = 'index.html';
-        }
-
-        // Au chargement, vérifier si l'utilisateur est connecté ou en mode visiteur
+        // Au chargement, vérifier si l'utilisateur est connecté
         window.addEventListener('load', async () => {
             const user = AuthManager.getCurrentUser();
             if (user) {
@@ -499,11 +546,7 @@
                     console.error('Erreur:', e);
                     window.location.href = 'index.html';
                 }
-            } else if (localStorage.getItem('visitMode') === 'true') {
-                // Mode visiteur, aller à index
-                window.location.href = 'index.html';
             }
-            // Sinon rester sur la page d'accueil
         });
 
         // Changer d'onglet
@@ -515,103 +558,129 @@
             document.getElementById(tabName).classList.add('active');
         }
 
-        // CONNEXION
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-            const btn = e.target.querySelector('.btn-submit');
-            const alertEl = document.getElementById('loginAlert');
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner"></i> Connexion...';
-
-            const result = await AuthManager.login(email, password);
-
-            if (result.success) {
-                showAlert(alertEl, 'success', 'Connexion réussie ! Redirection...');
-                
-                // Récupérer le rôle et rediriger rapidement
-                try {
-                    const userData = await AuthManager.getCurrentUserData();
-                    console.log('Données utilisateur:', userData);
-                    console.log('Rôle détecté:', userData?.role);
-                    
-                    let destination = 'index.html';
-                    if (userData && userData.role && userData.role.toLowerCase() === 'admin') {
-                        destination = 'admin.html';
-                        console.log('Admin détecté! Redirection vers admin.html');
-                    } else {
-                        console.log('Utilisateur normal, redirection vers index.html');
+        // Attendre que Firebase soit initialisé
+        function waitForFirebase() {
+            return new Promise((resolve) => {
+                let attempts = 0;
+                const check = setInterval(() => {
+                    console.log(`🔍 Vérification Firebase... (${attempts})`);
+                    if (window.auth && window.db) {
+                        console.log('✅ Firebase détecté!');
+                        clearInterval(check);
+                        resolve();
                     }
-                    
-                    setTimeout(() => {
-                        window.location.href = destination;
-                    }, 800);
-                } catch (e) {
-                    // En cas d'erreur, aller à index.html
-                    console.error('Erreur récupération données:', e);
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 800);
+                    attempts++;
+                    if (attempts > 50) {
+                        console.error('❌ Timeout: Firebase non détecté');
+                        clearInterval(check);
+                        resolve();
+                    }
+                }, 100);
+            });
+        }
+
+        // Attendre Firebase avant d'ajouter les event listeners
+        waitForFirebase().then(() => {
+
+            // CONNEXION
+            document.getElementById('loginForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const email = document.getElementById('loginEmail').value;
+                const password = document.getElementById('loginPassword').value;
+                const btn = e.target.querySelector('.btn-submit');
+                const alertEl = document.getElementById('loginAlert');
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner"></i> Connexion...';
+
+                const result = await AuthManager.login(email, password);
+
+                if (result.success) {
+                    showAlert(alertEl, 'success', 'Connexion réussie ! Redirection...');
+
+                    // Récupérer le rôle et rediriger rapidement
+                    try {
+                        const userData = await AuthManager.getCurrentUserData();
+                        console.log('Données utilisateur:', userData);
+                        console.log('Rôle détecté:', userData?.role);
+
+                        let destination = 'index.html';
+                        if (userData && userData.role && userData.role.toLowerCase() === 'admin') {
+                            destination = 'admin.html';
+                            console.log('Admin détecté! Redirection vers admin.html');
+                        } else {
+                            console.log('Utilisateur normal, redirection vers index.html');
+                        }
+
+                        setTimeout(() => {
+                            window.location.href = destination;
+                        }, 800);
+                    } catch (e) {
+                        // En cas d'erreur, aller à index.html
+                        console.error('Erreur récupération données:', e);
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    }
+                } else {
+                    showAlert(alertEl, 'error', result.error);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
                 }
-            } else {
-                showAlert(alertEl, 'error', result.error);
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Se connecter';
-            }
-        });
-
-        // INSCRIPTION
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
-            const prenom = document.getElementById('regPrenom').value;
-            const nom = document.getElementById('regNom').value;
-            const userType = document.getElementById('regUserType').value;
-            const niveau = document.getElementById('regNiveau').value;
-            const groupe = document.getElementById('regGroupe').value;
-            const btn = e.target.querySelector('.btn-submit');
-            const alertEl = document.getElementById('registerAlert');
-
-            if (password.length < 6) {
-                showAlert(alertEl, 'error', 'Le mot de passe doit contenir au moins 6 caractères');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner"></i> Inscription...';
-
-            const result = await AuthManager.register(email, password, {
-                nom, prenom, niveau, groupe, role: userType
             });
 
-            if (result.success) {
-                showAlert(alertEl, 'success', 'Inscription réussie ! Redirection...');
+            // INSCRIPTION
+            document.getElementById('registerForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
 
-                // Redirection rapide
-                try {
-                    const userData = await AuthManager.getCurrentUserData();
-                    const destination = (userData && userData.role === 'admin') ? 'admin.html' : 'index.html';
-                    setTimeout(() => {
-                        window.location.href = destination;
-                    }, 800);
-                } catch (e) {
-                    // En cas d'erreur, aller à index.html
-                    console.error('Erreur récupération données:', e);
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 800);
+                const email = document.getElementById('regEmail').value;
+                const password = document.getElementById('regPassword').value;
+                const prenom = document.getElementById('regPrenom').value;
+                const nom = document.getElementById('regNom').value;
+                const userType = document.getElementById('regUserType').value;
+                const niveau = document.getElementById('regNiveau').value;
+                const groupe = document.getElementById('regGroupe').value;
+                const btn = e.target.querySelector('.btn-submit');
+                const alertEl = document.getElementById('registerAlert');
+
+                if (password.length < 6) {
+                    showAlert(alertEl, 'error', 'Le mot de passe doit contenir au moins 6 caractères');
+                    return;
                 }
-            } else {
-                showAlert(alertEl, 'error', result.error);
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-user-plus"></i> S\'inscrire';
-            }
-        });
+
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner"></i> Inscription...';
+
+                const result = await AuthManager.register(email, password, {
+                    nom, prenom, niveau, groupe, role: userType
+                });
+
+                if (result.success) {
+                    showAlert(alertEl, 'success', 'Inscription réussie ! Redirection...');
+
+                    // Redirection rapide
+                    try {
+                        const userData = await AuthManager.getCurrentUserData();
+                        const destination = (userData && userData.role === 'admin') ? 'admin.html' : 'index.html';
+                        setTimeout(() => {
+                            window.location.href = destination;
+                        }, 800);
+                    } catch (e) {
+                        // En cas d'erreur, aller à index.html
+                        console.error('Erreur récupération données:', e);
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 800);
+                    }
+                } else {
+                    showAlert(alertEl, 'error', result.error);
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-user-plus"></i> S\'inscrire';
+                }
+            });
+
+        }); // Fin de waitForFirebase
 
         function showAlert(element, type, message) {
             element.className = `alert show ${type}`;
@@ -624,10 +693,15 @@
                 alert('Entrez votre email');
                 return;
             }
-            auth.sendPasswordResetEmail(email)
+            if (!window.auth) {
+                alert('Firebase non initialisé');
+                return;
+            }
+            window.auth.sendPasswordResetEmail(email)
                 .then(() => alert('Email envoyé'))
                 .catch(e => alert('Erreur: ' + e.message));
         }
     </script>
 </body>
+
 </html>

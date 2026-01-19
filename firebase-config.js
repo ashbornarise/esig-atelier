@@ -147,7 +147,7 @@ const DataManager = {
                 const user = AuthManager.getCurrentUser();
                 if (!user) throw new Error('Utilisateur non connecté');
 
-                const docRef = await db.collection('tp').add({
+                const docRef = await db.collection('TP').add({
                     ...tpData,
                     createdBy: user.uid,
                     dateCreation: new Date(),
@@ -170,7 +170,7 @@ const DataManager = {
          */
         async getAll(filterByUser = false) {
             try {
-                let query = db.collection('tp');
+                let query = db.collection('TP');
 
                 if (filterByUser) {
                     const user = AuthManager.getCurrentUser();
@@ -197,7 +197,7 @@ const DataManager = {
          */
         async getById(tpId) {
             try {
-                const docSnap = await db.collection('tp').doc(tpId).get();
+                const docSnap = await db.collection('TP').doc(tpId).get();
                 if (!docSnap.exists) {
                     throw new Error('TP non trouvé');
                 }
@@ -213,7 +213,7 @@ const DataManager = {
          */
         async update(tpId, tpData) {
             try {
-                await db.collection('tp').doc(tpId).update({
+                await db.collection('TP').doc(tpId).update({
                     ...tpData,
                     dateModification: new Date()
                 });
@@ -238,7 +238,7 @@ const DataManager = {
                     throw new Error('Permission refusée');
                 }
 
-                await db.collection('tp').doc(tpId).delete();
+                await db.collection('TP').doc(tpId).delete();
                 console.log('✅ TP supprimé:', tpId);
                 return { success: true };
             } catch (error) {
@@ -505,7 +505,7 @@ const RealtimeListener = {
      * Écouter les changements de TP
      */
     onTPChange(callback) {
-        return db.collection('tp').orderBy('dateCreation', 'desc')
+        return db.collection('TP').orderBy('dateCreation', 'desc')
             .onSnapshot(snapshot => {
                 const tpList = [];
                 snapshot.forEach(doc => {

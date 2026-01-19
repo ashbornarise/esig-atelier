@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ESIG Atelier - Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A==" crossorigin="anonymous" referrerpolicy="no-referrer">
+    <title>ESIG Atelier - Tableau de bord</title>
+    <link rel="icon" type="image/png" href="logo-esig.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVJkEZSMUkrQ6FOLiHyVwEwghs41UlsO3UY2kHIddLSH8UQ0iMp4GZ9WUeGR7jYsJqeua0YMY2A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         * {
             margin: 0;
@@ -14,7 +18,7 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 50%, #ffffff 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #ffffff 100%);
             min-height: 100vh;
         }
 
@@ -26,13 +30,13 @@
 
         /* HEADER */
         .header {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            background: linear-gradient(135deg, #0055ff 0%, #0033cc 100%);
             color: white;
             padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 85, 255, 0.2);
         }
 
         .header-title {
@@ -162,7 +166,9 @@
             font-size: 14px;
         }
 
-        input, select, textarea {
+        input,
+        select,
+        textarea {
             width: 100%;
             padding: 12px 14px;
             border: 2px solid #e5e7eb;
@@ -172,7 +178,9 @@
             transition: all 0.3s;
         }
 
-        input:focus, select:focus, textarea:focus {
+        input:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
             border-color: #3b82f6;
             background: #eff6ff;
@@ -216,7 +224,8 @@
             gap: 12px;
         }
 
-        .filter-bar input, .filter-bar select {
+        .filter-bar input,
+        .filter-bar select {
             padding: 10px 12px;
             border: 2px solid #e5e7eb;
             border-radius: 8px;
@@ -353,7 +362,8 @@
                 flex-direction: column;
             }
 
-            .filter-bar input, .filter-bar select {
+            .filter-bar input,
+            .filter-bar select {
                 width: 100%;
             }
 
@@ -371,6 +381,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="app">
         <!-- HEADER -->
@@ -384,8 +395,11 @@
                     <i class="fas fa-user-circle"></i>
                     <span id="userName">Utilisateur</span>
                 </div>
-                <button class="btn-icon" onclick="adminPanel()" id="adminBtn" style="display:none;" title="Admin">
+                <button class="btn-icon" onclick="openSettingsModal()" title="Paramètres">
                     <i class="fas fa-cog"></i>
+                </button>
+                <button class="btn-icon" onclick="adminPanel()" id="adminBtn" style="display:none;" title="Admin">
+                    <i class="fas fa-user-shield"></i>
                 </button>
                 <button class="btn-icon" onclick="logout()" title="Déconnexion">
                     <i class="fas fa-sign-out-alt"></i>
@@ -464,7 +478,8 @@
             <div id="machinesSection" class="section">
                 <div class="section-title">
                     <i class="fas fa-wrench"></i> Machines
-                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span id="machinesCount">0</span></span>
+                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span
+                            id="machinesCount">0</span></span>
                 </div>
                 <div class="filter-bar">
                     <input type="text" id="machinesSearch" placeholder="🔍 Rechercher..." style="flex: 1;">
@@ -482,7 +497,8 @@
             <div id="stockSection" class="section">
                 <div class="section-title">
                     <i class="fas fa-box"></i> Inventaire
-                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span id="stockCount">0</span></span>
+                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span
+                            id="stockCount">0</span></span>
                 </div>
                 <div class="filter-bar">
                     <input type="text" id="stockSearch" placeholder="🔍 Rechercher..." style="flex: 1;">
@@ -500,7 +516,8 @@
             <div id="maintenanceSection" class="section">
                 <div class="section-title">
                     <i class="fas fa-tools"></i> Maintenance
-                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span id="maintenanceCount">0</span></span>
+                    <span style="margin-left: auto; font-size: 13px; color: #6b7280; font-weight: 400;">Total: <span
+                            id="maintenanceCount">0</span></span>
                 </div>
                 <div class="filter-bar">
                     <input type="text" id="maintenanceSearch" placeholder="🔍 Rechercher..." style="flex: 1;">
@@ -523,7 +540,8 @@
                     <button class="modal-close" onclick="closeModal()">✕</button>
                 </div>
                 <div id="modalBody"></div>
-                <button onclick="closeModal()" class="btn-primary" style="width: 100%; margin-top: 16px;">Fermer</button>
+                <button onclick="closeModal()" class="btn-primary"
+                    style="width: 100%; margin-top: 16px;">Fermer</button>
             </div>
         </div>
 
@@ -544,11 +562,54 @@
         </div>
     </div>
 
-    <!-- Firebase -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script src="firebase-config.js"></script>
+
+    <!-- Configuration Firebase -->
+    <script src="app/js/config.js"></script>
+
+    <!-- Initialisation Firebase IMMÉDIATE -->
+    <script>
+        console.log('🔵 Initialisation Firebase en cours...');
+
+        // Vérifier que FIREBASE_CONFIG existe
+        if (typeof FIREBASE_CONFIG === 'undefined') {
+            console.error('❌ FIREBASE_CONFIG non défini!');
+        } else {
+            console.log('✅ FIREBASE_CONFIG chargé');
+
+            // Initialiser Firebase
+            if (!firebase.apps.length) {
+                firebase.initializeApp(FIREBASE_CONFIG);
+                console.log('✅ Firebase.initializeApp() appelé');
+            }
+
+            // Créer les références GLOBALES
+            window.auth = firebase.auth();
+            window.db = firebase.firestore();
+
+            console.log('✅ auth et db globaux créés');
+
+            // Activer la persistance
+            window.db.enablePersistence().catch((err) => {
+                if (err.code === 'failed-precondition') {
+                    console.warn('Persistance impossible : plusieurs onglets');
+                } else if (err.code === 'unimplemented') {
+                    console.warn('Persistance non supportée');
+                }
+            });
+
+            console.log('✅ Firebase complètement initialisé');
+        }
+    </script>
+
+    <!-- Firebase Init helpers -->
+    <script src="app/js/firebase-init.js"></script>
+
+    <!-- Auth Manager -->
+    <script src="app/js/auth.js"></script>
 
     <script>
         let currentUser = null;
@@ -569,15 +630,34 @@
             if (e.target === document.getElementById('modal')) closeModal();
         });
 
-        // Auth
-        window.addEventListener('load', async () => {
-            const user = AuthManager.getCurrentUser();
-            const visitMode = localStorage.getItem('visitMode') === 'true';
+        // Settings Modal
+        function openSettingsModal() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
 
-            console.log('🔍 Vérification auth:', { user: user?.email, visitMode });
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
 
-            if (!user && !visitMode) {
-                console.log('❌ Pas de user et pas en mode visiteur -> redirection login');
+        document.getElementById('settingsModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('settingsModal')) closeSettingsModal();
+        });
+
+        function resetPassword() {
+            const email = currentUser?.email;
+            if (email) {
+                auth.sendPasswordResetEmail(email)
+                    .then(() => alert('Un email de réinitialisation a été envoyé à ' + email))
+                    .catch(e => alert('Erreur: ' + e.message));
+            }
+        }
+
+        // Auth - Vérifier l'authentification avec Firebase directement
+        auth.onAuthStateChanged(async (user) => {
+            console.log('🔍 Vérification auth:', { user: user?.email });
+
+            if (!user) {
+                console.log('❌ Pas de user -> redirection login');
                 window.location.href = 'login.html';
                 return;
             }
@@ -586,20 +666,20 @@
                 console.log('✅ User trouvé:', user.email);
                 currentUser = user;
                 try {
-                    currentUserData = await AuthManager.getCurrentUserData();
-                    console.log('✅ User data:', currentUserData);
-                    document.getElementById('userName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
-                    if (currentUserData.role === 'admin') {
-                        document.getElementById('adminBtn').style.display = 'flex';
+                    // Charger les données utilisateur depuis Firestore
+                    const docRef = db.collection(COLLECTIONS.USERS).doc(user.uid);
+                    const doc = await docRef.get();
+                    if (doc.exists) {
+                        currentUserData = { id: doc.id, ...doc.data() };
+                        console.log('✅ User data:', currentUserData);
+                        document.getElementById('userName').textContent = currentUserData.prenom + ' ' + currentUserData.nom;
+                        if (currentUserData.role === 'admin') {
+                            document.getElementById('adminBtn').style.display = 'flex';
+                        }
                     }
-                } catch (err) {
-                    console.error('❌ Erreur récupération données user:', err);
+                } catch (error) {
+                    console.error('Erreur chargement données:', error);
                 }
-            } else {
-                console.log('👥 Mode visiteur activé');
-                document.getElementById('userName').textContent = 'Visiteur';
-                document.getElementById('tpForm').style.display = 'none';
-                document.getElementById('statsSection').innerHTML = '<div style="grid-column: 1/-1; background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #3b82f6; color: #1e40af;"><strong>Mode visiteur:</strong> Consultez les données. Connectez-vous pour créer des TP.</div>';
             }
 
             console.log('📊 Chargement des données...');
@@ -620,7 +700,7 @@
 
         // Load stats
         async function loadData() {
-            const tp = await DataManager.tp.getAll();
+            const tp = await DataManager.tp.getAll(true); // Mes TP
             const mach = await DataManager.machines.getAll();
             const stock = await DataManager.stocks.getAll();
             const maint = await DataManager.maintenance.getAll();
@@ -767,7 +847,7 @@
                         </div>
                         <p style="font-size: 13px; color: #6b7280; margin: 0;">Catégorie: ${s.categorie} • Quantité: ${q}/${min} • Prix: ${s.prix || 0}€</p>
                         <div style="width: 100%; height: 6px; background: #e5e7eb; border-radius: 3px; margin-top: 8px; overflow: hidden;">
-                            <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${Math.min(100, (q/min)*100)}%;"></div>
+                            <div style="height: 100%; background: linear-gradient(90deg, #3b82f6, #2563eb); width: ${Math.min(100, (q / min) * 100)}%;"></div>
                         </div>
                     </div>
                 `;
@@ -830,11 +910,12 @@
 
         async function logout() {
             if (confirm('Vous êtes sûr ?')) {
-                await AuthManager.logout();
+                await auth.signOut();
                 localStorage.removeItem('visitMode');
                 window.location.href = 'login.html';
             }
         }
     </script>
 </body>
+
 </html>

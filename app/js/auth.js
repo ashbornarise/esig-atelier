@@ -36,7 +36,7 @@ const AuthManager = {
      */
     async loadUserData(uid) {
         try {
-            const db = getFirestore();
+            const db = window.db || firebase.firestore();
             const docRef = db.collection(COLLECTIONS.USERS).doc(uid);
             const doc = await docRef.get();
 
@@ -56,8 +56,20 @@ const AuthManager = {
      */
     async register(email, password, userData) {
         try {
-            const auth = getAuth();
-            const db = getFirestore();
+            // Vérifier que Firebase est initialisé
+            if (!window.auth) {
+                console.error('❌ Firebase Auth non initialisé! window.auth est null');
+                return { success: false, error: 'Firebase non initialisé' };
+            }
+            if (!window.db) {
+                console.error('❌ Firebase Firestore non initialisé! window.db est null');
+                return { success: false, error: 'Firebase non initialisé' };
+            }
+            
+            console.log('✅ Firebase prêt, inscription en cours...');
+            
+            const auth = window.auth;
+            const db = window.db;
 
             // Créer le compte Firebase Auth
             const { user } = await auth.createUserWithEmailAndPassword(email, password);
@@ -94,11 +106,24 @@ const AuthManager = {
      */
     async login(email, password) {
         try {
-            const auth = getAuth();
+            // Vérifier que Firebase est initialisé
+            if (!window.auth) {
+                console.error('❌ Firebase Auth non initialisé! window.auth est null');
+                return { success: false, error: 'Firebase non initialisé' };
+            }
+            if (!window.db) {
+                console.error('❌ Firebase Firestore non initialisé! window.db est null');
+                return { success: false, error: 'Firebase non initialisé' };
+            }
+            
+            console.log('✅ Firebase prêt, connexion en cours...');
+            
+            const auth = window.auth;
+            const db = window.db;
+            
             const { user } = await auth.signInWithEmailAndPassword(email, password);
 
             // Mettre à jour la dernière connexion
-            const db = getFirestore();
             await db.collection(COLLECTIONS.USERS).doc(user.uid).update({
                 derniereConnexion: new Date().toISOString()
             });
@@ -119,7 +144,7 @@ const AuthManager = {
      */
     async logout() {
         try {
-            const auth = getAuth();
+            const auth = window.auth || firebase.auth();
             await auth.signOut();
             this.currentUser = null;
             this.currentUserData = null;
@@ -135,7 +160,7 @@ const AuthManager = {
      */
     async resetPassword(email) {
         try {
-            const auth = getAuth();
+            const auth = window.auth || firebase.auth();
             await auth.sendPasswordResetEmail(email);
             return { success: true };
         } catch (error) {
