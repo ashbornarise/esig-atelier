@@ -74,7 +74,24 @@ Pour créer le premier compte administrateur sans effort :
    - Mot de passe par défaut : `Esig2026`
 4. Une fois créé, retournez sur `login.html` et connectez-vous.
 
-## 6. Vérification
+## 6. Gestion des Données (TPs, Machines, Stocks)
+Vous ne voyez rien sur le site car la base de données est vide au départ. Il faut créer les données.
+
+### Méthode 1 : Via le Site (Recommandé)
+1. Connectez-vous en tant qu'**Admin** (`admin@esig.tg`).
+2. Allez sur le Dashboard Admin (`admin.html`).
+3. Dans la barre latérale, cliquez sur **TP**, **Machines**, ou **Stock**.
+4. Cliquez sur le bouton **"Ajouter"** (icône `+`).
+5. Remplissez le formulaire et validez. Les données apparaîtront instantanément.
+
+### Méthode 2 : Via la Console Firebase (Avancé)
+1. Allez dans **Firestore Database** > **Data**.
+2. Cliquez sur **"Commencer une collection"**.
+3. ID de collection : `machines` (par exemple).
+4. Ajoutez un document avec Champs : `nom` (string), `statut` (string), `type` (string).
+5. Répétez pour `TP`, `stocks`.
+
+## 7. Vérification
 - Connectez-vous avec `admin@esig.tg`.
 - Vous devriez être redirigé vers `admin.html`.
 - Si vous voyez le Dashboard, tout fonctionne !
