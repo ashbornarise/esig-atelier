@@ -57,6 +57,16 @@
             }
         }
 
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100px); opacity: 0; }
+        }
+
         .app {
             display: none;
             /* Hidden by default until auth check */
@@ -1164,12 +1174,12 @@
 
             console.log('✅ auth et db globaux créés');
 
-            // Activer la persistance
-            window.db.enablePersistence().catch((err) => {
+            // Activer la persistance avec support multi-onglets
+            window.db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
                 if (err.code === 'failed-precondition') {
-                    console.warn('Persistance impossible : plusieurs onglets');
+                    console.warn('⚠️ Persistance impossible : plusieurs onglets ouverts');
                 } else if (err.code === 'unimplemented') {
-                    console.warn('Persistance non supportée');
+                    console.warn('⚠️ Persistance non supportée par ce navigateur');
                 }
             });
 
@@ -1573,19 +1583,29 @@
             }
         }
 
+        // Flag pour savoir si c'est le premier chargement
+        let isInitialAuthCheck = true;
+
         // Auth - Vérifier l'authentification avec Firebase directement
         auth.onAuthStateChanged(async (user) => {
-            console.log('🔍 Vérification auth:', { user: user?.email, visitorMode: isVisitorMode() });
+            console.log('🔍 Vérification auth:', { user: user?.email, visitorMode: isVisitorMode(), isInitial: isInitialAuthCheck });
 
             // Si mode visiteur, ne pas rediriger vers login
             if (!user && isVisitorMode()) {
                 setupVisitorMode();
+                isInitialAuthCheck = false;
                 return;
             }
 
             if (!user) {
-                console.log('❌ Pas de user -> redirection login');
-                window.location.href = 'login.html';
+                // Ne rediriger que lors du premier chargement
+                if (isInitialAuthCheck) {
+                    console.log('❌ Pas de user -> redirection login');
+                    window.location.href = 'login.html';
+                } else {
+                    console.log('⚠️ Déconnexion détectée depuis un autre onglet - ignorée');
+                }
+                isInitialAuthCheck = false;
                 return;
             }
 
@@ -1689,31 +1709,49 @@
             const html = tpList.map(tp => {
                 // Formater la date
                 let dateStr = '-';
+                let tpDate = null;
                 if (tp.dateDebut) {
                     try {
-                        const date = tp.dateDebut.toDate ? tp.dateDebut.toDate() : new Date(tp.dateDebut);
-                        dateStr = date.toLocaleDateString('fr-FR');
+                        tpDate = tp.dateDebut.toDate ? tp.dateDebut.toDate() : new Date(tp.dateDebut);
+                        dateStr = tpDate.toLocaleDateString('fr-FR');
                     } catch(e) {}
+                }
+
+                // Vérifier si le TP est expiré (date + durée dépassée)
+                let isExpired = false;
+                if (tpDate && tp.duree) {
+                    const endDate = new Date(tpDate.getTime() + (tp.duree * 60 * 60 * 1000)); // durée en heures
+                    isExpired = new Date() > endDate;
                 }
 
                 // Badge de statut
                 let statusColor = '#d1fae5';
                 let statusText = 'En cours';
+                let statusTextColor = '#065f46';
+
                 if (tp.statut === 'termine') {
                     statusColor = '#dbeafe';
                     statusText = 'Terminé';
+                    statusTextColor = '#1e40af';
                 } else if (tp.statut === 'planifie') {
                     statusColor = '#fef3c7';
                     statusText = 'Planifié';
+                    statusTextColor = '#92400e';
+                } else if (isExpired && tp.statut !== 'termine') {
+                    statusColor = '#fee2e2';
+                    statusText = 'Expiré';
+                    statusTextColor = '#991b1b';
                 }
 
+                // Bouton terminer (seulement si pas encore terminé)
+                const showEndButton = tp.statut !== 'termine';
+
                 return `
-                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; cursor: pointer; transition: all 0.3s; border-left: 4px solid #3b82f6;"
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: all 0.3s; border-left: 4px solid ${tp.statut === 'termine' ? '#10b981' : '#3b82f6'};"
                          onmouseover="this.style.boxShadow='0 8px 16px rgba(59,130,246,0.15)'; this.style.transform='translateY(-2px)'"
-                         onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'"
-                         onclick="viewTPDetail('${tp.id}')">
+                         onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                            <div>
+                            <div style="cursor: pointer; flex: 1;" onclick="viewTPDetail('${tp.id}')">
                                 <h4 style="color: #1e40af; margin: 0 0 4px 0;">${tp.titre}</h4>
                                 <p style="font-size: 13px; color: #6b7280; margin: 0;">
                                     <i class="fas fa-tag" style="margin-right: 4px;"></i> ${tp.type || 'Non défini'}
@@ -1723,14 +1761,108 @@
                                     <i class="fas fa-clock" style="margin-right: 4px;"></i> ${tp.duree || '-'}h
                                 </p>
                             </div>
-                            <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${statusColor};">${statusText}</span>
+                            <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${statusColor}; color: ${statusTextColor};">${statusText}</span>
                         </div>
-                        ${tp.description ? `<p style="font-size: 13px; color: #4b5563; margin: 8px 0 0 0; line-height: 1.5;">${tp.description.substring(0, 100)}${tp.description.length > 100 ? '...' : ''}</p>` : ''}
+                        ${tp.description ? `<p style="font-size: 13px; color: #4b5563; margin: 8px 0 0 0; line-height: 1.5; cursor: pointer;" onclick="viewTPDetail('${tp.id}')">${tp.description.substring(0, 100)}${tp.description.length > 100 ? '...' : ''}</p>` : ''}
+                        ${showEndButton ? `
+                        <div style="margin-top: 12px; display: flex; gap: 8px;">
+                            <button onclick="event.stopPropagation(); terminerTP('${tp.id}')" style="padding: 8px 16px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-check-circle"></i> Terminer le TP
+                            </button>
+                            <button onclick="event.stopPropagation(); supprimerMonTP('${tp.id}')" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                        ` : `
+                        <div style="margin-top: 12px;">
+                            <span style="padding: 6px 12px; background: #d1fae5; color: #065f46; border-radius: 8px; font-size: 12px; font-weight: 500;">
+                                <i class="fas fa-check"></i> TP terminé
+                            </span>
+                        </div>
+                        `}
                     </div>
                 `;
             }).join('');
 
             container.innerHTML = html;
+        }
+
+        // Terminer un TP
+        async function terminerTP(tpId) {
+            if (!confirm('Voulez-vous marquer ce TP comme terminé ?')) return;
+
+            try {
+                await window.db.collection('TP').doc(tpId).update({
+                    statut: 'termine',
+                    dateFin: new Date()
+                });
+
+                // Notification
+                showUserNotification('TP marqué comme terminé !', 'success');
+
+                // Recharger les données
+                loadData();
+            } catch(error) {
+                console.error('Erreur terminer TP:', error);
+                showUserNotification('Erreur: ' + error.message, 'error');
+            }
+        }
+
+        // Supprimer mon TP
+        async function supprimerMonTP(tpId) {
+            if (!confirm('Voulez-vous vraiment supprimer ce TP ? Cette action est irréversible.')) return;
+
+            try {
+                await window.db.collection('TP').doc(tpId).delete();
+
+                // Notification
+                showUserNotification('TP supprimé avec succès', 'success');
+
+                // Recharger les données
+                loadData();
+            } catch(error) {
+                console.error('Erreur suppression TP:', error);
+                showUserNotification('Erreur: ' + error.message, 'error');
+            }
+        }
+
+        // Notification pour utilisateur
+        function showUserNotification(message, type = 'info') {
+            const notif = document.createElement('div');
+            notif.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                padding: 14px 20px;
+                border-radius: 10px;
+                color: white;
+                font-weight: 500;
+                z-index: 10000;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+                animation: slideIn 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 14px;
+            `;
+
+            if (type === 'success') {
+                notif.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                notif.innerHTML = '<i class="fas fa-check-circle"></i> ' + message;
+            } else if (type === 'error') {
+                notif.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                notif.innerHTML = '<i class="fas fa-exclamation-circle"></i> ' + message;
+            } else {
+                notif.style.background = 'linear-gradient(135deg, #3b82f6, #2563eb)';
+                notif.innerHTML = '<i class="fas fa-info-circle"></i> ' + message;
+            }
+
+            document.body.appendChild(notif);
+
+            setTimeout(() => {
+                notif.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => notif.remove(), 300);
+            }, 3000);
         }
 
         // Voir le détail d'un TP

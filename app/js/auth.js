@@ -123,10 +123,25 @@ const AuthManager = {
             
             const { user } = await auth.signInWithEmailAndPassword(email, password);
 
-            // Mettre à jour la dernière connexion
-            await db.collection(COLLECTIONS.USERS).doc(user.uid).update({
-                derniereConnexion: new Date().toISOString()
-            });
+            // Vérifier si le document utilisateur existe
+            const userDocRef = db.collection(COLLECTIONS.USERS).doc(user.uid);
+            const userDoc = await userDocRef.get();
+
+            if (userDoc.exists) {
+                // Mettre à jour la dernière connexion
+                await userDocRef.update({
+                    derniereConnexion: new Date().toISOString()
+                });
+            } else {
+                // Créer le document utilisateur s'il n'existe pas (cas où l'inscription Firestore a échoué)
+                console.warn('⚠️ Document utilisateur manquant, création...');
+                await userDocRef.set({
+                    email: user.email,
+                    actif: true,
+                    dateCreation: new Date().toISOString(),
+                    derniereConnexion: new Date().toISOString()
+                });
+            }
 
             // Charger les données utilisateur
             await this.loadUserData(user.uid);
@@ -135,7 +150,11 @@ const AuthManager = {
 
         } catch (error) {
             console.error('Erreur connexion:', error);
-            return { success: false, error: getErrorMessage(error.code) };
+            console.error('Code erreur:', error.code);
+            console.error('Message erreur:', error.message);
+            // Si pas de code d'erreur, utiliser le message directement
+            const errorMsg = error.code ? getErrorMessage(error.code) : (error.message || 'Une erreur est survenue');
+            return { success: false, error: errorMsg };
         }
     },
 

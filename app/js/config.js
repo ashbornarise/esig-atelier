@@ -139,10 +139,14 @@ const COLLECTIONS = {
 const ERROR_MESSAGES = {
     'auth/user-not-found': 'Aucun compte trouvé avec cet email.',
     'auth/wrong-password': 'Mot de passe incorrect.',
+    'auth/invalid-credential': 'Email ou mot de passe incorrect.',
+    'auth/invalid-login-credentials': 'Email ou mot de passe incorrect.',
     'auth/email-already-in-use': 'Cet email est déjà utilisé.',
     'auth/weak-password': 'Le mot de passe doit contenir au moins 6 caractères.',
     'auth/invalid-email': 'Adresse email invalide.',
     'auth/network-request-failed': 'Erreur de connexion. Vérifiez votre connexion internet.',
+    'auth/too-many-requests': 'Trop de tentatives. Veuillez réessayer plus tard.',
+    'auth/user-disabled': 'Ce compte a été désactivé.',
     'permission-denied': 'Vous n\'avez pas les permissions nécessaires.',
     'default': 'Une erreur est survenue. Veuillez réessayer.'
 };
@@ -151,6 +155,9 @@ const ERROR_MESSAGES = {
  * Obtenir le message d'erreur traduit
  */
 function getErrorMessage(errorCode) {
+    if (!ERROR_MESSAGES[errorCode]) {
+        console.warn('⚠️ Code erreur non reconnu:', errorCode);
+    }
     return ERROR_MESSAGES[errorCode] || ERROR_MESSAGES['default'];
 }
 
@@ -209,10 +216,10 @@ const DataManager = {
          */
         async getAll(filterByUser = false) {
             try {
+                const user = window.auth?.currentUser || AuthManager.getCurrentUser();
                 let query = window.db.collection('TP');
 
                 if (filterByUser) {
-                    const user = window.auth?.currentUser || AuthManager.getCurrentUser();
                     if (!user) {
                         console.warn('⚠️ Utilisateur non connecté pour filtrer les TP');
                         return { success: true, data: [] };
@@ -231,11 +238,19 @@ const DataManager = {
                 return { success: true, data: tpList };
             } catch (error) {
                 console.error('❌ Erreur lecture TP:', error.message);
-                // Si erreur d'index, essayer sans orderBy
+                // Si erreur d'index, essayer sans orderBy mais TOUJOURS filtrer par utilisateur
                 if (error.message.includes('index')) {
                     console.warn('⚠️ Index manquant, essai sans tri...');
                     try {
-                        const snapshot = await window.db.collection('TP').get();
+                        const user = window.auth?.currentUser || AuthManager.getCurrentUser();
+                        let query = window.db.collection('TP');
+
+                        // Toujours filtrer par utilisateur si demandé
+                        if (filterByUser && user) {
+                            query = query.where('createdBy', '==', user.uid);
+                        }
+
+                        const snapshot = await query.get();
                         const tpList = [];
                         snapshot.forEach(doc => {
                             tpList.push({ id: doc.id, ...doc.data() });
