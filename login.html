@@ -671,8 +671,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Email (ESIG uniquement)</label>
-                    <input type="email" id="regEmail" placeholder="prenom.nom.etu@esig.tg" required>
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="votre@email.com" required>
                 </div>
 
                 <div class="form-group">
@@ -924,12 +924,6 @@
 
                 if (password.length < 6) {
                     showAlert(alertEl, 'error', 'Le mot de passe doit contenir au moins 6 caractères');
-                    return;
-                }
-
-                // Validation du domaine email - uniquement etu@esig.tg
-                if (!email.endsWith('etu@esig.tg')) {
-                    showAlert(alertEl, 'error', 'Seuls les emails etu@esig.tg sont acceptés pour l\'inscription');
                     return;
                 }
 

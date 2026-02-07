@@ -3,7 +3,9 @@
     "allow": [
       "Bash(ls:*)",
       "Bash(wc:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix: auth login, error messages, and multi-tab session handling\n\n- Fix login for new accounts by checking if user document exists before update\n- Add more Firebase Auth error codes for better error feedback\n- Enable Firestore persistence with synchronizeTabs option\n- Add isInitialAuthCheck flag to prevent unwanted redirects across tabs\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)"
     ]
   }
 }

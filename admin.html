@@ -42,9 +42,7 @@
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             margin: 0;
-            background: linear-gradient(to bottom, #ffffff 0%, #2563eb 100%);
-            /* Vertical White to Vivid Blue */
-            background-attachment: fixed;
+            background: #f1f5f9;
             color: #1e293b;
             min-height: 100vh;
             display: flex;
@@ -60,16 +58,17 @@
         /* SIDEBAR */
         .sidebar {
             width: 260px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(180deg, #1e40af 0%, #1e3a8a 100%);
             color: white;
             display: flex;
             flex-direction: column;
-            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+            box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
             flex-shrink: 0;
-            /* Prevent shrinking */
+            position: fixed;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            z-index: 100;
         }
 
         .logo {
@@ -105,8 +104,8 @@
 
         .menu-link:hover,
         .menu-link.active {
-            background: rgba(255, 255, 255, 0.3);
-            color: white;
+            background: rgba(255, 255, 255, 0.15);
+            color: #fbbf24;
             border-left-color: #fbbf24;
             font-weight: 600;
         }
@@ -151,9 +150,10 @@
 
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background: rgba(255, 255, 255, 0.35);
+            background: rgba(255, 255, 255, 0.15);
             transform: translateX(5px);
             font-weight: 600;
+            color: #fbbf24;
         }
 
         .sidebar-menu a i {
@@ -195,11 +195,13 @@
         /* MAIN CONTENT */
         .main-content {
             flex: 1;
-            margin-left: 0;
-            padding: 30px;
+            margin-left: 260px;
+            padding: 24px 32px;
             overflow-x: hidden;
             overflow-y: auto;
-            max-width: 100%;
+            max-width: calc(100% - 260px);
+            min-height: 100vh;
+            background: #f1f5f9;
         }
 
         .header {
@@ -524,6 +526,21 @@
             background: #059669;
         }
 
+        /* PLAN ATELIER INTERACTIF */
+        #planAtelier rect {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #planAtelier rect:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
+
+        #planAtelier g {
+            transition: opacity 0.3s ease;
+        }
+
         /* TABLE RESPONSIVE */
         .table-container {
             overflow-x: auto;
@@ -534,7 +551,7 @@
             min-width: 600px;
         }
 
-        /* RESPONSIVE */
+        /* RESPONSIVE - TABLETTE */
         @media (max-width: 1024px) {
             .admin-wrapper {
                 flex-direction: column;
@@ -549,6 +566,7 @@
                 top: 0;
                 z-index: 100;
                 flex-shrink: 0;
+                padding: 10px;
             }
 
             .sidebar-header {
@@ -557,7 +575,8 @@
                 justify-content: center;
                 gap: 12px;
                 margin-bottom: 0;
-                padding-bottom: 10px;
+                padding: 10px 0;
+                border-bottom: none;
             }
 
             .sidebar-header img {
@@ -568,6 +587,7 @@
 
             .sidebar-header h1 {
                 font-size: 14px !important;
+                margin-bottom: 0 !important;
             }
 
             .sidebar-header p {
@@ -578,8 +598,8 @@
                 display: flex;
                 flex-wrap: nowrap;
                 overflow-x: auto;
-                gap: 5px;
-                padding: 10px;
+                gap: 8px;
+                padding: 10px 0;
                 -webkit-overflow-scrolling: touch;
                 scrollbar-width: none;
             }
@@ -594,9 +614,15 @@
             }
 
             .sidebar-menu a {
-                padding: 8px 12px;
+                padding: 10px 14px;
                 white-space: nowrap;
-                font-size: 12px;
+                font-size: 13px;
+                border-radius: 20px;
+                background: rgba(255,255,255,0.1);
+            }
+
+            .sidebar-menu a.active {
+                background: rgba(255,255,255,0.25);
             }
 
             .sidebar-menu a i {
@@ -604,25 +630,12 @@
             }
 
             .sidebar-footer {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px 15px;
-                margin-top: 0;
-                border-top: none;
-            }
-
-            .sidebar-footer .user-profile {
-                margin-bottom: 0;
-                text-align: left;
-            }
-
-            .logout-btn {
-                width: auto;
-                padding: 8px 16px;
+                display: none;
             }
 
             .main-content {
+                margin-left: 0;
+                max-width: 100%;
                 padding: 15px;
                 overflow-x: hidden;
             }
@@ -652,11 +665,12 @@
             }
 
             .stat-label {
-                font-size: 12px;
+                font-size: 11px;
             }
 
             .search-box {
                 flex-direction: column;
+                gap: 10px;
             }
 
             .search-box input {
@@ -667,51 +681,141 @@
                 width: 100%;
             }
 
-            table {
-                font-size: 12px;
+            /* Tables responsives en cartes */
+            .table-container {
+                background: transparent;
+                box-shadow: none;
             }
 
-            td, th {
-                padding: 10px 8px;
+            table {
+                display: block;
+                min-width: 100%;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            tr {
+                display: flex;
+                flex-direction: column;
+                background: white;
+                border-radius: 12px;
+                padding: 15px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                border-left: 4px solid #3b82f6;
+            }
+
+            tr:hover {
+                background: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+            }
+
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 0;
+                border-bottom: 1px solid #f1f5f9;
+                font-size: 14px;
+            }
+
+            td:last-child {
+                border-bottom: none;
+                padding-top: 12px;
+                justify-content: flex-start;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: #64748b;
+                font-size: 12px;
+                text-transform: uppercase;
             }
 
             .actions {
-                flex-direction: column;
-                gap: 4px;
+                flex-direction: row;
+                gap: 8px;
+                width: 100%;
+                justify-content: flex-end;
             }
 
             .btn-sm {
-                padding: 6px 10px;
-                font-size: 11px;
+                padding: 8px 14px;
+                font-size: 12px;
             }
 
             .modal-content {
                 width: 95%;
+                max-width: 500px;
                 margin: 20px auto;
                 padding: 20px;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .form-group {
+                margin-bottom: 15px;
+            }
+
+            .form-group label {
+                font-size: 13px;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                font-size: 16px;
+                padding: 12px;
+            }
+
+            /* Boutons tabs responsive */
+            .securite-tab,
+            .rangement-tab {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+            }
+
+            /* Plan atelier responsive */
+            #planAtelier svg {
+                min-height: 500px;
             }
         }
 
-        @media (max-width: 480px) {
+        /* RESPONSIVE - MOBILE */
+        @media (max-width: 640px) {
             body {
                 font-size: 14px;
             }
 
             .stats-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
             }
 
-            .sidebar-menu a span {
-                display: none;
+            .stat-card {
+                padding: 12px;
+            }
+
+            .stat-value {
+                font-size: 20px;
+            }
+
+            .stat-label {
+                font-size: 10px;
             }
 
             .sidebar-menu a {
-                padding: 10px;
-            }
-
-            .sidebar-menu a i {
-                margin-right: 0;
-                font-size: 18px;
+                padding: 8px 12px;
+                font-size: 11px;
             }
 
             .header h2 {
@@ -722,17 +826,117 @@
                 padding: 10px;
             }
 
-            table {
-                font-size: 11px;
+            .btn-primary,
+            .btn-secondary,
+            .btn-add {
+                padding: 10px 16px;
+                font-size: 13px;
             }
 
-            td, th {
-                padding: 8px 6px;
+            /* Grids adaptatifs */
+            #consignesGrid,
+            #zonesGrid,
+            #emplacementsGrid,
+            #categoriesGrid {
+                grid-template-columns: 1fr !important;
             }
 
             .badge {
                 padding: 4px 8px;
                 font-size: 10px;
+            }
+
+            /* Modal plein écran mobile */
+            .modal-content {
+                width: 100%;
+                height: 100%;
+                max-height: 100%;
+                margin: 0;
+                border-radius: 0;
+                padding: 15px;
+            }
+
+            .modal-header h3 {
+                font-size: 16px;
+            }
+
+            /* Plan atelier mobile */
+            #planAtelier {
+                padding: 10px;
+            }
+
+            #planAtelier svg {
+                min-height: 450px;
+            }
+
+            #machineInfoPanel {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                margin: 0;
+                border-radius: 16px 16px 0 0;
+                z-index: 200;
+                box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+            }
+        }
+
+        /* RESPONSIVE - TRÈS PETIT ÉCRAN */
+        @media (max-width: 400px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar-menu {
+                gap: 5px;
+            }
+
+            .sidebar-menu a {
+                padding: 8px 10px;
+                font-size: 10px;
+            }
+
+            .sidebar-menu a i {
+                font-size: 14px;
+                margin-right: 4px;
+            }
+
+            td {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+
+            td::before {
+                margin-bottom: 2px;
+            }
+
+            .header h2 {
+                font-size: 16px;
+            }
+
+            .btn-sm {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+        }
+
+        /* Utilitaires pour cacher/montrer sur mobile */
+        .hide-mobile {
+            display: block;
+        }
+
+        .show-mobile {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .hide-mobile {
+                display: none !important;
+            }
+
+            .show-mobile {
+                display: block !important;
             }
         }
     </style>
@@ -756,6 +960,9 @@
                 <li><a class="menu-link" data-page="machines"><i class="fas fa-cog"></i> Machines</a></li>
                 <li><a class="menu-link" data-page="stock"><i class="fas fa-box"></i> Stock</a></li>
                 <li><a class="menu-link" data-page="activities"><i class="fas fa-history"></i> Activités</a></li>
+                <li><a class="menu-link" data-page="securite"><i class="fas fa-shield-alt"></i> Sécurité</a></li>
+                <li><a class="menu-link" data-page="rapports"><i class="fas fa-file-alt"></i> Rapports</a></li>
+                <li><a class="menu-link" data-page="rangement"><i class="fas fa-warehouse"></i> Rangement</a></li>
             </ul>
 
             <div class="sidebar-footer">
@@ -989,6 +1196,449 @@
                     </table>
                 </div>
             </div>
+
+            <!-- SÉCURITÉ -->
+            <div id="securite" class="page">
+                <div class="header">
+                    <h2><i class="fas fa-shield-alt"></i> Gestion de la Sécurité</h2>
+                </div>
+
+                <!-- Alertes de sécurité actives -->
+                <div id="alertesSecurite" style="margin-bottom: 20px;"></div>
+
+                <!-- Onglets sécurité -->
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="btn-primary securite-tab active" data-tab="consignes" onclick="showSecuriteTab('consignes')">
+                        <i class="fas fa-clipboard-list"></i> Consignes
+                    </button>
+                    <button class="btn-secondary securite-tab" data-tab="zones" onclick="showSecuriteTab('zones')">
+                        <i class="fas fa-map-marked-alt"></i> Zones de travail
+                    </button>
+                    <button class="btn-secondary securite-tab" data-tab="dossier" onclick="showSecuriteTab('dossier')">
+                        <i class="fas fa-folder-open"></i> Dossier Sécurité
+                    </button>
+                    <button class="btn-secondary securite-tab" data-tab="alertes" onclick="showSecuriteTab('alertes')">
+                        <i class="fas fa-bell"></i> Alertes & Rappels
+                    </button>
+                </div>
+
+                <!-- Tab Consignes -->
+                <div id="tabConsignes" class="securite-content active">
+                    <div class="search-box">
+                        <input type="text" id="consignesSearch" placeholder="Chercher une consigne...">
+                        <button class="btn-add" onclick="openConsigneModal()"><i class="fas fa-plus"></i> Ajouter Consigne</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 15px; margin-top: 15px;" id="consignesGrid">
+                        <p style="text-align: center; color: #999; grid-column: 1/-1;">Chargement des consignes...</p>
+                    </div>
+                </div>
+
+                <!-- Tab Zones -->
+                <div id="tabZones" class="securite-content" style="display: none;">
+                    <div class="search-box">
+                        <input type="text" id="zonesSearch" placeholder="Chercher une zone...">
+                        <button class="btn-add" onclick="openZoneModal()"><i class="fas fa-plus"></i> Ajouter Zone</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin-top: 15px;" id="zonesGrid">
+                        <p style="text-align: center; color: #999; grid-column: 1/-1;">Chargement des zones...</p>
+                    </div>
+                </div>
+
+                <!-- Tab Dossier Sécurité -->
+                <div id="tabDossier" class="securite-content" style="display: none;">
+                    <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                        <h3 style="margin: 0 0 10px 0;"><i class="fas fa-folder-open"></i> Dossier Sécurité de l'Atelier</h3>
+                        <p style="margin: 0; opacity: 0.9;">Référence réglementaire centralisée pour l'atelier ESIG</p>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px;">
+                        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                            <h4 style="color: #1e40af; margin: 0 0 15px 0;"><i class="fas fa-file-pdf" style="color: #ef4444;"></i> Documents Réglementaires</h4>
+                            <div id="docsReglementaires">
+                                <p style="color: #999; font-size: 14px;">Aucun document</p>
+                            </div>
+                            <button class="btn-add" style="margin-top: 15px; width: 100%;" onclick="openDocumentModal('reglementaire')">
+                                <i class="fas fa-plus"></i> Ajouter Document
+                            </button>
+                        </div>
+
+                        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                            <h4 style="color: #1e40af; margin: 0 0 15px 0;"><i class="fas fa-hard-hat" style="color: #f59e0b;"></i> Équipements de Protection</h4>
+                            <div id="docsEPI">
+                                <p style="color: #999; font-size: 14px;">Aucun document</p>
+                            </div>
+                            <button class="btn-add" style="margin-top: 15px; width: 100%;" onclick="openDocumentModal('epi')">
+                                <i class="fas fa-plus"></i> Ajouter Document
+                            </button>
+                        </div>
+
+                        <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                            <h4 style="color: #1e40af; margin: 0 0 15px 0;"><i class="fas fa-first-aid" style="color: #10b981;"></i> Procédures d'Urgence</h4>
+                            <div id="docsUrgence">
+                                <p style="color: #999; font-size: 14px;">Aucun document</p>
+                            </div>
+                            <button class="btn-add" style="margin-top: 15px; width: 100%;" onclick="openDocumentModal('urgence')">
+                                <i class="fas fa-plus"></i> Ajouter Document
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab Alertes -->
+                <div id="tabAlertes" class="securite-content" style="display: none;">
+                    <div class="search-box">
+                        <input type="text" id="alertesSearch" placeholder="Chercher une alerte...">
+                        <button class="btn-add" onclick="openAlerteModal()"><i class="fas fa-plus"></i> Créer Alerte</button>
+                    </div>
+
+                    <div style="margin-top: 15px;">
+                        <h4 style="color: #374151; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i> Alertes Actives</h4>
+                        <div id="alertesActives" style="margin-bottom: 20px;">
+                            <p style="color: #999; font-size: 14px;">Aucune alerte active</p>
+                        </div>
+
+                        <h4 style="color: #374151; margin-bottom: 10px;"><i class="fas fa-bell" style="color: #3b82f6;"></i> Rappels Programmés</h4>
+                        <div id="rappelsProgrammes">
+                            <p style="color: #999; font-size: 14px;">Aucun rappel programmé</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RAPPORTS -->
+            <div id="rapports" class="page">
+                <div class="header">
+                    <h2><i class="fas fa-file-alt"></i> Rapports & Audit</h2>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                    <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 10px 0;"><i class="fas fa-chart-bar"></i> Rapport Général</h3>
+                        <p style="margin: 0 0 15px 0; opacity: 0.9; font-size: 14px;">Vue d'ensemble de l'atelier</p>
+                        <button onclick="genererRapport('general')" style="background: white; color: #059669; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-download"></i> Générer
+                        </button>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 10px 0;"><i class="fas fa-shield-alt"></i> Audit Sécurité</h3>
+                        <p style="margin: 0 0 15px 0; opacity: 0.9; font-size: 14px;">Conformité et risques</p>
+                        <button onclick="genererRapport('securite')" style="background: white; color: #1e40af; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-download"></i> Générer
+                        </button>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 10px 0;"><i class="fas fa-box"></i> Rapport Stock</h3>
+                        <p style="margin: 0 0 15px 0; opacity: 0.9; font-size: 14px;">Inventaire et alertes</p>
+                        <button onclick="genererRapport('stock')" style="background: white; color: #d97706; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-download"></i> Générer
+                        </button>
+                    </div>
+
+                    <div style="background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; padding: 20px; border-radius: 12px;">
+                        <h3 style="margin: 0 0 10px 0;"><i class="fas fa-cog"></i> Rapport Machines</h3>
+                        <p style="margin: 0 0 15px 0; opacity: 0.9; font-size: 14px;">Maintenance et utilisation</p>
+                        <button onclick="genererRapport('machines')" style="background: white; color: #6d28d9; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                            <i class="fas fa-download"></i> Générer
+                        </button>
+                    </div>
+                </div>
+
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                    <h3 style="color: #1e40af; margin: 0 0 20px 0;"><i class="fas fa-history"></i> Historique des Rapports</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type</th>
+                                    <th>Date de génération</th>
+                                    <th>Généré par</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rapportsTable">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #999;">Aucun rapport généré</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Alertes Maintenance Stock -->
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-top: 20px;">
+                    <h3 style="color: #ef4444; margin: 0 0 20px 0;"><i class="fas fa-exclamation-circle"></i> Alertes de Renouvellement Stock</h3>
+                    <div id="alertesStock">
+                        <p style="color: #999; font-size: 14px;">Vérification des stocks...</p>
+                    </div>
+                </div>
+
+                <!-- Alertes Maintenance Machines -->
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px; margin-top: 20px;">
+                    <h3 style="color: #f59e0b; margin: 0 0 20px 0;"><i class="fas fa-tools"></i> Alertes de Maintenance Machines</h3>
+                    <div id="alertesMaintenance">
+                        <p style="color: #999; font-size: 14px;">Vérification des maintenances...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RANGEMENT -->
+            <div id="rangement" class="page">
+                <div class="header">
+                    <h2><i class="fas fa-warehouse"></i> Stratégie de Rangement</h2>
+                </div>
+
+                <!-- Stats rangement -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                    <div style="background: linear-gradient(135deg, #3b82f6, #1e40af); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold;" id="statEmplacements">0</div>
+                        <div style="opacity: 0.9;">Emplacements</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold;" id="statOccupes">0</div>
+                        <div style="opacity: 0.9;">Occupés</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 20px; border-radius: 12px; text-align: center;">
+                        <div style="font-size: 32px; font-weight: bold;" id="statLibres">0</div>
+                        <div style="opacity: 0.9;">Libres</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <button class="btn-primary rangement-tab active" data-tab="emplacements" onclick="showRangementTab('emplacements')">
+                        <i class="fas fa-th-large"></i> Emplacements
+                    </button>
+                    <button class="btn-secondary rangement-tab" data-tab="categories" onclick="showRangementTab('categories')">
+                        <i class="fas fa-tags"></i> Catégories
+                    </button>
+                    <button class="btn-secondary rangement-tab" data-tab="plan" onclick="showRangementTab('plan')">
+                        <i class="fas fa-map"></i> Plan de l'Atelier
+                    </button>
+                </div>
+
+                <!-- Tab Emplacements -->
+                <div id="tabEmplacements" class="rangement-content active">
+                    <div class="search-box">
+                        <input type="text" id="emplacementsSearch" placeholder="Chercher un emplacement...">
+                        <button class="btn-add" onclick="openEmplacementModal()"><i class="fas fa-plus"></i> Ajouter Emplacement</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px; margin-top: 15px;" id="emplacementsGrid">
+                        <p style="text-align: center; color: #999; grid-column: 1/-1;">Chargement des emplacements...</p>
+                    </div>
+                </div>
+
+                <!-- Tab Catégories -->
+                <div id="tabCategories" class="rangement-content" style="display: none;">
+                    <div class="search-box">
+                        <input type="text" id="categoriesSearch" placeholder="Chercher une catégorie...">
+                        <button class="btn-add" onclick="openCategorieModal()"><i class="fas fa-plus"></i> Ajouter Catégorie</button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;" id="categoriesGrid">
+                        <p style="text-align: center; color: #999; grid-column: 1/-1;">Chargement des catégories...</p>
+                    </div>
+                </div>
+
+                <!-- Tab Plan -->
+                <div id="tabPlan" class="rangement-content" style="display: none;">
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 20px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                            <h3 style="color: #1e40af; margin: 0;"><i class="fas fa-map"></i> Plan Interactif de l'Atelier ESIG</h3>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                <select id="filterCriticite" onchange="filterZonesByCriticite()" style="padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                    <option value="">Toutes les zones</option>
+                                    <option value="critique">🔴 Critique</option>
+                                    <option value="eleve">🟠 Élevé</option>
+                                    <option value="moyen">🟡 Moyen</option>
+                                    <option value="faible">🟢 Faible</option>
+                                </select>
+                                <button class="btn-primary" onclick="resetPlanView()"><i class="fas fa-sync"></i> Réinitialiser</button>
+                            </div>
+                        </div>
+
+                        <!-- Légende -->
+                        <div style="display: flex; gap: 20px; margin-bottom: 15px; flex-wrap: wrap; font-size: 12px;">
+                            <span><span style="display: inline-block; width: 14px; height: 14px; background: #ef4444; border-radius: 3px; margin-right: 5px;"></span>Zone CNC (Haute précision)</span>
+                            <span><span style="display: inline-block; width: 14px; height: 14px; background: #f59e0b; border-radius: 3px; margin-right: 5px;"></span>Machines-outils</span>
+                            <span><span style="display: inline-block; width: 14px; height: 14px; background: #3b82f6; border-radius: 3px; margin-right: 5px;"></span>Postes de travail</span>
+                            <span><span style="display: inline-block; width: 14px; height: 14px; background: #10b981; border-radius: 3px; margin-right: 5px;"></span>Stockage/Armoires</span>
+                            <span><span style="display: inline-block; width: 14px; height: 14px; background: #8b5cf6; border-radius: 3px; margin-right: 5px;"></span>Équipements spéciaux</span>
+                        </div>
+
+                        <div id="planAtelier" style="background: #f8fafc; border: 2px solid #e5e7eb; border-radius: 12px; padding: 15px; overflow-x: auto;">
+                            <svg viewBox="0 0 400 700" style="width: 100%; max-width: 500px; margin: 0 auto; display: block; min-height: 600px;">
+                                <!-- Contour de l'atelier -->
+                                <rect x="10" y="10" width="380" height="680" fill="none" stroke="#1e40af" stroke-width="3" rx="5"/>
+
+                                <!-- Piliers -->
+                                <rect x="10" y="10" width="15" height="15" fill="#374151"/>
+                                <rect x="375" y="10" width="15" height="15" fill="#374151"/>
+                                <rect x="10" y="675" width="15" height="15" fill="#374151"/>
+                                <rect x="375" y="675" width="15" height="15" fill="#374151"/>
+                                <rect x="10" y="240" width="15" height="15" fill="#374151"/>
+                                <rect x="375" y="240" width="15" height="15" fill="#374151"/>
+
+                                <!-- ZONE CNC (en haut) - Haute criticité -->
+                                <g class="zone-machine" data-criticite="critique" data-zone="Zone CNC">
+                                    <!-- CNC Fraiseuse -->
+                                    <rect x="30" y="30" width="120" height="90" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="4" class="machine-block" onclick="showMachineInfo('CNC Fraiseuse', 'critique')"/>
+                                    <text x="90" y="70" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="bold">CNC</text>
+                                    <text x="90" y="85" text-anchor="middle" fill="#991b1b" font-size="10">FRAISEUSE</text>
+
+                                    <!-- CNC Router -->
+                                    <rect x="250" y="30" width="120" height="90" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="4" class="machine-block" onclick="showMachineInfo('CNC Router', 'critique')"/>
+                                    <text x="310" y="70" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="bold">CNC</text>
+                                    <text x="310" y="85" text-anchor="middle" fill="#991b1b" font-size="10">ROUTER</text>
+
+                                    <!-- CNC Tour -->
+                                    <rect x="30" y="140" width="120" height="80" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="4" class="machine-block" onclick="showMachineInfo('CNC Tour', 'critique')"/>
+                                    <text x="90" y="175" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="bold">CNC</text>
+                                    <text x="90" y="190" text-anchor="middle" fill="#991b1b" font-size="10">TOUR</text>
+                                </g>
+
+                                <!-- Mch. à Ess. -->
+                                <g class="zone-machine" data-criticite="moyen">
+                                    <rect x="170" y="30" width="60" height="30" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="3" onclick="showMachineInfo('Machine à Essai', 'moyen')"/>
+                                    <text x="200" y="50" text-anchor="middle" fill="#1e40af" font-size="8">Mch. à Ess.</text>
+
+                                    <rect x="330" y="140" width="40" height="60" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="3" onclick="showMachineInfo('Machine à Essai 2', 'moyen')"/>
+                                    <text x="350" y="165" text-anchor="middle" fill="#1e40af" font-size="7">Mch.</text>
+                                    <text x="350" y="175" text-anchor="middle" fill="#1e40af" font-size="7">Ess.2</text>
+                                </g>
+
+                                <!-- Armoires -->
+                                <g class="zone-stockage" data-criticite="faible">
+                                    <rect x="30" y="230" width="40" height="25" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="2" onclick="showMachineInfo('Armoire 3', 'faible')"/>
+                                    <text x="50" y="247" text-anchor="middle" fill="#065f46" font-size="8">Arm. 3</text>
+                                </g>
+
+                                <!-- Ligne de séparation -->
+                                <line x1="10" y1="265" x2="390" y2="265" stroke="#6b7280" stroke-width="2" stroke-dasharray="5,5"/>
+
+                                <!-- ZONE MACHINES-OUTILS (milieu haut) - Criticité élevée -->
+                                <g class="zone-machine" data-criticite="eleve" data-zone="Zone Machines-outils">
+                                    <!-- Scie mécanique -->
+                                    <rect x="30" y="280" width="70" height="40" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Scie Mécanique', 'eleve')"/>
+                                    <text x="65" y="295" text-anchor="middle" fill="#92400e" font-size="8">Scie</text>
+                                    <text x="65" y="307" text-anchor="middle" fill="#92400e" font-size="7">mécanique</text>
+
+                                    <!-- Perceuse à colonne -->
+                                    <rect x="110" y="280" width="70" height="40" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Perceuse à colonne', 'eleve')"/>
+                                    <text x="145" y="295" text-anchor="middle" fill="#92400e" font-size="8">Perceuse</text>
+                                    <text x="145" y="307" text-anchor="middle" fill="#92400e" font-size="7">à colonne</text>
+
+                                    <!-- Poinçonneuse -->
+                                    <rect x="190" y="280" width="70" height="40" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Poinçonneuse', 'eleve')"/>
+                                    <text x="225" y="300" text-anchor="middle" fill="#92400e" font-size="8">Poinçon.</text>
+
+                                    <!-- Moyen Tour -->
+                                    <rect x="320" y="280" width="55" height="70" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Moyen Tour', 'eleve')"/>
+                                    <text x="347" y="310" text-anchor="middle" fill="#92400e" font-size="8">Moyen</text>
+                                    <text x="347" y="322" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
+                                </g>
+
+                                <!-- ZONE TRAVAIL (milieu) -->
+                                <g class="zone-travail" data-criticite="moyen" data-zone="Zone Travail">
+                                    <!-- Moyenne Fraiseuse -->
+                                    <rect x="30" y="340" width="55" height="70" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Moyenne Fraiseuse', 'eleve')"/>
+                                    <text x="57" y="370" text-anchor="middle" fill="#92400e" font-size="7">Moyenne</text>
+                                    <text x="57" y="382" text-anchor="middle" fill="#92400e" font-size="7">Fraiseuse</text>
+
+                                    <!-- ETABLI 1 -->
+                                    <rect x="150" y="360" width="100" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="3" onclick="showMachineInfo('Établi Principal', 'moyen')"/>
+                                    <text x="200" y="390" text-anchor="middle" fill="#1e40af" font-size="10" font-weight="bold">ÉTABLI</text>
+
+                                    <!-- Mini Tour droite -->
+                                    <rect x="320" y="360" width="55" height="60" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Tour', 'eleve')"/>
+                                    <text x="347" y="385" text-anchor="middle" fill="#92400e" font-size="8">Mini</text>
+                                    <text x="347" y="397" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
+                                </g>
+
+                                <!-- Armoires milieu -->
+                                <g class="zone-stockage" data-criticite="faible">
+                                    <rect x="110" y="365" width="30" height="20" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="2" onclick="showMachineInfo('Armoire 1', 'faible')"/>
+                                    <text x="125" y="379" text-anchor="middle" fill="#065f46" font-size="7">Arm.1</text>
+                                </g>
+
+                                <!-- Mini Fraiseuses -->
+                                <g class="zone-machine" data-criticite="eleve">
+                                    <rect x="30" y="420" width="55" height="50" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Fraiseuse 1', 'eleve')"/>
+                                    <text x="57" y="443" text-anchor="middle" fill="#92400e" font-size="7">Mini</text>
+                                    <text x="57" y="455" text-anchor="middle" fill="#92400e" font-size="7">Fraiseuse</text>
+
+                                    <rect x="30" y="480" width="55" height="50" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Fraiseuse 2', 'eleve')"/>
+                                    <text x="57" y="503" text-anchor="middle" fill="#92400e" font-size="7">Mini</text>
+                                    <text x="57" y="515" text-anchor="middle" fill="#92400e" font-size="7">Fraiseuse</text>
+                                </g>
+
+                                <!-- ETABLI 2 et Armoire 2 -->
+                                <g class="zone-travail" data-criticite="moyen">
+                                    <rect x="150" y="440" width="100" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="3" onclick="showMachineInfo('Établi 2', 'moyen')"/>
+                                    <text x="200" y="470" text-anchor="middle" fill="#1e40af" font-size="10" font-weight="bold">ÉTABLI</text>
+
+                                    <rect x="110" y="500" width="30" height="20" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="2" onclick="showMachineInfo('Armoire 2', 'faible')"/>
+                                    <text x="125" y="514" text-anchor="middle" fill="#065f46" font-size="7">Arm.2</text>
+                                </g>
+
+                                <!-- Mini Tour en bas à droite -->
+                                <g class="zone-machine" data-criticite="eleve">
+                                    <rect x="320" y="430" width="55" height="60" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Tour 2', 'eleve')"/>
+                                    <text x="347" y="455" text-anchor="middle" fill="#92400e" font-size="8">Mini</text>
+                                    <text x="347" y="467" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
+
+                                    <rect x="320" y="500" width="55" height="50" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Tour 3', 'eleve')"/>
+                                    <text x="347" y="522" text-anchor="middle" fill="#92400e" font-size="8">Mini</text>
+                                    <text x="347" y="534" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
+                                </g>
+
+                                <!-- ZONE ÉQUIPEMENTS SPÉCIAUX (bas) -->
+                                <g class="zone-speciale" data-criticite="eleve" data-zone="Zone Équipements">
+                                    <!-- Compresseur -->
+                                    <rect x="30" y="560" width="60" height="50" fill="#e9d5ff" stroke="#8b5cf6" stroke-width="2" rx="3" onclick="showMachineInfo('Compresseur', 'eleve')"/>
+                                    <text x="60" y="590" text-anchor="middle" fill="#6b21a8" font-size="8">Compres.</text>
+
+                                    <!-- Plieuse -->
+                                    <rect x="280" y="560" width="60" height="50" fill="#e9d5ff" stroke="#8b5cf6" stroke-width="2" rx="3" onclick="showMachineInfo('Plieuse', 'eleve')"/>
+                                    <text x="310" y="590" text-anchor="middle" fill="#6b21a8" font-size="8">Plieuse</text>
+                                </g>
+
+                                <!-- Porte d'entrée -->
+                                <g>
+                                    <rect x="160" y="630" width="80" height="20" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="2"/>
+                                    <text x="200" y="645" text-anchor="middle" fill="#92400e" font-size="9">ENTRÉE</text>
+                                </g>
+
+                                <!-- GUILLOTINE -->
+                                <g class="zone-machine" data-criticite="critique">
+                                    <rect x="260" y="650" width="100" height="30" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="3" onclick="showMachineInfo('Guillotine', 'critique')"/>
+                                    <text x="310" y="670" text-anchor="middle" fill="#991b1b" font-size="9" font-weight="bold">GUILLOTINE</text>
+                                </g>
+                            </svg>
+                        </div>
+
+                        <!-- Info machine sélectionnée -->
+                        <div id="machineInfoPanel" style="margin-top: 15px; display: none;">
+                            <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 15px;">
+                                <h4 id="machineInfoTitle" style="color: #1e40af; margin: 0 0 10px 0;"></h4>
+                                <p id="machineInfoCriticite" style="margin: 5px 0; font-size: 13px;"></p>
+                                <p id="machineInfoConsignes" style="margin: 5px 0; font-size: 13px; color: #6b7280;"></p>
+                                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                    <button onclick="voirConsignesMachine()" class="btn-primary" style="font-size: 12px; padding: 8px 12px;">
+                                        <i class="fas fa-shield-alt"></i> Voir consignes
+                                    </button>
+                                    <button onclick="ajouterConsigneMachine()" class="btn-add" style="font-size: 12px; padding: 8px 12px;">
+                                        <i class="fas fa-plus"></i> Ajouter consigne
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1100,8 +1750,12 @@
                     <input type="date" id="tpDate" required>
                 </div>
                 <div class="form-group">
-                    <label>Durée (jours)</label>
-                    <input type="number" id="tpDuree" min="1" value="1">
+                    <label>Heure de début</label>
+                    <input type="time" id="tpHeureDebut" required>
+                </div>
+                <div class="form-group">
+                    <label>Durée (heures)</label>
+                    <input type="number" id="tpDuree" min="0.5" step="0.5" value="2" placeholder="Ex: 2.5">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeModal('tpModal')">Annuler</button>
@@ -1182,6 +1836,292 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeModal('stockModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CONSIGNE MODAL -->
+    <div id="consigneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter une Consigne de Sécurité</h3>
+                <button class="close-btn" onclick="closeModal('consigneModal')">&times;</button>
+            </div>
+            <form id="consigneForm" onsubmit="saveConsigne(event)">
+                <div class="form-group">
+                    <label>Titre de la consigne</label>
+                    <input type="text" id="consigneTitre" required placeholder="Ex: Port des EPI obligatoire">
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="consigneType" required>
+                        <option value="generale">Règle Générale</option>
+                        <option value="machine">Spécifique Machine</option>
+                        <option value="zone">Spécifique Zone</option>
+                        <option value="urgence">Procédure d'Urgence</option>
+                    </select>
+                </div>
+                <div class="form-group" id="consigneMachineGroup" style="display: none;">
+                    <label>Machine concernée</label>
+                    <select id="consigneMachine">
+                        <option value="">Sélectionner une machine...</option>
+                    </select>
+                </div>
+                <div class="form-group" id="consigneZoneGroup" style="display: none;">
+                    <label>Zone concernée</label>
+                    <select id="consigneZone">
+                        <option value="">Sélectionner une zone...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Niveau d'importance</label>
+                    <select id="consigneNiveau" required>
+                        <option value="info">Information</option>
+                        <option value="attention">Attention</option>
+                        <option value="danger">Danger</option>
+                        <option value="critique">Critique</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description détaillée</label>
+                    <textarea id="consigneDescription" rows="4" placeholder="Décrivez la consigne de manière pédagogique..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Date de validation</label>
+                    <input type="date" id="consigneValidation">
+                </div>
+                <div class="form-group">
+                    <label>Prochaine révision</label>
+                    <input type="date" id="consigneRevision">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('consigneModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ZONE MODAL -->
+    <div id="zoneModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter une Zone de Travail</h3>
+                <button class="close-btn" onclick="closeModal('zoneModal')">&times;</button>
+            </div>
+            <form id="zoneForm" onsubmit="saveZone(event)">
+                <div class="form-group">
+                    <label>Nom de la zone</label>
+                    <input type="text" id="zoneNom" required placeholder="Ex: Zone Usinage">
+                </div>
+                <div class="form-group">
+                    <label>Type de zone</label>
+                    <select id="zoneType" required>
+                        <option value="travail">Zone de Travail</option>
+                        <option value="stockage">Zone de Stockage</option>
+                        <option value="circulation">Zone de Circulation</option>
+                        <option value="securite">Zone de Sécurité</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Niveau de risque</label>
+                    <select id="zoneRisque" required>
+                        <option value="faible">Faible</option>
+                        <option value="moyen">Moyen</option>
+                        <option value="eleve">Élevé</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Capacité max (personnes)</label>
+                    <input type="number" id="zoneCapacite" min="1" value="5">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="zoneDescription" rows="3" placeholder="Description de la zone..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>EPI requis</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="epiLunettes"> Lunettes de protection
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="epiGants"> Gants
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="epiCasque"> Casque
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="epiChaussures"> Chaussures de sécurité
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="epiAuditif"> Protection auditive
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 8px; font-weight: normal;">
+                            <input type="checkbox" id="epiBlouse"> Blouse
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('zoneModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ALERTE MODAL -->
+    <div id="alerteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Créer une Alerte/Rappel</h3>
+                <button class="close-btn" onclick="closeModal('alerteModal')">&times;</button>
+            </div>
+            <form id="alerteForm" onsubmit="saveAlerte(event)">
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="alerteType" required>
+                        <option value="alerte">Alerte de sécurité</option>
+                        <option value="rappel">Rappel programmé</option>
+                        <option value="maintenance">Maintenance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Titre</label>
+                    <input type="text" id="alerteTitre" required placeholder="Ex: Vérification extincteurs">
+                </div>
+                <div class="form-group">
+                    <label>Message</label>
+                    <textarea id="alerteMessage" rows="3" required placeholder="Décrivez l'alerte ou le rappel..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Priorité</label>
+                    <select id="alertePriorite" required>
+                        <option value="basse">Basse</option>
+                        <option value="moyenne">Moyenne</option>
+                        <option value="haute">Haute</option>
+                        <option value="critique">Critique</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Date d'activation</label>
+                    <input type="datetime-local" id="alerteDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Destinataires</label>
+                    <select id="alerteDestinataires" required>
+                        <option value="tous">Tous les utilisateurs</option>
+                        <option value="etudiants">Étudiants seulement</option>
+                        <option value="enseignants">Enseignants seulement</option>
+                        <option value="admins">Administrateurs seulement</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('alerteModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Créer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- EMPLACEMENT MODAL -->
+    <div id="emplacementModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter un Emplacement</h3>
+                <button class="close-btn" onclick="closeModal('emplacementModal')">&times;</button>
+            </div>
+            <form id="emplacementForm" onsubmit="saveEmplacement(event)">
+                <div class="form-group">
+                    <label>Code/Référence</label>
+                    <input type="text" id="emplacementCode" required placeholder="Ex: A1-01">
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="emplacementNom" required placeholder="Ex: Étagère A - Rangée 1">
+                </div>
+                <div class="form-group">
+                    <label>Type de stockage</label>
+                    <select id="emplacementType" required>
+                        <option value="etagere">Étagère</option>
+                        <option value="armoire">Armoire</option>
+                        <option value="tiroir">Tiroir</option>
+                        <option value="bac">Bac</option>
+                        <option value="rack">Rack</option>
+                        <option value="sol">Au sol</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Zone</label>
+                    <select id="emplacementZone">
+                        <option value="">Sélectionner une zone...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Capacité</label>
+                    <input type="text" id="emplacementCapacite" placeholder="Ex: 20 pièces, 50kg">
+                </div>
+                <div class="form-group">
+                    <label>Contenu actuel</label>
+                    <textarea id="emplacementContenu" rows="2" placeholder="Décrivez le contenu actuel..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Statut</label>
+                    <select id="emplacementStatut" required>
+                        <option value="libre">Libre</option>
+                        <option value="occupe">Occupé</option>
+                        <option value="reserve">Réservé</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('emplacementModal')">Annuler</button>
+                    <button type="submit" class="btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CATEGORIE MODAL -->
+    <div id="categorieModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Ajouter une Catégorie</h3>
+                <button class="close-btn" onclick="closeModal('categorieModal')">&times;</button>
+            </div>
+            <form id="categorieForm" onsubmit="saveCategorie(event)">
+                <div class="form-group">
+                    <label>Nom de la catégorie</label>
+                    <input type="text" id="categorieNom" required placeholder="Ex: Outils de coupe">
+                </div>
+                <div class="form-group">
+                    <label>Icône</label>
+                    <select id="categorieIcone">
+                        <option value="fa-tools">🔧 Outils</option>
+                        <option value="fa-cog">⚙️ Pièces</option>
+                        <option value="fa-bolt">⚡ Électrique</option>
+                        <option value="fa-oil-can">🛢️ Lubrifiants</option>
+                        <option value="fa-hard-hat">🪖 EPI</option>
+                        <option value="fa-box">📦 Consommables</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Couleur</label>
+                    <input type="color" id="categorieCouleur" value="#3b82f6">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="categorieDescription" rows="2" placeholder="Description de la catégorie..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Emplacement par défaut</label>
+                    <select id="categorieEmplacement">
+                        <option value="">Aucun</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('categorieModal')">Annuler</button>
                     <button type="submit" class="btn-primary">Enregistrer</button>
                 </div>
             </form>
@@ -1384,9 +2324,9 @@
 
                 return `
                 <tr>
-                    <td>
+                    <td data-label="Utilisateur">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; flex-shrink: 0;">
                                 ${(u.prenom || 'U').charAt(0).toUpperCase()}${(u.nom || '').charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -1394,13 +2334,12 @@
                             </div>
                         </div>
                     </td>
-                    <td style="color: #3b82f6;">${u.email || ''}</td>
-                    <td><code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 11px;">${shortUid}</code></td>
-                    <td><span class="badge ${roleBadge}">${(u.role || 'user').toUpperCase()}</span></td>
-                    <td>${u.niveau || '-'}</td>
-                    <td style="font-size: 12px; color: #6b7280;">${lastLogin}</td>
-                    <td><span class="badge ${u.actif !== false ? 'badge-online' : 'badge-offline'}">${u.actif !== false ? 'Actif' : 'Inactif'}</span></td>
-                    <td>
+                    <td data-label="Email" style="color: #3b82f6; word-break: break-all;">${u.email || ''}</td>
+                    <td data-label="Rôle"><span class="badge ${roleBadge}">${(u.role || 'user').toUpperCase()}</span></td>
+                    <td data-label="Niveau">${u.niveau || '-'}</td>
+                    <td data-label="Connexion" style="font-size: 12px; color: #6b7280;">${lastLogin}</td>
+                    <td data-label="Statut"><span class="badge ${u.actif !== false ? 'badge-online' : 'badge-offline'}">${u.actif !== false ? 'Actif' : 'Inactif'}</span></td>
+                    <td data-label="Actions">
                         <div class="actions">
                             <button class="btn-sm btn-edit" onclick="editUser('${u.id}')" title="Modifier"><i class="fas fa-edit"></i></button>
                             <button class="btn-sm" style="background: #6366f1; color: white;" onclick="viewUserDetails('${u.id}')" title="Détails"><i class="fas fa-eye"></i></button>
@@ -1502,14 +2441,16 @@
         function renderMachinesTable() {
             const html = allMachines.map(m => `
                 <tr>
-                    <td>${m.nom || ''}</td>
-                    <td>${m.type || ''}</td>
-                    <td><span class="badge ${m.statut === 'disponible' ? 'badge-online' : 'badge-offline'}">${m.statut || 'inconnu'}</span></td>
-                    <td>${m.lieu || '-'}</td>
-                    <td>${m.nombreHeuresUtilisation || 0}h</td>
-                    <td>
-                        <button class="btn-sm btn-edit" onclick="editMachine('${m.id}')"><i class="fas fa-edit"></i></button>
-                        <button class="btn-sm btn-delete" onclick="deleteMachine('${m.id}')"><i class="fas fa-trash"></i></button>
+                    <td data-label="Machine"><strong>${m.nom || ''}</strong></td>
+                    <td data-label="Type">${m.type || ''}</td>
+                    <td data-label="Statut"><span class="badge ${m.statut === 'disponible' ? 'badge-online' : 'badge-offline'}">${m.statut || 'inconnu'}</span></td>
+                    <td data-label="Lieu">${m.lieu || '-'}</td>
+                    <td data-label="Heures">${m.nombreHeuresUtilisation || 0}h</td>
+                    <td data-label="Actions">
+                        <div class="actions">
+                            <button class="btn-sm btn-edit" onclick="editMachine('${m.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteMachine('${m.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -1522,15 +2463,17 @@
                 const min = s.quantiteMinimale || 5;
                 const lowStock = q <= min;
                 return `
-                    <tr style="${lowStock ? 'background: #fef2f2;' : ''}">
-                        <td>${s.nom || ''}</td>
-                        <td>${s.categorie || ''}</td>
-                        <td style="${lowStock ? 'color: #dc2626; font-weight: bold;' : ''}">${q}</td>
-                        <td>${min}</td>
-                        <td>${s.prix || 0}€</td>
-                        <td>
-                            <button class="btn-sm btn-edit" onclick="editStock('${s.id}')"><i class="fas fa-edit"></i></button>
-                            <button class="btn-sm btn-delete" onclick="deleteStock('${s.id}')"><i class="fas fa-trash"></i></button>
+                    <tr style="${lowStock ? 'border-left-color: #dc2626;' : ''}">
+                        <td data-label="Article"><strong>${s.nom || ''}</strong></td>
+                        <td data-label="Catégorie">${s.categorie || ''}</td>
+                        <td data-label="Quantité" style="${lowStock ? 'color: #dc2626; font-weight: bold;' : ''}">${q} ${lowStock ? '⚠️' : ''}</td>
+                        <td data-label="Min">${min}</td>
+                        <td data-label="Prix">${s.prix || 0}€</td>
+                        <td data-label="Actions">
+                            <div class="actions">
+                                <button class="btn-sm btn-edit" onclick="editStock('${s.id}')"><i class="fas fa-edit"></i></button>
+                                <button class="btn-sm btn-delete" onclick="deleteStock('${s.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
                         </td>
                     </tr>
                 `;
@@ -1538,27 +2481,63 @@
             document.getElementById('stockTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'articles</td></tr>';
         }
 
+        // Fonction pour calculer le statut dynamique d'un TP
+        function getTPStatus(tp) {
+            const now = new Date();
+            let dateDebut = tp.dateDebut;
+            if (dateDebut && dateDebut.toDate) dateDebut = dateDebut.toDate();
+            else if (dateDebut) dateDebut = new Date(dateDebut);
+
+            if (!dateDebut || !tp.duree) return tp.statut || 'planifie';
+
+            const dateFin = new Date(dateDebut.getTime() + (tp.duree * 60 * 60 * 1000));
+
+            if (now < dateDebut) return 'planifie';
+            if (now >= dateDebut && now < dateFin) return 'en_cours';
+            return 'termine';
+        }
+
+        // Fonction pour obtenir le badge de statut
+        function getStatusBadge(statut) {
+            const badges = {
+                'planifie': '<span class="badge" style="background: #fef3c7; color: #92400e;">En attente</span>',
+                'en_cours': '<span class="badge badge-online">En cours</span>',
+                'termine': '<span class="badge" style="background: #dbeafe; color: #1e40af;">Terminé</span>'
+            };
+            return badges[statut] || badges['planifie'];
+        }
+
         function renderTPTable() {
             const html = allTP.map(t => {
-                const dateStr = t.dateDebut ? new Date(t.dateDebut.toDate ? t.dateDebut.toDate() : t.dateDebut).toLocaleDateString('fr-FR') : '-';
+                let dateDebut = t.dateDebut;
+                if (dateDebut && dateDebut.toDate) dateDebut = dateDebut.toDate();
+                else if (dateDebut) dateDebut = new Date(dateDebut);
+
+                const dateStr = dateDebut ? dateDebut.toLocaleDateString('fr-FR') : '-';
+                const heureStr = t.heureDebut || (dateDebut ? dateDebut.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : '-');
+
+                // Calculer le statut dynamique
+                const statut = getTPStatus(t);
+
                 return `
                     <tr>
-                        <td><strong>${t.titre || ''}</strong></td>
-                        <td>${t.creatorName || 'N/A'}</td>
-                        <td>${t.creatorEmail || '-'}</td>
-                        <td>${t.type || ''}</td>
-                        <td>${dateStr}</td>
-                        <td>${t.duree || '-'} jours</td>
-                        <td><span class="badge badge-online">${t.statut || 'En cours'}</span></td>
-                        <td>${(t.membres || t.participants || []).length}</td>
-                        <td>
-                            <button class="btn-sm btn-edit" onclick="viewTPDetails('${t.id}')"><i class="fas fa-eye"></i></button>
-                            <button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button>
+                        <td data-label="Titre"><strong>${t.titre || ''}</strong></td>
+                        <td data-label="Créateur">${t.creatorName || 'N/A'}</td>
+                        <td data-label="Type">${t.type || ''}</td>
+                        <td data-label="Date">${dateStr} à ${heureStr}</td>
+                        <td data-label="Durée">${t.duree || '-'}h</td>
+                        <td data-label="Statut">${getStatusBadge(statut)}</td>
+                        <td data-label="Membres"><span class="badge" style="background: #dbeafe; color: #1e40af;">${(t.membres || t.participants || []).length} 👥</span></td>
+                        <td data-label="Actions">
+                            <div class="actions">
+                                <button class="btn-sm btn-edit" onclick="viewTPDetails('${t.id}')"><i class="fas fa-eye"></i></button>
+                                <button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button>
+                            </div>
                         </td>
                     </tr>
                 `;
             }).join('');
-            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="9" style="text-align: center;">Pas de TP</td></tr>';
+            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="8" style="text-align: center;">Pas de TP</td></tr>';
         }
 
         // Nettoyage des listeners à la fermeture
@@ -1623,7 +2602,7 @@
                     <td>${t.creatorEmail || '-'}</td>
                     <td>${t.type}</td>
                     <td>${new Date(t.dateDebut?.toDate?.() || t.dateDebut).toLocaleDateString('fr-FR')}</td>
-                    <td>${t.duree || '-'} jours</td>
+                    <td>${t.duree || '-'}h</td>
                     <td><span class="badge badge-online">${t.statut || 'En cours'}</span></td>
                     <td>${(t.participants || []).length} participant(s)</td>
                     <td>
@@ -1736,7 +2715,7 @@
 TP: ${tp.titre}
 Créateur: ${tp.creatorName} (${tp.creatorEmail})
 Type: ${tp.type}
-Durée: ${tp.duree || '-'} jours
+Durée: ${tp.duree || '-'} heures
 Date de début: ${new Date(tp.dateDebut?.toDate?.() || tp.dateDebut).toLocaleDateString('fr-FR')}
 Description: ${tp.description || '-'}
 Participants: ${(tp.participants || []).length}
@@ -1922,11 +2901,32 @@ Statut: ${tp.statut || 'En cours'}
 
         async function saveTP(e) {
             e.preventDefault();
+
+            // Combiner date et heure de début
+            const dateStr = document.getElementById('tpDate').value;
+            const heureStr = document.getElementById('tpHeureDebut').value;
+            const dateDebut = new Date(dateStr + 'T' + heureStr);
+
+            // Calculer le statut initial basé sur l'heure actuelle
+            const now = new Date();
+            const dureeHeures = parseFloat(document.getElementById('tpDuree').value);
+            const dateFin = new Date(dateDebut.getTime() + (dureeHeures * 60 * 60 * 1000));
+
+            let statut = 'planifie'; // En attente par défaut
+            if (now >= dateDebut && now < dateFin) {
+                statut = 'en_cours';
+            } else if (now >= dateFin) {
+                statut = 'termine';
+            }
+
             const data = {
                 titre: document.getElementById('tpTitre').value,
                 type: document.getElementById('tpType').value,
-                dateDebut: new Date(document.getElementById('tpDate').value),
-                duree: parseInt(document.getElementById('tpDuree').value),
+                dateDebut: dateDebut,
+                heureDebut: heureStr,
+                duree: dureeHeures,
+                dateFin: dateFin,
+                statut: statut,
                 dateCreation: new Date(),
                 creatorId: currentUserData.id,
                 creatorName: currentUserData.nom + ' ' + currentUserData.prenom
@@ -1990,6 +2990,805 @@ Statut: ${tp.statut || 'En cours'}
             loadStock();
             closeModal('stockModal');
             document.querySelector('#stockModal .modal-header h3').textContent = 'Ajouter du Stock';
+        }
+
+        // ==========================================
+        // FONCTIONS SÉCURITÉ
+        // ==========================================
+
+        let allConsignes = [];
+        let allZones = [];
+        let allAlertes = [];
+
+        function showSecuriteTab(tabName) {
+            document.querySelectorAll('.securite-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.securite-tab').forEach(el => {
+                el.classList.remove('active');
+                el.classList.remove('btn-primary');
+                el.classList.add('btn-secondary');
+            });
+
+            document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).style.display = 'block';
+            document.querySelector(`.securite-tab[data-tab="${tabName}"]`).classList.add('active');
+            document.querySelector(`.securite-tab[data-tab="${tabName}"]`).classList.remove('btn-secondary');
+            document.querySelector(`.securite-tab[data-tab="${tabName}"]`).classList.add('btn-primary');
+        }
+
+        async function loadSecurite() {
+            await Promise.all([loadConsignes(), loadZones(), loadAlertes()]);
+            checkAlertesSecurite();
+        }
+
+        async function loadConsignes() {
+            try {
+                const snapshot = await db.collection('consignes').orderBy('dateCreation', 'desc').get();
+                allConsignes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderConsignes();
+            } catch(e) {
+                console.error('Erreur chargement consignes:', e);
+            }
+        }
+
+        function renderConsignes() {
+            const searchTerm = document.getElementById('consignesSearch')?.value?.toLowerCase() || '';
+            const filtered = allConsignes.filter(c =>
+                c.titre?.toLowerCase().includes(searchTerm) ||
+                c.description?.toLowerCase().includes(searchTerm)
+            );
+
+            const niveauColors = {
+                'info': { bg: '#dbeafe', color: '#1e40af', icon: 'fa-info-circle' },
+                'attention': { bg: '#fef3c7', color: '#92400e', icon: 'fa-exclamation-triangle' },
+                'danger': { bg: '#fee2e2', color: '#991b1b', icon: 'fa-exclamation-circle' },
+                'critique': { bg: '#fecaca', color: '#7f1d1d', icon: 'fa-skull-crossbones' }
+            };
+
+            const html = filtered.map(c => {
+                const niveau = niveauColors[c.niveau] || niveauColors['info'];
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; border-left: 4px solid ${niveau.color};">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <h4 style="color: #1e40af; margin: 0;"><i class="fas ${niveau.icon}" style="color: ${niveau.color};"></i> ${c.titre}</h4>
+                            <span style="background: ${niveau.bg}; color: ${niveau.color}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">${c.niveau?.toUpperCase()}</span>
+                        </div>
+                        <p style="color: #6b7280; font-size: 13px; margin: 0 0 10px 0;">${c.description || 'Pas de description'}</p>
+                        <div style="display: flex; gap: 10px; font-size: 12px; color: #9ca3af;">
+                            <span><i class="fas fa-tag"></i> ${c.type || 'Général'}</span>
+                            ${c.machine ? `<span><i class="fas fa-cog"></i> ${c.machine}</span>` : ''}
+                            ${c.zone ? `<span><i class="fas fa-map-marker-alt"></i> ${c.zone}</span>` : ''}
+                        </div>
+                        <div style="margin-top: 12px; display: flex; gap: 8px;">
+                            <button class="btn-sm btn-edit" onclick="editConsigne('${c.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteConsigne('${c.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('consignesGrid').innerHTML = html || '<p style="text-align: center; color: #999; grid-column: 1/-1;">Aucune consigne de sécurité</p>';
+        }
+
+        function openConsigneModal() {
+            document.getElementById('consigneForm').reset();
+            populateMachinesSelect();
+            populateZonesSelect();
+            document.getElementById('consigneModal').classList.add('active');
+
+            document.getElementById('consigneType').addEventListener('change', function() {
+                document.getElementById('consigneMachineGroup').style.display = this.value === 'machine' ? 'block' : 'none';
+                document.getElementById('consigneZoneGroup').style.display = this.value === 'zone' ? 'block' : 'none';
+            });
+        }
+
+        function populateMachinesSelect() {
+            const select = document.getElementById('consigneMachine');
+            select.innerHTML = '<option value="">Sélectionner une machine...</option>' +
+                allMachines.map(m => `<option value="${m.nom}">${m.nom}</option>`).join('');
+        }
+
+        function populateZonesSelect() {
+            const select = document.getElementById('consigneZone');
+            const zoneSelect = document.getElementById('emplacementZone');
+            const html = '<option value="">Sélectionner une zone...</option>' +
+                allZones.map(z => `<option value="${z.nom}">${z.nom}</option>`).join('');
+            select.innerHTML = html;
+            if (zoneSelect) zoneSelect.innerHTML = html;
+        }
+
+        async function saveConsigne(e) {
+            e.preventDefault();
+            const data = {
+                titre: document.getElementById('consigneTitre').value,
+                type: document.getElementById('consigneType').value,
+                machine: document.getElementById('consigneMachine').value || null,
+                zone: document.getElementById('consigneZone').value || null,
+                niveau: document.getElementById('consigneNiveau').value,
+                description: document.getElementById('consigneDescription').value,
+                dateValidation: document.getElementById('consigneValidation').value || null,
+                dateRevision: document.getElementById('consigneRevision').value || null,
+                dateCreation: new Date(),
+                createdBy: currentUserData.id
+            };
+
+            await db.collection('consignes').add(data);
+            await loadConsignes();
+            closeModal('consigneModal');
+        }
+
+        async function deleteConsigne(id) {
+            if (!confirm('Supprimer cette consigne ?')) return;
+            await db.collection('consignes').doc(id).delete();
+            await loadConsignes();
+        }
+
+        async function loadZones() {
+            try {
+                const snapshot = await db.collection('zones').orderBy('nom').get();
+                allZones = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderZones();
+            } catch(e) {
+                console.error('Erreur chargement zones:', e);
+            }
+        }
+
+        function renderZones() {
+            const risqueColors = {
+                'faible': { bg: '#d1fae5', color: '#065f46' },
+                'moyen': { bg: '#fef3c7', color: '#92400e' },
+                'eleve': { bg: '#fee2e2', color: '#991b1b' }
+            };
+
+            const html = allZones.map(z => {
+                const risque = risqueColors[z.risque] || risqueColors['faible'];
+                const epiList = [];
+                if (z.epiLunettes) epiList.push('👓');
+                if (z.epiGants) epiList.push('🧤');
+                if (z.epiCasque) epiList.push('⛑️');
+                if (z.epiChaussures) epiList.push('👟');
+                if (z.epiAuditif) epiList.push('🎧');
+                if (z.epiBlouse) epiList.push('🥼');
+
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px;">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <h4 style="color: #1e40af; margin: 0;"><i class="fas fa-map-marked-alt"></i> ${z.nom}</h4>
+                            <span style="background: ${risque.bg}; color: ${risque.color}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">Risque ${z.risque}</span>
+                        </div>
+                        <p style="color: #6b7280; font-size: 13px; margin: 0 0 10px 0;">${z.description || 'Pas de description'}</p>
+                        <div style="display: flex; gap: 10px; font-size: 12px; color: #9ca3af; margin-bottom: 10px;">
+                            <span><i class="fas fa-tag"></i> ${z.type || 'Travail'}</span>
+                            <span><i class="fas fa-users"></i> Max ${z.capacite || 5} pers.</span>
+                        </div>
+                        ${epiList.length > 0 ? `<div style="font-size: 18px; margin-bottom: 10px;">${epiList.join(' ')}</div>` : ''}
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-sm btn-edit" onclick="editZone('${z.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteZone('${z.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('zonesGrid').innerHTML = html || '<p style="text-align: center; color: #999; grid-column: 1/-1;">Aucune zone définie</p>';
+        }
+
+        function openZoneModal() {
+            document.getElementById('zoneForm').reset();
+            document.getElementById('zoneModal').classList.add('active');
+        }
+
+        async function saveZone(e) {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('zoneNom').value,
+                type: document.getElementById('zoneType').value,
+                risque: document.getElementById('zoneRisque').value,
+                capacite: parseInt(document.getElementById('zoneCapacite').value),
+                description: document.getElementById('zoneDescription').value,
+                epiLunettes: document.getElementById('epiLunettes').checked,
+                epiGants: document.getElementById('epiGants').checked,
+                epiCasque: document.getElementById('epiCasque').checked,
+                epiChaussures: document.getElementById('epiChaussures').checked,
+                epiAuditif: document.getElementById('epiAuditif').checked,
+                epiBlouse: document.getElementById('epiBlouse').checked,
+                dateCreation: new Date()
+            };
+
+            await db.collection('zones').add(data);
+            await loadZones();
+            closeModal('zoneModal');
+        }
+
+        async function deleteZone(id) {
+            if (!confirm('Supprimer cette zone ?')) return;
+            await db.collection('zones').doc(id).delete();
+            await loadZones();
+        }
+
+        async function loadAlertes() {
+            try {
+                const snapshot = await db.collection('alertes').orderBy('dateActivation', 'desc').get();
+                allAlertes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderAlertes();
+            } catch(e) {
+                console.error('Erreur chargement alertes:', e);
+            }
+        }
+
+        function renderAlertes() {
+            const now = new Date();
+            const actives = allAlertes.filter(a => {
+                const dateActivation = a.dateActivation?.toDate ? a.dateActivation.toDate() : new Date(a.dateActivation);
+                return dateActivation <= now && a.type === 'alerte';
+            });
+            const rappels = allAlertes.filter(a => a.type === 'rappel' || a.type === 'maintenance');
+
+            const prioriteColors = {
+                'basse': { bg: '#dbeafe', color: '#1e40af' },
+                'moyenne': { bg: '#fef3c7', color: '#92400e' },
+                'haute': { bg: '#fed7aa', color: '#c2410c' },
+                'critique': { bg: '#fecaca', color: '#991b1b' }
+            };
+
+            const activesHtml = actives.map(a => {
+                const p = prioriteColors[a.priorite] || prioriteColors['moyenne'];
+                return `
+                    <div style="background: ${p.bg}; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: ${p.color};"><i class="fas fa-exclamation-triangle"></i> ${a.titre}</strong>
+                            <button class="btn-sm btn-delete" onclick="deleteAlerte('${a.id}')"><i class="fas fa-times"></i></button>
+                        </div>
+                        <p style="color: ${p.color}; margin: 8px 0 0 0; font-size: 13px;">${a.message}</p>
+                    </div>
+                `;
+            }).join('');
+
+            const rappelsHtml = rappels.map(a => {
+                const dateActivation = a.dateActivation?.toDate ? a.dateActivation.toDate() : new Date(a.dateActivation);
+                return `
+                    <div style="background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <strong style="color: #1e40af;"><i class="fas fa-bell"></i> ${a.titre}</strong>
+                            <span style="font-size: 12px; color: #6b7280;">${dateActivation.toLocaleDateString('fr-FR')}</span>
+                        </div>
+                        <p style="color: #6b7280; margin: 8px 0 0 0; font-size: 13px;">${a.message}</p>
+                        <button class="btn-sm btn-delete" style="margin-top: 8px;" onclick="deleteAlerte('${a.id}')"><i class="fas fa-trash"></i> Supprimer</button>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('alertesActives').innerHTML = activesHtml || '<p style="color: #999; font-size: 14px;">Aucune alerte active</p>';
+            document.getElementById('rappelsProgrammes').innerHTML = rappelsHtml || '<p style="color: #999; font-size: 14px;">Aucun rappel programmé</p>';
+        }
+
+        function openAlerteModal() {
+            document.getElementById('alerteForm').reset();
+            document.getElementById('alerteModal').classList.add('active');
+        }
+
+        async function saveAlerte(e) {
+            e.preventDefault();
+            const data = {
+                type: document.getElementById('alerteType').value,
+                titre: document.getElementById('alerteTitre').value,
+                message: document.getElementById('alerteMessage').value,
+                priorite: document.getElementById('alertePriorite').value,
+                dateActivation: new Date(document.getElementById('alerteDate').value),
+                destinataires: document.getElementById('alerteDestinataires').value,
+                dateCreation: new Date(),
+                createdBy: currentUserData.id
+            };
+
+            await db.collection('alertes').add(data);
+            await loadAlertes();
+            closeModal('alerteModal');
+        }
+
+        async function deleteAlerte(id) {
+            if (!confirm('Supprimer cette alerte ?')) return;
+            await db.collection('alertes').doc(id).delete();
+            await loadAlertes();
+        }
+
+        function checkAlertesSecurite() {
+            const now = new Date();
+            const actives = allAlertes.filter(a => {
+                const dateActivation = a.dateActivation?.toDate ? a.dateActivation.toDate() : new Date(a.dateActivation);
+                return dateActivation <= now && (a.priorite === 'haute' || a.priorite === 'critique');
+            });
+
+            if (actives.length > 0) {
+                const html = actives.map(a => `
+                    <div style="background: ${a.priorite === 'critique' ? '#fecaca' : '#fed7aa'}; border-radius: 8px; padding: 12px; margin-bottom: 10px;">
+                        <strong style="color: ${a.priorite === 'critique' ? '#991b1b' : '#c2410c'};"><i class="fas fa-exclamation-triangle"></i> ${a.titre}</strong>
+                        <p style="color: ${a.priorite === 'critique' ? '#991b1b' : '#c2410c'}; margin: 5px 0 0 0; font-size: 13px;">${a.message}</p>
+                    </div>
+                `).join('');
+                document.getElementById('alertesSecurite').innerHTML = html;
+            } else {
+                document.getElementById('alertesSecurite').innerHTML = '';
+            }
+        }
+
+        // ==========================================
+        // FONCTIONS RAPPORTS
+        // ==========================================
+
+        async function loadRapports() {
+            checkStockAlerts();
+            checkMaintenanceAlerts();
+            loadRapportsHistory();
+        }
+
+        function checkStockAlerts() {
+            const lowStock = allStock.filter(s => s.quantite <= (s.quantiteMinimale || 5));
+
+            if (lowStock.length > 0) {
+                const html = lowStock.map(s => `
+                    <div style="background: #fee2e2; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #991b1b;"><i class="fas fa-exclamation-circle"></i> ${s.nom}</strong>
+                            <p style="color: #991b1b; margin: 5px 0 0 0; font-size: 13px;">Stock: ${s.quantite} / Min: ${s.quantiteMinimale || 5}</p>
+                        </div>
+                        <button onclick="openStockModal(); document.getElementById('stockNom').value='${s.nom}'" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;">
+                            <i class="fas fa-plus"></i> Réapprovisionner
+                        </button>
+                    </div>
+                `).join('');
+                document.getElementById('alertesStock').innerHTML = html;
+            } else {
+                document.getElementById('alertesStock').innerHTML = '<p style="color: #10b981; font-size: 14px;"><i class="fas fa-check-circle"></i> Tous les stocks sont suffisants</p>';
+            }
+        }
+
+        function checkMaintenanceAlerts() {
+            const needMaintenance = allMachines.filter(m => m.statut === 'maintenance' || m.statut === 'en panne');
+
+            if (needMaintenance.length > 0) {
+                const html = needMaintenance.map(m => `
+                    <div style="background: #fef3c7; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <strong style="color: #92400e;"><i class="fas fa-tools"></i> ${m.nom}</strong>
+                            <p style="color: #92400e; margin: 5px 0 0 0; font-size: 13px;">Statut: ${m.statut} | Type: ${m.type}</p>
+                        </div>
+                        <span style="background: ${m.statut === 'en panne' ? '#ef4444' : '#f59e0b'}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 12px;">
+                            ${m.statut === 'en panne' ? 'Urgent' : 'À planifier'}
+                        </span>
+                    </div>
+                `).join('');
+                document.getElementById('alertesMaintenance').innerHTML = html;
+            } else {
+                document.getElementById('alertesMaintenance').innerHTML = '<p style="color: #10b981; font-size: 14px;"><i class="fas fa-check-circle"></i> Toutes les machines sont opérationnelles</p>';
+            }
+        }
+
+        async function loadRapportsHistory() {
+            try {
+                const snapshot = await db.collection('rapports').orderBy('dateGeneration', 'desc').limit(10).get();
+                const rapports = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (rapports.length > 0) {
+                    const html = rapports.map(r => {
+                        const date = r.dateGeneration?.toDate ? r.dateGeneration.toDate() : new Date(r.dateGeneration);
+                        return `
+                            <tr>
+                                <td><strong>${r.type}</strong></td>
+                                <td>${date.toLocaleDateString('fr-FR')} ${date.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</td>
+                                <td>${r.generePar || 'Admin'}</td>
+                                <td>
+                                    <button class="btn-sm btn-edit" onclick="viewRapport('${r.id}')"><i class="fas fa-eye"></i></button>
+                                    <button class="btn-sm btn-delete" onclick="deleteRapport('${r.id}')"><i class="fas fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join('');
+                    document.getElementById('rapportsTable').innerHTML = html;
+                }
+            } catch(e) {
+                console.error('Erreur chargement historique rapports:', e);
+            }
+        }
+
+        async function genererRapport(type) {
+            const rapportData = {
+                type: type,
+                dateGeneration: new Date(),
+                generePar: currentUserData.nom + ' ' + currentUserData.prenom,
+                contenu: {}
+            };
+
+            switch(type) {
+                case 'general':
+                    rapportData.contenu = {
+                        utilisateurs: allUsers.length,
+                        machines: allMachines.length,
+                        tp: allTP.length,
+                        stock: allStock.length,
+                        zones: allZones.length,
+                        consignes: allConsignes.length
+                    };
+                    break;
+                case 'securite':
+                    rapportData.contenu = {
+                        consignes: allConsignes.length,
+                        zones: allZones.length,
+                        alertesActives: allAlertes.filter(a => a.type === 'alerte').length,
+                        zonesHautRisque: allZones.filter(z => z.risque === 'eleve').length
+                    };
+                    break;
+                case 'stock':
+                    rapportData.contenu = {
+                        totalArticles: allStock.length,
+                        stockBas: allStock.filter(s => s.quantite <= (s.quantiteMinimale || 5)).length,
+                        valeurTotale: allStock.reduce((sum, s) => sum + (s.quantite * (s.prix || 0)), 0)
+                    };
+                    break;
+                case 'machines':
+                    rapportData.contenu = {
+                        totalMachines: allMachines.length,
+                        operationnelles: allMachines.filter(m => m.statut === 'operationnelle').length,
+                        enMaintenance: allMachines.filter(m => m.statut === 'maintenance').length,
+                        enPanne: allMachines.filter(m => m.statut === 'en panne').length
+                    };
+                    break;
+            }
+
+            await db.collection('rapports').add(rapportData);
+            await loadRapportsHistory();
+            alert('Rapport ' + type + ' généré avec succès !');
+        }
+
+        async function deleteRapport(id) {
+            if (!confirm('Supprimer ce rapport ?')) return;
+            await db.collection('rapports').doc(id).delete();
+            await loadRapportsHistory();
+        }
+
+        // ==========================================
+        // FONCTIONS RANGEMENT
+        // ==========================================
+
+        let allEmplacements = [];
+        let allCategories = [];
+
+        function showRangementTab(tabName) {
+            document.querySelectorAll('.rangement-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.rangement-tab').forEach(el => {
+                el.classList.remove('active');
+                el.classList.remove('btn-primary');
+                el.classList.add('btn-secondary');
+            });
+
+            document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1)).style.display = 'block';
+            document.querySelector(`.rangement-tab[data-tab="${tabName}"]`).classList.add('active');
+            document.querySelector(`.rangement-tab[data-tab="${tabName}"]`).classList.remove('btn-secondary');
+            document.querySelector(`.rangement-tab[data-tab="${tabName}"]`).classList.add('btn-primary');
+        }
+
+        async function loadRangement() {
+            await Promise.all([loadEmplacements(), loadCategories()]);
+            updateRangementStats();
+        }
+
+        async function loadEmplacements() {
+            try {
+                const snapshot = await db.collection('emplacements').orderBy('code').get();
+                allEmplacements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderEmplacements();
+            } catch(e) {
+                console.error('Erreur chargement emplacements:', e);
+            }
+        }
+
+        function renderEmplacements() {
+            const statutColors = {
+                'libre': { bg: '#d1fae5', color: '#065f46', icon: 'fa-check-circle' },
+                'occupe': { bg: '#dbeafe', color: '#1e40af', icon: 'fa-box' },
+                'reserve': { bg: '#fef3c7', color: '#92400e', icon: 'fa-lock' }
+            };
+
+            const html = allEmplacements.map(e => {
+                const statut = statutColors[e.statut] || statutColors['libre'];
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; border-left: 4px solid ${statut.color};">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <div>
+                                <span style="background: #1e40af; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${e.code}</span>
+                                <h4 style="color: #1e40af; margin: 8px 0 0 0;">${e.nom}</h4>
+                            </div>
+                            <span style="background: ${statut.bg}; color: ${statut.color}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                                <i class="fas ${statut.icon}"></i> ${e.statut}
+                            </span>
+                        </div>
+                        <div style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">
+                            <p style="margin: 4px 0;"><i class="fas fa-th-large"></i> Type: ${e.type || 'Non défini'}</p>
+                            ${e.zone ? `<p style="margin: 4px 0;"><i class="fas fa-map-marker-alt"></i> Zone: ${e.zone}</p>` : ''}
+                            ${e.capacite ? `<p style="margin: 4px 0;"><i class="fas fa-weight"></i> Capacité: ${e.capacite}</p>` : ''}
+                        </div>
+                        ${e.contenu ? `<p style="background: #f8fafc; padding: 8px; border-radius: 6px; font-size: 12px; color: #4b5563; margin-bottom: 10px;">${e.contenu}</p>` : ''}
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-sm btn-edit" onclick="editEmplacement('${e.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteEmplacement('${e.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('emplacementsGrid').innerHTML = html || '<p style="text-align: center; color: #999; grid-column: 1/-1;">Aucun emplacement défini</p>';
+        }
+
+        function openEmplacementModal() {
+            document.getElementById('emplacementForm').reset();
+            populateZonesSelect();
+            document.getElementById('emplacementModal').classList.add('active');
+        }
+
+        async function saveEmplacement(e) {
+            e.preventDefault();
+            const data = {
+                code: document.getElementById('emplacementCode').value,
+                nom: document.getElementById('emplacementNom').value,
+                type: document.getElementById('emplacementType').value,
+                zone: document.getElementById('emplacementZone').value || null,
+                capacite: document.getElementById('emplacementCapacite').value,
+                contenu: document.getElementById('emplacementContenu').value,
+                statut: document.getElementById('emplacementStatut').value,
+                dateCreation: new Date()
+            };
+
+            await db.collection('emplacements').add(data);
+            await loadEmplacements();
+            updateRangementStats();
+            closeModal('emplacementModal');
+        }
+
+        async function deleteEmplacement(id) {
+            if (!confirm('Supprimer cet emplacement ?')) return;
+            await db.collection('emplacements').doc(id).delete();
+            await loadEmplacements();
+            updateRangementStats();
+        }
+
+        async function loadCategories() {
+            try {
+                const snapshot = await db.collection('categories').orderBy('nom').get();
+                allCategories = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderCategories();
+            } catch(e) {
+                console.error('Erreur chargement catégories:', e);
+            }
+        }
+
+        function renderCategories() {
+            const html = allCategories.map(c => `
+                <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; border-left: 4px solid ${c.couleur || '#3b82f6'};">
+                    <h4 style="color: ${c.couleur || '#1e40af'}; margin: 0 0 10px 0;">
+                        <i class="fas ${c.icone || 'fa-box'}"></i> ${c.nom}
+                    </h4>
+                    <p style="color: #6b7280; font-size: 13px; margin: 0 0 10px 0;">${c.description || 'Pas de description'}</p>
+                    ${c.emplacement ? `<p style="font-size: 12px; color: #9ca3af;"><i class="fas fa-map-marker-alt"></i> Emplacement: ${c.emplacement}</p>` : ''}
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button class="btn-sm btn-edit" onclick="editCategorie('${c.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-sm btn-delete" onclick="deleteCategorie('${c.id}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('categoriesGrid').innerHTML = html || '<p style="text-align: center; color: #999; grid-column: 1/-1;">Aucune catégorie définie</p>';
+        }
+
+        function openCategorieModal() {
+            document.getElementById('categorieForm').reset();
+            populateEmplacementsSelect();
+            document.getElementById('categorieModal').classList.add('active');
+        }
+
+        function populateEmplacementsSelect() {
+            const select = document.getElementById('categorieEmplacement');
+            select.innerHTML = '<option value="">Aucun</option>' +
+                allEmplacements.map(e => `<option value="${e.code}">${e.code} - ${e.nom}</option>`).join('');
+        }
+
+        async function saveCategorie(e) {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('categorieNom').value,
+                icone: document.getElementById('categorieIcone').value,
+                couleur: document.getElementById('categorieCouleur').value,
+                description: document.getElementById('categorieDescription').value,
+                emplacement: document.getElementById('categorieEmplacement').value || null,
+                dateCreation: new Date()
+            };
+
+            await db.collection('categories').add(data);
+            await loadCategories();
+            closeModal('categorieModal');
+        }
+
+        async function deleteCategorie(id) {
+            if (!confirm('Supprimer cette catégorie ?')) return;
+            await db.collection('categories').doc(id).delete();
+            await loadCategories();
+        }
+
+        function updateRangementStats() {
+            document.getElementById('statEmplacements').textContent = allEmplacements.length;
+            document.getElementById('statOccupes').textContent = allEmplacements.filter(e => e.statut === 'occupe').length;
+            document.getElementById('statLibres').textContent = allEmplacements.filter(e => e.statut === 'libre').length;
+        }
+
+        // ==========================================
+        // FONCTIONS PLAN ATELIER
+        // ==========================================
+
+        let selectedMachine = null;
+
+        function showMachineInfo(machineName, criticite) {
+            selectedMachine = machineName;
+            document.getElementById('machineInfoPanel').style.display = 'block';
+            document.getElementById('machineInfoTitle').innerHTML = '<i class="fas fa-cog"></i> ' + machineName;
+
+            const criticiteLabels = {
+                'critique': '🔴 Criticité CRITIQUE - Port des EPI obligatoire',
+                'eleve': '🟠 Criticité ÉLEVÉE - Attention particulière requise',
+                'moyen': '🟡 Criticité MOYENNE - Respect des consignes',
+                'faible': '🟢 Criticité FAIBLE - Zone sécurisée'
+            };
+            document.getElementById('machineInfoCriticite').innerHTML = '<strong>Niveau de risque:</strong> ' + (criticiteLabels[criticite] || 'Non défini');
+
+            // Compter les consignes pour cette machine
+            const consignesMachine = allConsignes.filter(c => c.machine === machineName);
+            document.getElementById('machineInfoConsignes').innerHTML = '<strong>Consignes:</strong> ' + consignesMachine.length + ' consigne(s) de sécurité';
+
+            // Mettre en évidence la machine sélectionnée
+            document.querySelectorAll('.machine-block').forEach(el => {
+                el.style.opacity = '0.5';
+            });
+            event.target.closest('rect')?.style && (event.target.closest('rect').style.opacity = '1');
+        }
+
+        function filterZonesByCriticite() {
+            const filter = document.getElementById('filterCriticite').value;
+            const groups = document.querySelectorAll('#planAtelier g[data-criticite]');
+
+            groups.forEach(g => {
+                if (!filter || g.dataset.criticite === filter) {
+                    g.style.opacity = '1';
+                    g.style.pointerEvents = 'auto';
+                } else {
+                    g.style.opacity = '0.2';
+                    g.style.pointerEvents = 'none';
+                }
+            });
+        }
+
+        function resetPlanView() {
+            document.getElementById('filterCriticite').value = '';
+            document.querySelectorAll('#planAtelier g[data-criticite]').forEach(g => {
+                g.style.opacity = '1';
+                g.style.pointerEvents = 'auto';
+            });
+            document.querySelectorAll('.machine-block').forEach(el => {
+                el.style.opacity = '1';
+            });
+            document.getElementById('machineInfoPanel').style.display = 'none';
+            selectedMachine = null;
+        }
+
+        function voirConsignesMachine() {
+            if (!selectedMachine) return;
+            // Basculer vers l'onglet Sécurité > Consignes et filtrer
+            document.querySelector('[data-page="securite"]').click();
+            setTimeout(() => {
+                showSecuriteTab('consignes');
+                document.getElementById('consignesSearch').value = selectedMachine;
+                renderConsignes();
+            }, 100);
+        }
+
+        function ajouterConsigneMachine() {
+            if (!selectedMachine) return;
+            openConsigneModal();
+            setTimeout(() => {
+                document.getElementById('consigneType').value = 'machine';
+                document.getElementById('consigneMachineGroup').style.display = 'block';
+                // Chercher ou ajouter la machine dans le select
+                const select = document.getElementById('consigneMachine');
+                let found = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === selectedMachine) {
+                        select.selectedIndex = i;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) {
+                    const option = document.createElement('option');
+                    option.value = selectedMachine;
+                    option.textContent = selectedMachine;
+                    select.appendChild(option);
+                    select.value = selectedMachine;
+                }
+            }, 100);
+        }
+
+        function editPlanAtelier() {
+            alert('Le plan de l\'atelier est maintenant interactif ! Cliquez sur les machines pour voir leurs informations et gérer leurs consignes de sécurité.');
+        }
+
+        // ==========================================
+        // INITIALISATION
+        // ==========================================
+
+        // Charger les nouvelles sections quand on change de page
+        const originalMenuLinks = document.querySelectorAll('.menu-link');
+        originalMenuLinks.forEach(link => {
+            link.addEventListener('click', async function() {
+                const page = this.dataset.page;
+                if (page === 'securite') {
+                    await loadSecurite();
+                } else if (page === 'rapports') {
+                    await loadRapports();
+                } else if (page === 'rangement') {
+                    await loadRangement();
+                }
+            });
+        });
+
+        // Écouteurs pour les recherches
+        document.addEventListener('DOMContentLoaded', function() {
+            // Recherche consignes
+            const consignesSearch = document.getElementById('consignesSearch');
+            if (consignesSearch) {
+                consignesSearch.addEventListener('input', renderConsignes);
+            }
+
+            // Recherche emplacements
+            const emplacementsSearch = document.getElementById('emplacementsSearch');
+            if (emplacementsSearch) {
+                emplacementsSearch.addEventListener('input', function() {
+                    const term = this.value.toLowerCase();
+                    const filtered = allEmplacements.filter(e =>
+                        e.nom?.toLowerCase().includes(term) ||
+                        e.code?.toLowerCase().includes(term)
+                    );
+                    renderEmplacementsFiltered(filtered);
+                });
+            }
+        });
+
+        function renderEmplacementsFiltered(emplacements) {
+            const statutColors = {
+                'libre': { bg: '#d1fae5', color: '#065f46', icon: 'fa-check-circle' },
+                'occupe': { bg: '#dbeafe', color: '#1e40af', icon: 'fa-box' },
+                'reserve': { bg: '#fef3c7', color: '#92400e', icon: 'fa-lock' }
+            };
+
+            const html = emplacements.map(e => {
+                const statut = statutColors[e.statut] || statutColors['libre'];
+                return `
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; border-left: 4px solid ${statut.color};">
+                        <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                            <div>
+                                <span style="background: #1e40af; color: white; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${e.code}</span>
+                                <h4 style="color: #1e40af; margin: 8px 0 0 0;">${e.nom}</h4>
+                            </div>
+                            <span style="background: ${statut.bg}; color: ${statut.color}; padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
+                                <i class="fas ${statut.icon}"></i> ${e.statut}
+                            </span>
+                        </div>
+                        <div style="font-size: 13px; color: #6b7280; margin-bottom: 10px;">
+                            <p style="margin: 4px 0;"><i class="fas fa-th-large"></i> Type: ${e.type || 'Non défini'}</p>
+                            ${e.zone ? `<p style="margin: 4px 0;"><i class="fas fa-map-marker-alt"></i> Zone: ${e.zone}</p>` : ''}
+                        </div>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn-sm btn-edit" onclick="editEmplacement('${e.id}')"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-delete" onclick="deleteEmplacement('${e.id}')"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('emplacementsGrid').innerHTML = html || '<p style="text-align: center; color: #999; grid-column: 1/-1;">Aucun emplacement trouvé</p>';
         }
     </script>
 </body>

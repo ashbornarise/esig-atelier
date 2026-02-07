@@ -445,6 +445,7 @@
         @media (max-width: 768px) {
             .form-row {
                 grid-template-columns: 1fr;
+                gap: 12px;
             }
 
             .stats-grid {
@@ -470,6 +471,7 @@
 
             .filter-bar {
                 flex-direction: column;
+                gap: 10px;
             }
 
             .filter-bar input,
@@ -500,6 +502,40 @@
                 width: 36px;
                 height: 36px;
                 font-size: 16px;
+            }
+
+            /* Amélioration cartes TP mobile */
+            #tpContent > div,
+            #mesTP > div {
+                padding: 14px !important;
+                margin-bottom: 12px !important;
+            }
+
+            #tpContent h4,
+            #mesTP h4 {
+                font-size: 15px !important;
+            }
+
+            #tpContent p,
+            #mesTP p {
+                font-size: 12px !important;
+            }
+
+            /* Boutons TP responsive */
+            #mesTP button {
+                padding: 8px 12px !important;
+                font-size: 12px !important;
+            }
+
+            /* Section sécurité responsive */
+            #securiteSection > div {
+                padding: 12px !important;
+                margin-bottom: 12px !important;
+            }
+
+            /* Grilles procédures urgence */
+            #proceduresUrgence > div {
+                grid-template-columns: repeat(2, 1fr) !important;
             }
 
             .user-profile {
@@ -591,6 +627,80 @@
 
             .stat-label i {
                 font-size: 14px;
+            }
+
+            /* Modal plein écran sur mobile */
+            .modal-content {
+                width: 100% !important;
+                height: 100% !important;
+                max-height: 100% !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+                padding: 15px !important;
+                overflow-y: auto !important;
+            }
+
+            /* Modal membres responsive */
+            #membresModal .modal-content {
+                max-width: 100% !important;
+            }
+
+            #membresModal input {
+                font-size: 16px;
+            }
+
+            #currentMembers > div,
+            #searchResults > div {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+
+            #currentMembers button,
+            #searchResults button {
+                width: 100% !important;
+            }
+
+            /* Cartes TP mobile optimisées */
+            #mesTP > div > div:first-child {
+                flex-direction: column !important;
+                align-items: flex-start !important;
+                gap: 10px !important;
+            }
+
+            #mesTP > div > div:last-child {
+                flex-direction: column !important;
+                width: 100% !important;
+            }
+
+            #mesTP > div > div:last-child button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            /* Section sécurité mobile */
+            #securiteSection h3 {
+                font-size: 14px !important;
+            }
+
+            #consignesGenerales > div,
+            #zonesSecurite > div,
+            #consignesMachines > div {
+                padding: 10px !important;
+            }
+
+            /* Procédures urgence 2 colonnes */
+            #proceduresUrgence > div {
+                grid-template-columns: 1fr 1fr !important;
+                gap: 8px !important;
+            }
+
+            #proceduresUrgence > div > div {
+                padding: 10px !important;
+            }
+
+            #proceduresUrgence i {
+                font-size: 20px !important;
             }
 
             .header {
@@ -877,8 +987,15 @@
                                 <input type="date" id="tpDateDebut" required>
                             </div>
                             <div class="form-group">
+                                <label>Heure de début</label>
+                                <input type="time" id="tpHeureDebut" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
                                 <label>Durée (heures)</label>
-                                <input type="number" id="tpDuree" min="0.5" step="0.5" placeholder="Ex: 4.5" required>
+                                <input type="number" id="tpDuree" min="0.5" step="0.5" placeholder="Ex: 2.5" required>
                             </div>
                         </div>
 
@@ -950,6 +1067,77 @@
                 </div>
                 <div id="maintenanceContent"></div>
             </div>
+
+            <!-- SÉCURITÉ SECTION -->
+            <div id="securiteSection" class="section" style="display: none;">
+                <div class="section-title">
+                    <i class="fas fa-shield-alt"></i> Sécurité
+                </div>
+
+                <!-- Alertes actives pour l'utilisateur -->
+                <div id="userAlertesSecurite" style="margin-bottom: 20px;"></div>
+
+                <!-- Consignes générales -->
+                <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #e5e7eb;">
+                    <h3 style="color: #1e40af; margin: 0 0 16px 0; font-size: 16px;">
+                        <i class="fas fa-clipboard-list"></i> Consignes de Sécurité Générales
+                    </h3>
+                    <div id="consignesGenerales">
+                        <p style="color: #9ca3af; text-align: center; padding: 20px;">Chargement des consignes...</p>
+                    </div>
+                </div>
+
+                <!-- Consignes par zone -->
+                <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #e5e7eb;">
+                    <h3 style="color: #1e40af; margin: 0 0 16px 0; font-size: 16px;">
+                        <i class="fas fa-map-marked-alt"></i> Zones de Travail & EPI Requis
+                    </h3>
+                    <div id="zonesSecurite">
+                        <p style="color: #9ca3af; text-align: center; padding: 20px;">Chargement des zones...</p>
+                    </div>
+                </div>
+
+                <!-- Consignes par machine -->
+                <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px; border: 1px solid #e5e7eb;">
+                    <h3 style="color: #1e40af; margin: 0 0 16px 0; font-size: 16px;">
+                        <i class="fas fa-cog"></i> Consignes par Machine
+                    </h3>
+                    <div id="consignesMachines">
+                        <p style="color: #9ca3af; text-align: center; padding: 20px;">Chargement...</p>
+                    </div>
+                </div>
+
+                <!-- Procédures d'urgence -->
+                <div style="background: linear-gradient(135deg, #fef2f2, #fee2e2); border-radius: 12px; padding: 16px; border: 1px solid #fecaca;">
+                    <h3 style="color: #991b1b; margin: 0 0 16px 0; font-size: 16px;">
+                        <i class="fas fa-first-aid"></i> Procédures d'Urgence
+                    </h3>
+                    <div id="proceduresUrgence">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px;">
+                            <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #fecaca;">
+                                <i class="fas fa-fire-extinguisher" style="font-size: 24px; color: #ef4444; margin-bottom: 8px;"></i>
+                                <p style="margin: 0; font-size: 12px; color: #991b1b; font-weight: 600;">Extincteur</p>
+                                <p style="margin: 4px 0 0 0; font-size: 11px; color: #6b7280;">Près de chaque zone</p>
+                            </div>
+                            <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #fecaca;">
+                                <i class="fas fa-door-open" style="font-size: 24px; color: #10b981; margin-bottom: 8px;"></i>
+                                <p style="margin: 0; font-size: 12px; color: #991b1b; font-weight: 600;">Sortie de secours</p>
+                                <p style="margin: 4px 0 0 0; font-size: 11px; color: #6b7280;">Suivre signalisation</p>
+                            </div>
+                            <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #fecaca;">
+                                <i class="fas fa-phone-alt" style="font-size: 24px; color: #3b82f6; margin-bottom: 8px;"></i>
+                                <p style="margin: 0; font-size: 12px; color: #991b1b; font-weight: 600;">Urgences</p>
+                                <p style="margin: 4px 0 0 0; font-size: 11px; color: #6b7280;">112 / 15 / 18</p>
+                            </div>
+                            <div style="background: white; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #fecaca;">
+                                <i class="fas fa-medkit" style="font-size: 24px; color: #f59e0b; margin-bottom: 8px;"></i>
+                                <p style="margin: 0; font-size: 12px; color: #991b1b; font-weight: 600;">Trousse secours</p>
+                                <p style="margin: 4px 0 0 0; font-size: 11px; color: #6b7280;">Entrée atelier</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- MODAL -->
@@ -962,6 +1150,39 @@
                 <div id="modalBody"></div>
                 <button onclick="closeModal()" class="btn-primary"
                     style="width: 100%; margin-top: 16px;">Fermer</button>
+            </div>
+        </div>
+
+        <!-- MEMBRES TP MODAL -->
+        <div id="membresModal" class="modal">
+            <div class="modal-content" style="max-width: 500px;">
+                <div class="modal-header">
+                    <h2 class="modal-title"><i class="fas fa-users"></i> Gérer les Membres</h2>
+                    <button class="modal-close" onclick="closeMembresModal()">✕</button>
+                </div>
+                <p id="membresTPTitle" style="color: #6b7280; margin-bottom: 16px;"></p>
+
+                <!-- Recherche utilisateur -->
+                <div style="margin-bottom: 16px;">
+                    <label style="font-weight: 600; color: #374151; margin-bottom: 8px; display: block;">Ajouter un membre</label>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="searchMembre" placeholder="Rechercher par nom ou email..." style="flex: 1; padding: 10px; border: 1px solid #e5e7eb; border-radius: 8px;">
+                        <button onclick="searchUsers()" style="padding: 10px 16px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                    <div id="searchResults" style="margin-top: 10px; max-height: 150px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- Liste des membres actuels -->
+                <div>
+                    <label style="font-weight: 600; color: #374151; margin-bottom: 8px; display: block;">Membres actuels</label>
+                    <div id="currentMembers" style="max-height: 200px; overflow-y: auto;">
+                        <p style="color: #9ca3af; text-align: center;">Chargement...</p>
+                    </div>
+                </div>
+
+                <button onclick="closeMembresModal()" class="btn-primary" style="width: 100%; margin-top: 16px;">Fermer</button>
             </div>
         </div>
 
@@ -1140,6 +1361,9 @@
             </button>
             <button class="nav-item" data-nav="maintenance" onclick="switchSection('maintenance')">
                 <i class="fas fa-tools"></i> Maintenance
+            </button>
+            <button class="nav-item" data-nav="securite" onclick="switchSection('securite')">
+                <i class="fas fa-shield-alt"></i> Sécurité
             </button>
         </div>
     </div>
@@ -1668,6 +1892,7 @@
             if (section === 'machines') loadMachines();
             else if (section === 'stock') loadStock();
             else if (section === 'maintenance') loadMaintenance();
+            else if (section === 'securite') loadSecuriteUser();
         }
 
         // Load stats et afficher les TP de l'utilisateur
@@ -1707,47 +1932,58 @@
             }
 
             const html = tpList.map(tp => {
-                // Formater la date
+                // Formater la date et l'heure
                 let dateStr = '-';
+                let heureStr = '-';
                 let tpDate = null;
                 if (tp.dateDebut) {
                     try {
                         tpDate = tp.dateDebut.toDate ? tp.dateDebut.toDate() : new Date(tp.dateDebut);
                         dateStr = tpDate.toLocaleDateString('fr-FR');
+                        heureStr = tp.heureDebut || tpDate.toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'});
                     } catch(e) {}
                 }
 
-                // Vérifier si le TP est expiré (date + durée dépassée)
-                let isExpired = false;
+                // Calculer le statut dynamique basé sur l'heure actuelle
+                const now = new Date();
+                let statut = tp.statut || 'planifie';
+
                 if (tpDate && tp.duree) {
-                    const endDate = new Date(tpDate.getTime() + (tp.duree * 60 * 60 * 1000)); // durée en heures
-                    isExpired = new Date() > endDate;
+                    const dateFin = new Date(tpDate.getTime() + (tp.duree * 60 * 60 * 1000));
+                    if (now < tpDate) {
+                        statut = 'planifie';
+                    } else if (now >= tpDate && now < dateFin) {
+                        statut = 'en_cours';
+                    } else {
+                        statut = 'termine';
+                    }
                 }
 
                 // Badge de statut
-                let statusColor = '#d1fae5';
-                let statusText = 'En cours';
-                let statusTextColor = '#065f46';
+                let statusColor = '#fef3c7';
+                let statusText = 'En attente';
+                let statusTextColor = '#92400e';
 
-                if (tp.statut === 'termine') {
+                if (statut === 'en_cours') {
+                    statusColor = '#d1fae5';
+                    statusText = 'En cours';
+                    statusTextColor = '#065f46';
+                } else if (statut === 'termine') {
                     statusColor = '#dbeafe';
                     statusText = 'Terminé';
                     statusTextColor = '#1e40af';
-                } else if (tp.statut === 'planifie') {
-                    statusColor = '#fef3c7';
-                    statusText = 'Planifié';
-                    statusTextColor = '#92400e';
-                } else if (isExpired && tp.statut !== 'termine') {
-                    statusColor = '#fee2e2';
-                    statusText = 'Expiré';
-                    statusTextColor = '#991b1b';
                 }
 
                 // Bouton terminer (seulement si pas encore terminé)
-                const showEndButton = tp.statut !== 'termine';
+                const showEndButton = statut !== 'termine';
+
+                // Couleur de la bordure selon le statut
+                let borderColor = '#f59e0b'; // Orange pour en attente
+                if (statut === 'en_cours') borderColor = '#3b82f6'; // Bleu pour en cours
+                if (statut === 'termine') borderColor = '#10b981'; // Vert pour terminé
 
                 return `
-                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: all 0.3s; border-left: 4px solid ${tp.statut === 'termine' ? '#10b981' : '#3b82f6'};"
+                    <div style="background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px; margin-bottom: 12px; transition: all 0.3s; border-left: 4px solid ${borderColor};"
                          onmouseover="this.style.boxShadow='0 8px 16px rgba(59,130,246,0.15)'; this.style.transform='translateY(-2px)'"
                          onmouseout="this.style.boxShadow='none'; this.style.transform='translateY(0)'">
                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
@@ -1756,7 +1992,7 @@
                                 <p style="font-size: 13px; color: #6b7280; margin: 0;">
                                     <i class="fas fa-tag" style="margin-right: 4px;"></i> ${tp.type || 'Non défini'}
                                     <span style="margin: 0 8px;">•</span>
-                                    <i class="fas fa-calendar" style="margin-right: 4px;"></i> ${dateStr}
+                                    <i class="fas fa-calendar" style="margin-right: 4px;"></i> ${dateStr} à ${heureStr}
                                     <span style="margin: 0 8px;">•</span>
                                     <i class="fas fa-clock" style="margin-right: 4px;"></i> ${tp.duree || '-'}h
                                 </p>
@@ -1764,17 +2000,26 @@
                             <span style="padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; background: ${statusColor}; color: ${statusTextColor};">${statusText}</span>
                         </div>
                         ${tp.description ? `<p style="font-size: 13px; color: #4b5563; margin: 8px 0 0 0; line-height: 1.5; cursor: pointer;" onclick="viewTPDetail('${tp.id}')">${tp.description.substring(0, 100)}${tp.description.length > 100 ? '...' : ''}</p>` : ''}
+                        <div style="margin-top: 8px; padding-top: 8px; border-top: 1px solid #e5e7eb;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                                <i class="fas fa-users" style="color: #6b7280;"></i>
+                                <span style="font-size: 12px; color: #6b7280;">${(tp.membres || []).length} membre(s)</span>
+                                <button onclick="event.stopPropagation(); gererMembresTP('${tp.id}', '${tp.titre}')" style="margin-left: auto; padding: 4px 10px; background: #3b82f6; color: white; border: none; border-radius: 6px; font-size: 11px; cursor: pointer;">
+                                    <i class="fas fa-user-plus"></i> Gérer
+                                </button>
+                            </div>
+                        </div>
                         ${showEndButton ? `
-                        <div style="margin-top: 12px; display: flex; gap: 8px;">
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                             <button onclick="event.stopPropagation(); terminerTP('${tp.id}')" style="padding: 8px 16px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px;">
-                                <i class="fas fa-check-circle"></i> Terminer le TP
+                                <i class="fas fa-check-circle"></i> Terminer
                             </button>
                             <button onclick="event.stopPropagation(); supprimerMonTP('${tp.id}')" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; display: flex; align-items: center; gap: 6px;">
                                 <i class="fas fa-trash"></i> Supprimer
                             </button>
                         </div>
                         ` : `
-                        <div style="margin-top: 12px;">
+                        <div>
                             <span style="padding: 6px 12px; background: #d1fae5; color: #065f46; border-radius: 8px; font-size: 12px; font-weight: 500;">
                                 <i class="fas fa-check"></i> TP terminé
                             </span>
@@ -1917,14 +2162,33 @@
                 return;
             }
 
+            // Combiner date et heure de début
+            const dateStr = document.getElementById('tpDateDebut').value;
+            const heureStr = document.getElementById('tpHeureDebut').value;
+            const dateDebut = new Date(dateStr + 'T' + heureStr);
+
+            // Calculer le statut initial basé sur l'heure actuelle
+            const now = new Date();
+            const dureeHeures = parseFloat(document.getElementById('tpDuree').value);
+            const dateFin = new Date(dateDebut.getTime() + (dureeHeures * 60 * 60 * 1000));
+
+            let statut = 'planifie'; // En attente par défaut
+            if (now >= dateDebut && now < dateFin) {
+                statut = 'en_cours';
+            } else if (now >= dateFin) {
+                statut = 'termine';
+            }
+
             const result = await DataManager.tp.create({
                 titre: document.getElementById('tpTitre').value,
                 type: document.getElementById('tpType').value,
-                dateDebut: new Date(document.getElementById('tpDateDebut').value),
-                duree: parseFloat(document.getElementById('tpDuree').value),
+                dateDebut: dateDebut,
+                heureDebut: heureStr,
+                duree: dureeHeures,
+                dateFin: dateFin,
                 description: document.getElementById('tpDescription').value,
                 createdBy: currentUser.uid,
-                statut: 'en cours',
+                statut: statut,
                 membres: [currentUser.uid]
             });
 
@@ -2111,6 +2375,364 @@
                 window.location.href = 'login.html';
             }
         }
+
+        // ==========================================
+        // FONCTIONS SÉCURITÉ UTILISATEUR
+        // ==========================================
+
+        async function loadSecuriteUser() {
+            await Promise.all([
+                loadUserAlertes(),
+                loadUserConsignesGenerales(),
+                loadUserZones(),
+                loadUserConsignesMachines()
+            ]);
+        }
+
+        async function loadUserAlertes() {
+            try {
+                const now = new Date();
+                const snapshot = await db.collection('alertes')
+                    .where('destinataires', 'in', ['tous', 'etudiants'])
+                    .get();
+
+                const alertes = snapshot.docs
+                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                    .filter(a => {
+                        const dateActivation = a.dateActivation?.toDate ? a.dateActivation.toDate() : new Date(a.dateActivation);
+                        return dateActivation <= now;
+                    });
+
+                if (alertes.length > 0) {
+                    const prioriteColors = {
+                        'basse': { bg: '#dbeafe', color: '#1e40af', icon: 'fa-info-circle' },
+                        'moyenne': { bg: '#fef3c7', color: '#92400e', icon: 'fa-exclamation-triangle' },
+                        'haute': { bg: '#fed7aa', color: '#c2410c', icon: 'fa-exclamation-circle' },
+                        'critique': { bg: '#fecaca', color: '#991b1b', icon: 'fa-skull-crossbones' }
+                    };
+
+                    const html = alertes.map(a => {
+                        const p = prioriteColors[a.priorite] || prioriteColors['moyenne'];
+                        return `
+                            <div style="background: ${p.bg}; border-radius: 12px; padding: 14px; margin-bottom: 10px; border-left: 4px solid ${p.color};">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas ${p.icon}" style="color: ${p.color}; font-size: 20px;"></i>
+                                    <div>
+                                        <strong style="color: ${p.color};">${a.titre}</strong>
+                                        <p style="color: ${p.color}; margin: 4px 0 0 0; font-size: 13px; opacity: 0.9;">${a.message}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('userAlertesSecurite').innerHTML = html;
+                } else {
+                    document.getElementById('userAlertesSecurite').innerHTML = '';
+                }
+            } catch(e) {
+                console.error('Erreur chargement alertes:', e);
+                document.getElementById('userAlertesSecurite').innerHTML = '';
+            }
+        }
+
+        async function loadUserConsignesGenerales() {
+            try {
+                const snapshot = await db.collection('consignes')
+                    .where('type', '==', 'generale')
+                    .get();
+
+                const consignes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (consignes.length > 0) {
+                    const niveauStyles = {
+                        'info': { bg: '#dbeafe', color: '#1e40af', icon: 'fa-info-circle' },
+                        'attention': { bg: '#fef3c7', color: '#92400e', icon: 'fa-exclamation-triangle' },
+                        'danger': { bg: '#fee2e2', color: '#991b1b', icon: 'fa-exclamation-circle' },
+                        'critique': { bg: '#fecaca', color: '#7f1d1d', icon: 'fa-skull-crossbones' }
+                    };
+
+                    const html = consignes.map(c => {
+                        const style = niveauStyles[c.niveau] || niveauStyles['info'];
+                        return `
+                            <div style="background: ${style.bg}; border-radius: 10px; padding: 12px; margin-bottom: 10px;">
+                                <div style="display: flex; align-items: start; gap: 10px;">
+                                    <i class="fas ${style.icon}" style="color: ${style.color}; margin-top: 2px;"></i>
+                                    <div>
+                                        <strong style="color: ${style.color};">${c.titre}</strong>
+                                        <p style="color: ${style.color}; margin: 4px 0 0 0; font-size: 13px; opacity: 0.85;">${c.description || ''}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('consignesGenerales').innerHTML = html;
+                } else {
+                    document.getElementById('consignesGenerales').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 20px;">Aucune consigne générale définie</p>';
+                }
+            } catch(e) {
+                console.error('Erreur chargement consignes générales:', e);
+            }
+        }
+
+        async function loadUserZones() {
+            try {
+                const snapshot = await db.collection('zones').orderBy('nom').get();
+                const zones = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (zones.length > 0) {
+                    const risqueColors = {
+                        'faible': { bg: '#d1fae5', color: '#065f46' },
+                        'moyen': { bg: '#fef3c7', color: '#92400e' },
+                        'eleve': { bg: '#fee2e2', color: '#991b1b' }
+                    };
+
+                    const html = zones.map(z => {
+                        const risque = risqueColors[z.risque] || risqueColors['faible'];
+                        const epiIcons = [];
+                        if (z.epiLunettes) epiIcons.push('<span title="Lunettes">👓</span>');
+                        if (z.epiGants) epiIcons.push('<span title="Gants">🧤</span>');
+                        if (z.epiCasque) epiIcons.push('<span title="Casque">⛑️</span>');
+                        if (z.epiChaussures) epiIcons.push('<span title="Chaussures">👟</span>');
+                        if (z.epiAuditif) epiIcons.push('<span title="Protection auditive">🎧</span>');
+                        if (z.epiBlouse) epiIcons.push('<span title="Blouse">🥼</span>');
+
+                        return `
+                            <div style="background: #f8fafc; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                    <strong style="color: #1e40af;"><i class="fas fa-map-marker-alt"></i> ${z.nom}</strong>
+                                    <span style="background: ${risque.bg}; color: ${risque.color}; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600;">Risque ${z.risque}</span>
+                                </div>
+                                ${z.description ? `<p style="color: #6b7280; font-size: 13px; margin: 0 0 8px 0;">${z.description}</p>` : ''}
+                                ${epiIcons.length > 0 ? `
+                                    <div style="display: flex; align-items: center; gap: 4px;">
+                                        <span style="font-size: 12px; color: #6b7280;">EPI requis:</span>
+                                        <span style="font-size: 18px;">${epiIcons.join(' ')}</span>
+                                    </div>
+                                ` : ''}
+                            </div>
+                        `;
+                    }).join('');
+                    document.getElementById('zonesSecurite').innerHTML = html;
+                } else {
+                    document.getElementById('zonesSecurite').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 20px;">Aucune zone définie</p>';
+                }
+            } catch(e) {
+                console.error('Erreur chargement zones:', e);
+            }
+        }
+
+        async function loadUserConsignesMachines() {
+            try {
+                const snapshot = await db.collection('consignes')
+                    .where('type', '==', 'machine')
+                    .get();
+
+                const consignes = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                if (consignes.length > 0) {
+                    // Grouper par machine
+                    const parMachine = {};
+                    consignes.forEach(c => {
+                        const machine = c.machine || 'Autre';
+                        if (!parMachine[machine]) parMachine[machine] = [];
+                        parMachine[machine].push(c);
+                    });
+
+                    const niveauStyles = {
+                        'info': { color: '#3b82f6', icon: 'fa-info-circle' },
+                        'attention': { color: '#f59e0b', icon: 'fa-exclamation-triangle' },
+                        'danger': { color: '#ef4444', icon: 'fa-exclamation-circle' },
+                        'critique': { color: '#991b1b', icon: 'fa-skull-crossbones' }
+                    };
+
+                    const html = Object.entries(parMachine).map(([machine, consignesList]) => `
+                        <div style="background: #f8fafc; border-radius: 10px; padding: 12px; margin-bottom: 10px; border: 1px solid #e5e7eb;">
+                            <h4 style="color: #1e40af; margin: 0 0 10px 0; font-size: 14px;">
+                                <i class="fas fa-cog"></i> ${machine}
+                            </h4>
+                            ${consignesList.map(c => {
+                                const style = niveauStyles[c.niveau] || niveauStyles['info'];
+                                return `
+                                    <div style="display: flex; align-items: start; gap: 8px; padding: 6px 0; border-bottom: 1px solid #e5e7eb;">
+                                        <i class="fas ${style.icon}" style="color: ${style.color}; margin-top: 2px;"></i>
+                                        <div>
+                                            <strong style="color: #374151; font-size: 13px;">${c.titre}</strong>
+                                            ${c.description ? `<p style="color: #6b7280; font-size: 12px; margin: 2px 0 0 0;">${c.description}</p>` : ''}
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    `).join('');
+                    document.getElementById('consignesMachines').innerHTML = html;
+                } else {
+                    document.getElementById('consignesMachines').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 20px;">Aucune consigne par machine</p>';
+                }
+            } catch(e) {
+                console.error('Erreur chargement consignes machines:', e);
+            }
+        }
+
+        // ==========================================
+        // GESTION DES MEMBRES TP
+        // ==========================================
+
+        let currentTPId = null;
+        let allUsersCache = [];
+
+        async function gererMembresTP(tpId, tpTitle) {
+            currentTPId = tpId;
+            document.getElementById('membresTPTitle').textContent = 'TP: ' + tpTitle;
+            document.getElementById('membresModal').classList.add('active');
+            document.getElementById('searchResults').innerHTML = '';
+            document.getElementById('searchMembre').value = '';
+
+            // Charger les utilisateurs en cache
+            if (allUsersCache.length === 0) {
+                try {
+                    const snapshot = await db.collection('users').get();
+                    allUsersCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                } catch(e) {
+                    console.error('Erreur chargement utilisateurs:', e);
+                }
+            }
+
+            await loadCurrentMembers();
+        }
+
+        function closeMembresModal() {
+            document.getElementById('membresModal').classList.remove('active');
+            currentTPId = null;
+            loadData(); // Rafraîchir les données
+        }
+
+        async function loadCurrentMembers() {
+            try {
+                const tpDoc = await db.collection('TP').doc(currentTPId).get();
+                const tp = tpDoc.data();
+                const membres = tp.membres || [];
+
+                if (membres.length === 0) {
+                    document.getElementById('currentMembers').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 10px;">Aucun membre pour le moment</p>';
+                    return;
+                }
+
+                // Récupérer les infos des membres
+                const membresInfo = [];
+                for (const uid of membres) {
+                    const user = allUsersCache.find(u => u.id === uid);
+                    if (user) {
+                        membresInfo.push(user);
+                    } else {
+                        // Essayer de charger depuis Firestore
+                        try {
+                            const userDoc = await db.collection('users').doc(uid).get();
+                            if (userDoc.exists) {
+                                membresInfo.push({ id: uid, ...userDoc.data() });
+                            }
+                        } catch(e) {}
+                    }
+                }
+
+                const html = membresInfo.map(m => `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px; background: #f8fafc; border-radius: 8px; margin-bottom: 8px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1e40af); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">
+                                ${(m.prenom || '?')[0]}${(m.nom || '?')[0]}
+                            </div>
+                            <div>
+                                <strong style="color: #1e40af;">${m.prenom || ''} ${m.nom || ''}</strong>
+                                <p style="color: #6b7280; font-size: 12px; margin: 0;">${m.email || ''}</p>
+                            </div>
+                        </div>
+                        ${m.id !== currentUser?.uid ? `
+                            <button onclick="retirerMembre('${m.id}')" style="padding: 6px 12px; background: #fee2e2; color: #991b1b; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                <i class="fas fa-times"></i> Retirer
+                            </button>
+                        ` : '<span style="font-size: 11px; color: #10b981; background: #d1fae5; padding: 4px 8px; border-radius: 4px;">Vous</span>'}
+                    </div>
+                `).join('');
+
+                document.getElementById('currentMembers').innerHTML = html;
+            } catch(e) {
+                console.error('Erreur chargement membres:', e);
+                document.getElementById('currentMembers').innerHTML = '<p style="color: #ef4444;">Erreur de chargement</p>';
+            }
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('searchMembre').value.toLowerCase().trim();
+            if (!query) {
+                document.getElementById('searchResults').innerHTML = '';
+                return;
+            }
+
+            const results = allUsersCache.filter(u =>
+                (u.nom?.toLowerCase().includes(query) ||
+                 u.prenom?.toLowerCase().includes(query) ||
+                 u.email?.toLowerCase().includes(query)) &&
+                u.id !== currentUser?.uid
+            ).slice(0, 5);
+
+            if (results.length === 0) {
+                document.getElementById('searchResults').innerHTML = '<p style="color: #9ca3af; text-align: center; padding: 10px;">Aucun résultat</p>';
+                return;
+            }
+
+            const html = results.map(u => `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; background: #eff6ff; border-radius: 6px; margin-bottom: 6px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <div style="width: 32px; height: 32px; border-radius: 50%; background: #3b82f6; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px;">
+                            ${(u.prenom || '?')[0]}${(u.nom || '?')[0]}
+                        </div>
+                        <div>
+                            <strong style="color: #1e40af; font-size: 13px;">${u.prenom || ''} ${u.nom || ''}</strong>
+                            <p style="color: #6b7280; font-size: 11px; margin: 0;">${u.email || ''}</p>
+                        </div>
+                    </div>
+                    <button onclick="ajouterMembre('${u.id}')" style="padding: 5px 10px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 11px;">
+                        <i class="fas fa-plus"></i> Ajouter
+                    </button>
+                </div>
+            `).join('');
+
+            document.getElementById('searchResults').innerHTML = html;
+        }
+
+        async function ajouterMembre(userId) {
+            try {
+                await db.collection('TP').doc(currentTPId).update({
+                    membres: firebase.firestore.FieldValue.arrayUnion(userId)
+                });
+                showUserNotification('Membre ajouté avec succès !', 'success');
+                await loadCurrentMembers();
+                document.getElementById('searchResults').innerHTML = '';
+                document.getElementById('searchMembre').value = '';
+            } catch(e) {
+                console.error('Erreur ajout membre:', e);
+                showUserNotification('Erreur: ' + e.message, 'error');
+            }
+        }
+
+        async function retirerMembre(userId) {
+            if (!confirm('Retirer ce membre du TP ?')) return;
+
+            try {
+                await db.collection('TP').doc(currentTPId).update({
+                    membres: firebase.firestore.FieldValue.arrayRemove(userId)
+                });
+                showUserNotification('Membre retiré', 'success');
+                await loadCurrentMembers();
+            } catch(e) {
+                console.error('Erreur retrait membre:', e);
+                showUserNotification('Erreur: ' + e.message, 'error');
+            }
+        }
+
+        // Écouter la touche Entrée pour la recherche
+        document.getElementById('searchMembre')?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') searchUsers();
+        });
     </script>
 </body>
 
