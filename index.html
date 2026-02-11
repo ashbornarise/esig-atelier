@@ -3076,13 +3076,26 @@
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        function getApiKey() {
-            return localStorage.getItem('esig_ai_api_key') || window.AI_CONFIG?.apiKey || '';
+        let cachedApiKey = '';
+
+        async function getApiKey() {
+            if (cachedApiKey) return cachedApiKey;
+            const local = localStorage.getItem('esig_ai_api_key');
+            if (local) { cachedApiKey = local; return local; }
+            try {
+                const doc = await db.collection('settings').doc('ai_config').get();
+                if (doc.exists && doc.data().apiKey) {
+                    cachedApiKey = doc.data().apiKey;
+                    localStorage.setItem('esig_ai_api_key', cachedApiKey);
+                    return cachedApiKey;
+                }
+            } catch(e) { console.error('Erreur lecture cle API:', e); }
+            return window.AI_CONFIG?.apiKey || '';
         }
 
         async function callAI(message) {
             const config = window.AI_CONFIG;
-            const apiKey = getApiKey();
+            const apiKey = await getApiKey();
             if (!config || !apiKey) {
                 throw new Error('CLE_NON_CONFIGUREE');
             }

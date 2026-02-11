@@ -4122,23 +4122,50 @@ Statut: ${tp.statut || 'En cours'}
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
-        function getApiKey() {
-            return localStorage.getItem('esig_ai_api_key') || window.AI_CONFIG?.apiKey || '';
+        let cachedApiKey = '';
+
+        async function getApiKey() {
+            if (cachedApiKey) return cachedApiKey;
+            // 1. Essayer localStorage (cache local)
+            const local = localStorage.getItem('esig_ai_api_key');
+            if (local) { cachedApiKey = local; return local; }
+            // 2. Lire depuis Firestore (partage entre tous les utilisateurs)
+            try {
+                const doc = await db.collection('settings').doc('ai_config').get();
+                if (doc.exists && doc.data().apiKey) {
+                    cachedApiKey = doc.data().apiKey;
+                    localStorage.setItem('esig_ai_api_key', cachedApiKey);
+                    return cachedApiKey;
+                }
+            } catch(e) { console.error('Erreur lecture cle API:', e); }
+            return window.AI_CONFIG?.apiKey || '';
         }
 
-        function configureApiKey() {
-            const current = getApiKey();
+        async function configureApiKey() {
+            const current = await getApiKey();
             const masked = current ? current.substring(0, 8) + '...' : 'Non configuree';
             const newKey = prompt(`Cle API Groq actuelle : ${masked}\n\nCollez votre nouvelle cle API Groq :\n(Obtenir sur https://console.groq.com/keys)`);
             if (newKey && newKey.trim()) {
-                localStorage.setItem('esig_ai_api_key', newKey.trim());
-                alert('Cle API sauvegardee ! Elise est prete.');
+                const key = newKey.trim();
+                // Sauvegarder dans Firestore (accessible par tous les utilisateurs)
+                try {
+                    await db.collection('settings').doc('ai_config').set({
+                        apiKey: key,
+                        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                    }, { merge: true });
+                    localStorage.setItem('esig_ai_api_key', key);
+                    cachedApiKey = key;
+                    alert('Cle API sauvegardee pour tous les utilisateurs ! Elise est prete.');
+                } catch(e) {
+                    console.error('Erreur sauvegarde cle:', e);
+                    alert('Erreur lors de la sauvegarde: ' + e.message);
+                }
             }
         }
 
         async function callAI(message) {
             const config = window.AI_CONFIG;
-            const apiKey = getApiKey();
+            const apiKey = await getApiKey();
             if (!config || !apiKey) {
                 throw new Error('CLE_NON_CONFIGUREE');
             }
