@@ -68,7 +68,46 @@
             height: 100vh;
             left: 0;
             top: 0;
-            z-index: 100;
+            z-index: 200;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-260px);
+        }
+
+        /* Overlay mobile */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 199;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Bouton hamburger */
+        .hamburger-btn {
+            display: none;
+            position: fixed;
+            top: 14px;
+            left: 14px;
+            z-index: 201;
+            background: #1e40af;
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
 
         .logo {
@@ -86,6 +125,26 @@
             flex: 1;
             padding: 20px 0;
             overflow-y: auto;
+            overflow-x: hidden;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.3) rgba(255,255,255,0.1);
+        }
+
+        .menu::-webkit-scrollbar {
+            width: 5px;
+        }
+
+        .menu::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .menu::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+        }
+
+        .menu::-webkit-scrollbar-thumb:hover {
+            background: rgba(255,255,255,0.5);
         }
 
         .menu-link {
@@ -527,18 +586,42 @@
         }
 
         /* PLAN ATELIER INTERACTIF */
-        #planAtelier rect {
+        #planAtelier .machine-block {
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: filter 0.2s ease, transform 0.2s ease;
+            transform-origin: center;
         }
 
-        #planAtelier rect:hover {
-            filter: brightness(1.1);
-            transform: scale(1.02);
+        #planAtelier .machine-block:hover {
+            filter: brightness(1.15) drop-shadow(0 3px 8px rgba(0,0,0,0.25));
+            transform: scale(1.04);
         }
 
-        #planAtelier g {
-            transition: opacity 0.3s ease;
+        #planAtelier .machine-block:active {
+            transform: scale(0.98);
+        }
+
+        #planAtelier g[data-criticite] {
+            transition: opacity 0.35s ease;
+        }
+
+        #planAtelier g[data-criticite]:not([style*="opacity: 0"]) .machine-block:hover {
+            filter: brightness(1.2) drop-shadow(0 4px 10px rgba(0,0,0,0.3));
+        }
+
+        /* Animation pulsation pour les zones critiques */
+        @keyframes critiquePulse {
+            0%, 100% { stroke-opacity: 1; }
+            50% { stroke-opacity: 0.4; }
+        }
+
+        #planAtelier g[data-criticite="critique"] .machine-block {
+            animation: critiquePulse 2.5s ease-in-out infinite;
+        }
+
+        #planAtelier g[data-criticite="critique"] .machine-block:hover {
+            animation: none;
+            filter: brightness(1.2) drop-shadow(0 4px 12px rgba(239,68,68,0.5));
         }
 
         /* TABLE RESPONSIVE */
@@ -551,92 +634,31 @@
             min-width: 600px;
         }
 
-        /* RESPONSIVE - TABLETTE */
+        /* RESPONSIVE - TABLETTE & MOBILE */
         @media (max-width: 1024px) {
             .admin-wrapper {
-                flex-direction: column;
                 height: auto;
                 min-height: 100vh;
             }
 
             .sidebar {
-                width: 100%;
-                height: auto;
-                position: sticky;
-                top: 0;
-                z-index: 100;
-                flex-shrink: 0;
-                padding: 10px;
+                width: 260px;
+                transform: translateX(-260px);
+                z-index: 200;
             }
 
-            .sidebar-header {
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .hamburger-btn {
                 display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 12px;
-                margin-bottom: 0;
-                padding: 10px 0;
-                border-bottom: none;
-            }
-
-            .sidebar-header img {
-                width: 35px !important;
-                height: 35px !important;
-                margin-bottom: 0 !important;
-            }
-
-            .sidebar-header h1 {
-                font-size: 14px !important;
-                margin-bottom: 0 !important;
-            }
-
-            .sidebar-header p {
-                display: none;
-            }
-
-            .sidebar-menu {
-                display: flex;
-                flex-wrap: nowrap;
-                overflow-x: auto;
-                gap: 8px;
-                padding: 10px 0;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: none;
-            }
-
-            .sidebar-menu::-webkit-scrollbar {
-                display: none;
-            }
-
-            .sidebar-menu li {
-                margin-bottom: 0;
-                flex-shrink: 0;
-            }
-
-            .sidebar-menu a {
-                padding: 10px 14px;
-                white-space: nowrap;
-                font-size: 13px;
-                border-radius: 20px;
-                background: rgba(255,255,255,0.1);
-            }
-
-            .sidebar-menu a.active {
-                background: rgba(255,255,255,0.25);
-            }
-
-            .sidebar-menu a i {
-                margin-right: 6px;
-            }
-
-            .sidebar-footer {
-                display: none;
             }
 
             .main-content {
-                margin-left: 0;
+                margin-left: 0 !important;
                 max-width: 100%;
-                padding: 15px;
+                padding: 64px 14px 14px 14px;
                 overflow-x: hidden;
             }
 
@@ -943,9 +965,16 @@
 </head>
 
 <body>
+    <!-- Hamburger mobile -->
+    <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleSidebar()" title="Menu">
+        <i class="fas fa-bars" id="hamburgerIcon"></i>
+    </button>
+    <!-- Overlay mobile -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
     <div class="admin-wrapper">
         <!-- SIDEBAR -->
-        <div class="sidebar">
+        <div class="sidebar" id="mainSidebar">
             <div class="sidebar-header">
                 <img src="logo-esig.png" style="width: 50px; height: 50px; margin-bottom: 10px;">
                 <h1 style="font-size: 16px;">Admin Panel</h1>
@@ -1079,7 +1108,7 @@
                 </div>
 
                 <div class="search-box">
-                    <input type="text" id="tpSearch" placeholder="Chercher un TP (titre, créateur, type)...">
+                    <input type="text" id="tpSearch" placeholder="Chercher un TP (titre, créateur, type)..." oninput="filterTP()">
                     <button class="btn-add" onclick="openTPModal()"><i class="fas fa-plus"></i> Ajouter</button>
                 </div>
 
@@ -1114,7 +1143,15 @@
                 </div>
 
                 <div class="search-box">
-                    <input type="text" id="machineSearch" placeholder="Chercher une machine...">
+                    <input type="text" id="machineSearch" placeholder="Chercher une machine (nom, type, zone)..." oninput="filterMachines()">
+                    <select id="machineZoneFilter" onchange="filterMachines()" style="padding:12px;border:2px solid #e5e7eb;border-radius:8px;">
+                        <option value="">Toutes les zones</option>
+                        <option value="Zone CNC">Zone CNC</option>
+                        <option value="Zone Machines-outils">Machines-outils</option>
+                        <option value="Zone Travail">Zone Travail</option>
+                        <option value="Zone Équipements">Équipements</option>
+                        <option value="Zone Stockage">Stockage</option>
+                    </select>
                     <button class="btn-add" onclick="openMachineModal()"><i class="fas fa-plus"></i> Ajouter</button>
                 </div>
 
@@ -1124,9 +1161,10 @@
                             <tr>
                                 <th>Nom</th>
                                 <th>Type</th>
+                                <th>Zone</th>
                                 <th>Statut</th>
                                 <th>Lieu</th>
-                                <th>Heures utilisées</th>
+                                <th>Heures</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -1146,7 +1184,14 @@
                 </div>
 
                 <div class="search-box">
-                    <input type="text" id="stockSearch" placeholder="Chercher un article...">
+                    <input type="text" id="stockSearch" placeholder="Chercher un article (nom, catégorie)..." oninput="filterStock()">
+                    <select id="stockCatFilter" onchange="filterStock()" style="padding:12px;border:2px solid #e5e7eb;border-radius:8px;">
+                        <option value="">Toutes catégories</option>
+                        <option value="outils">Outils</option>
+                        <option value="materiaux">Matériaux</option>
+                        <option value="consommables">Consommables</option>
+                        <option value="epi">EPI</option>
+                    </select>
                     <button class="btn-add" onclick="openStockModal()"><i class="fas fa-plus"></i> Ajouter</button>
                 </div>
 
@@ -1470,152 +1515,208 @@
                         </div>
 
                         <div id="planAtelier" style="background: #f8fafc; border: 2px solid #e5e7eb; border-radius: 12px; padding: 15px; overflow-x: auto;">
-                            <svg viewBox="0 0 400 700" style="width: 100%; max-width: 500px; margin: 0 auto; display: block; min-height: 600px;">
-                                <!-- Contour de l'atelier -->
-                                <rect x="10" y="10" width="380" height="680" fill="none" stroke="#1e40af" stroke-width="3" rx="5"/>
+                            <svg viewBox="0 0 460 760" style="width: 100%; max-width: 580px; margin: 0 auto; display: block; min-height: 620px;">
 
-                                <!-- Piliers -->
-                                <rect x="10" y="10" width="15" height="15" fill="#374151"/>
-                                <rect x="375" y="10" width="15" height="15" fill="#374151"/>
-                                <rect x="10" y="675" width="15" height="15" fill="#374151"/>
-                                <rect x="375" y="675" width="15" height="15" fill="#374151"/>
-                                <rect x="10" y="240" width="15" height="15" fill="#374151"/>
-                                <rect x="375" y="240" width="15" height="15" fill="#374151"/>
+                                <!-- Fond atelier -->
+                                <rect x="12" y="12" width="436" height="736" fill="#f9fafb" stroke="#1e40af" stroke-width="3" rx="6"/>
 
-                                <!-- ZONE CNC (en haut) - Haute criticité -->
+                                <!-- Piliers structurels (coins + milieu) -->
+                                <rect x="12" y="12" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="432" y="12" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="12" y="732" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="432" y="732" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="12" y="252" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="432" y="252" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="12" y="570" width="16" height="16" fill="#374151" rx="2"/>
+                                <rect x="432" y="570" width="16" height="16" fill="#374151" rx="2"/>
+
+                                <!-- Étiquette zone CNC -->
+                                <rect x="12" y="12" width="436" height="248" fill="rgba(239,68,68,0.05)" rx="0"/>
+                                <text x="230" y="28" text-anchor="middle" fill="#dc2626" font-size="9" font-weight="600" letter-spacing="2">▲ ZONE CNC – HAUTE PRÉCISION ▲</text>
+
+                                <!-- ═══════ ZONE CNC ═══════ -->
                                 <g class="zone-machine" data-criticite="critique" data-zone="Zone CNC">
-                                    <!-- CNC Fraiseuse -->
-                                    <rect x="30" y="30" width="120" height="90" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="4" class="machine-block" onclick="showMachineInfo('CNC Fraiseuse', 'critique')"/>
-                                    <text x="90" y="70" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="bold">CNC</text>
-                                    <text x="90" y="85" text-anchor="middle" fill="#991b1b" font-size="10">FRAISEUSE</text>
+                                    <!-- CNC Fraiseuse (gauche haut) -->
+                                    <rect x="28" y="32" width="130" height="95" fill="#fecaca" stroke="#ef4444" stroke-width="2.5" rx="6" class="machine-block" onclick="showMachineReport('CNC Fraiseuse','','critique',event)"/>
+                                    <text x="93" y="72" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="700">CNC</text>
+                                    <text x="93" y="88" text-anchor="middle" fill="#991b1b" font-size="10">FRAISEUSE</text>
+                                    <text x="93" y="104" text-anchor="middle" fill="#b91c1c" font-size="8">⚙ Haute précision</text>
 
-                                    <!-- CNC Router -->
-                                    <rect x="250" y="30" width="120" height="90" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="4" class="machine-block" onclick="showMachineInfo('CNC Router', 'critique')"/>
-                                    <text x="310" y="70" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="bold">CNC</text>
-                                    <text x="310" y="85" text-anchor="middle" fill="#991b1b" font-size="10">ROUTER</text>
+                                    <!-- CNC Router (droite haut) -->
+                                    <rect x="302" y="32" width="130" height="95" fill="#fecaca" stroke="#ef4444" stroke-width="2.5" rx="6" class="machine-block" onclick="showMachineReport('CNC Router','','critique',event)"/>
+                                    <text x="367" y="72" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="700">CNC</text>
+                                    <text x="367" y="88" text-anchor="middle" fill="#991b1b" font-size="10">ROUTER</text>
+                                    <text x="367" y="104" text-anchor="middle" fill="#b91c1c" font-size="8">⚙ Haute précision</text>
 
-                                    <!-- CNC Tour -->
-                                    <rect x="30" y="140" width="120" height="80" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="4" class="machine-block" onclick="showMachineInfo('CNC Tour', 'critique')"/>
-                                    <text x="90" y="175" text-anchor="middle" fill="#991b1b" font-size="11" font-weight="bold">CNC</text>
-                                    <text x="90" y="190" text-anchor="middle" fill="#991b1b" font-size="10">TOUR</text>
+                                    <!-- CNC Tour (gauche bas) -->
+                                    <rect x="28" y="142" width="130" height="90" fill="#fecaca" stroke="#ef4444" stroke-width="2.5" rx="6" class="machine-block" onclick="showMachineReport('CNC Tour','','critique',event)"/>
+                                    <text x="93" y="178" text-anchor="middle" fill="#991b1b" font-size="12" font-weight="700">CNC</text>
+                                    <text x="93" y="194" text-anchor="middle" fill="#991b1b" font-size="10">TOUR</text>
+                                    <text x="93" y="210" text-anchor="middle" fill="#b91c1c" font-size="8">⚙ Tournage</text>
                                 </g>
 
-                                <!-- Mch. à Ess. -->
+                                <!-- Couloir CNC central + petites machines -->
                                 <g class="zone-machine" data-criticite="moyen">
-                                    <rect x="170" y="30" width="60" height="30" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="3" onclick="showMachineInfo('Machine à Essai', 'moyen')"/>
-                                    <text x="200" y="50" text-anchor="middle" fill="#1e40af" font-size="8">Mch. à Ess.</text>
+                                    <!-- Machine à Essai 1 -->
+                                    <rect x="174" y="35" width="110" height="45" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5" rx="4" onclick="showMachineReport('Machine à Essai 1','','moyen',event)"/>
+                                    <text x="229" y="55" text-anchor="middle" fill="#1e40af" font-size="8.5" font-weight="600">Machine à Essai</text>
+                                    <text x="229" y="69" text-anchor="middle" fill="#3b82f6" font-size="8">N°1</text>
 
-                                    <rect x="330" y="140" width="40" height="60" fill="#dbeafe" stroke="#3b82f6" stroke-width="1" rx="3" onclick="showMachineInfo('Machine à Essai 2', 'moyen')"/>
-                                    <text x="350" y="165" text-anchor="middle" fill="#1e40af" font-size="7">Mch.</text>
-                                    <text x="350" y="175" text-anchor="middle" fill="#1e40af" font-size="7">Ess.2</text>
+                                    <!-- Machine à Essai 2 -->
+                                    <rect x="174" y="95" width="110" height="45" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5" rx="4" onclick="showMachineReport('Machine à Essai 2','','moyen',event)"/>
+                                    <text x="229" y="115" text-anchor="middle" fill="#1e40af" font-size="8.5" font-weight="600">Machine à Essai</text>
+                                    <text x="229" y="129" text-anchor="middle" fill="#3b82f6" font-size="8">N°2</text>
+
+                                    <!-- Machine à Essai 3 -->
+                                    <rect x="174" y="155" width="110" height="45" fill="#dbeafe" stroke="#3b82f6" stroke-width="1.5" rx="4" onclick="showMachineReport('Machine à Essai 3','','moyen',event)"/>
+                                    <text x="229" y="175" text-anchor="middle" fill="#1e40af" font-size="8.5" font-weight="600">Machine à Essai</text>
+                                    <text x="229" y="189" text-anchor="middle" fill="#3b82f6" font-size="8">N°3</text>
+
+                                    <!-- Armoire CNC (droite bas) -->
+                                    <rect x="302" y="142" width="60" height="90" fill="#d1fae5" stroke="#10b981" stroke-width="1.5" rx="4" onclick="showMachineReport('Armoire CNC','','faible',event)"/>
+                                    <text x="332" y="181" text-anchor="middle" fill="#065f46" font-size="8" font-weight="600">Armoire</text>
+                                    <text x="332" y="195" text-anchor="middle" fill="#065f46" font-size="8">CNC</text>
                                 </g>
 
-                                <!-- Armoires -->
+                                <!-- Armoire 3 gauche -->
                                 <g class="zone-stockage" data-criticite="faible">
-                                    <rect x="30" y="230" width="40" height="25" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="2" onclick="showMachineInfo('Armoire 3', 'faible')"/>
-                                    <text x="50" y="247" text-anchor="middle" fill="#065f46" font-size="8">Arm. 3</text>
+                                    <rect x="175" y="215" width="65" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="3" onclick="showMachineReport('Armoire Outillage','','faible',event)"/>
+                                    <text x="207" y="233" text-anchor="middle" fill="#065f46" font-size="8">Armoire Outillage</text>
                                 </g>
 
-                                <!-- Ligne de séparation -->
-                                <line x1="10" y1="265" x2="390" y2="265" stroke="#6b7280" stroke-width="2" stroke-dasharray="5,5"/>
+                                <!-- Séparation zone CNC / Machines-outils -->
+                                <line x1="12" y1="262" x2="448" y2="262" stroke="#6b7280" stroke-width="2" stroke-dasharray="8,5"/>
+                                <text x="230" y="275" text-anchor="middle" fill="#6b7280" font-size="8" letter-spacing="2">ZONE MACHINES-OUTILS</text>
 
-                                <!-- ZONE MACHINES-OUTILS (milieu haut) - Criticité élevée -->
+                                <!-- ═══════ ZONE MACHINES-OUTILS ═══════ -->
                                 <g class="zone-machine" data-criticite="eleve" data-zone="Zone Machines-outils">
                                     <!-- Scie mécanique -->
-                                    <rect x="30" y="280" width="70" height="40" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Scie Mécanique', 'eleve')"/>
-                                    <text x="65" y="295" text-anchor="middle" fill="#92400e" font-size="8">Scie</text>
-                                    <text x="65" y="307" text-anchor="middle" fill="#92400e" font-size="7">mécanique</text>
+                                    <rect x="28" y="282" width="85" height="55" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Scie Mécanique','','eleve',event)"/>
+                                    <text x="70" y="303" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">Scie</text>
+                                    <text x="70" y="316" text-anchor="middle" fill="#92400e" font-size="8">Mécanique</text>
+                                    <text x="70" y="329" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
 
                                     <!-- Perceuse à colonne -->
-                                    <rect x="110" y="280" width="70" height="40" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Perceuse à colonne', 'eleve')"/>
-                                    <text x="145" y="295" text-anchor="middle" fill="#92400e" font-size="8">Perceuse</text>
-                                    <text x="145" y="307" text-anchor="middle" fill="#92400e" font-size="7">à colonne</text>
+                                    <rect x="125" y="282" width="85" height="55" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Perceuse à Colonne','','eleve',event)"/>
+                                    <text x="167" y="303" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">Perceuse</text>
+                                    <text x="167" y="316" text-anchor="middle" fill="#92400e" font-size="8">à Colonne</text>
+                                    <text x="167" y="329" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
 
                                     <!-- Poinçonneuse -->
-                                    <rect x="190" y="280" width="70" height="40" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Poinçonneuse', 'eleve')"/>
-                                    <text x="225" y="300" text-anchor="middle" fill="#92400e" font-size="8">Poinçon.</text>
+                                    <rect x="222" y="282" width="85" height="55" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Poinçonneuse','','eleve',event)"/>
+                                    <text x="264" y="303" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">Poinçon-</text>
+                                    <text x="264" y="316" text-anchor="middle" fill="#92400e" font-size="8">neuse</text>
+                                    <text x="264" y="329" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
 
-                                    <!-- Moyen Tour -->
-                                    <rect x="320" y="280" width="55" height="70" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Moyen Tour', 'eleve')"/>
-                                    <text x="347" y="310" text-anchor="middle" fill="#92400e" font-size="8">Moyen</text>
-                                    <text x="347" y="322" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
+                                    <!-- Moyen Tour (grand à droite) -->
+                                    <rect x="333" y="282" width="95" height="95" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Moyen Tour','','eleve',event)"/>
+                                    <text x="380" y="320" text-anchor="middle" fill="#92400e" font-size="10" font-weight="700">Moyen</text>
+                                    <text x="380" y="335" text-anchor="middle" fill="#92400e" font-size="10">Tour</text>
+                                    <text x="380" y="350" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
+                                    <text x="380" y="364" text-anchor="middle" fill="#92400e" font-size="7">Tournage</text>
                                 </g>
 
-                                <!-- ZONE TRAVAIL (milieu) -->
-                                <g class="zone-travail" data-criticite="moyen" data-zone="Zone Travail">
-                                    <!-- Moyenne Fraiseuse -->
-                                    <rect x="30" y="340" width="55" height="70" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Moyenne Fraiseuse', 'eleve')"/>
-                                    <text x="57" y="370" text-anchor="middle" fill="#92400e" font-size="7">Moyenne</text>
-                                    <text x="57" y="382" text-anchor="middle" fill="#92400e" font-size="7">Fraiseuse</text>
+                                <!-- Séparation Machines-outils / Zone Travail -->
+                                <line x1="12" y1="392" x2="448" y2="392" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="6,4"/>
+                                <text x="120" y="403" text-anchor="middle" fill="#6b7280" font-size="7.5" letter-spacing="1">ZONE TRAVAIL</text>
 
-                                    <!-- ETABLI 1 -->
-                                    <rect x="150" y="360" width="100" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="3" onclick="showMachineInfo('Établi Principal', 'moyen')"/>
-                                    <text x="200" y="390" text-anchor="middle" fill="#1e40af" font-size="10" font-weight="bold">ÉTABLI</text>
+                                <!-- ═══════ ZONE TRAVAIL ═══════ -->
+                                <g data-criticite="moyen" data-zone="Zone Travail">
+                                    <!-- Moyenne Fraiseuse (gauche) -->
+                                    <g class="zone-machine" data-criticite="eleve">
+                                        <rect x="28" y="408" width="78" height="85" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Moyenne Fraiseuse','','eleve',event)"/>
+                                        <text x="67" y="440" text-anchor="middle" fill="#92400e" font-size="8.5" font-weight="700">Moyenne</text>
+                                        <text x="67" y="453" text-anchor="middle" fill="#92400e" font-size="8">Fraiseuse</text>
+                                        <text x="67" y="469" text-anchor="middle" fill="#b45309" font-size="7">Fraisage</text>
+                                        <text x="67" y="483" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI</text>
+                                    </g>
 
-                                    <!-- Mini Tour droite -->
-                                    <rect x="320" y="360" width="55" height="60" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Tour', 'eleve')"/>
-                                    <text x="347" y="385" text-anchor="middle" fill="#92400e" font-size="8">Mini</text>
-                                    <text x="347" y="397" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
+                                    <!-- ÉTABLI 1 (centre) -->
+                                    <g class="zone-travail" data-criticite="moyen">
+                                        <rect x="118" y="415" width="125" height="65" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="5" onclick="showMachineReport('Établi Principal','','moyen',event)"/>
+                                        <text x="180" y="445" text-anchor="middle" fill="#1e40af" font-size="11" font-weight="700">ÉTABLI 1</text>
+                                        <text x="180" y="462" text-anchor="middle" fill="#3b82f6" font-size="8">Poste de travail</text>
+                                    </g>
+
+                                    <!-- Armoire 1 (centre-gauche) -->
+                                    <g class="zone-stockage" data-criticite="faible">
+                                        <rect x="118" y="490" width="40" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="3" onclick="showMachineReport('Armoire 1','','faible',event)"/>
+                                        <text x="138" y="508" text-anchor="middle" fill="#065f46" font-size="7.5">Armoire 1</text>
+                                    </g>
+
+                                    <!-- Mini Tour 1 (droite haut) -->
+                                    <g class="zone-machine" data-criticite="eleve">
+                                        <rect x="333" y="408" width="95" height="75" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Mini Tour 1','','eleve',event)"/>
+                                        <text x="380" y="440" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">Mini Tour 1</text>
+                                        <text x="380" y="455" text-anchor="middle" fill="#92400e" font-size="8">Tournage</text>
+                                        <text x="380" y="469" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
+                                    </g>
+
+                                    <!-- Mini Fraiseuse 1 (gauche bas) -->
+                                    <g class="zone-machine" data-criticite="eleve">
+                                        <rect x="28" y="505" width="78" height="72" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Mini Fraiseuse 1','','eleve',event)"/>
+                                        <text x="67" y="534" text-anchor="middle" fill="#92400e" font-size="8" font-weight="700">Mini</text>
+                                        <text x="67" y="547" text-anchor="middle" fill="#92400e" font-size="8">Fraiseuse 1</text>
+                                        <text x="67" y="563" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI</text>
+                                    </g>
+
+                                    <!-- ÉTABLI 2 (centre bas) -->
+                                    <g class="zone-travail" data-criticite="moyen">
+                                        <rect x="118" y="530" width="125" height="65" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="5" onclick="showMachineReport('Établi 2','','moyen',event)"/>
+                                        <text x="180" y="560" text-anchor="middle" fill="#1e40af" font-size="11" font-weight="700">ÉTABLI 2</text>
+                                        <text x="180" y="577" text-anchor="middle" fill="#3b82f6" font-size="8">Poste de travail</text>
+                                    </g>
+
+                                    <!-- Armoire 2 -->
+                                    <g class="zone-stockage" data-criticite="faible">
+                                        <rect x="165" y="490" width="40" height="28" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="3" onclick="showMachineReport('Armoire 2','','faible',event)"/>
+                                        <text x="185" y="508" text-anchor="middle" fill="#065f46" font-size="7.5">Armoire 2</text>
+                                    </g>
+
+                                    <!-- Mini Tour 2 (droite milieu) -->
+                                    <g class="zone-machine" data-criticite="eleve">
+                                        <rect x="333" y="493" width="95" height="70" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Mini Tour 2','','eleve',event)"/>
+                                        <text x="380" y="522" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">Mini Tour 2</text>
+                                        <text x="380" y="537" text-anchor="middle" fill="#92400e" font-size="8">Tournage</text>
+                                        <text x="380" y="551" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
+                                    </g>
                                 </g>
 
-                                <!-- Armoires milieu -->
-                                <g class="zone-stockage" data-criticite="faible">
-                                    <rect x="110" y="365" width="30" height="20" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="2" onclick="showMachineInfo('Armoire 1', 'faible')"/>
-                                    <text x="125" y="379" text-anchor="middle" fill="#065f46" font-size="7">Arm.1</text>
-                                </g>
+                                <!-- Séparation zone équipements -->
+                                <line x1="12" y1="590" x2="448" y2="590" stroke="#6b7280" stroke-width="2" stroke-dasharray="8,5"/>
+                                <text x="230" y="602" text-anchor="middle" fill="#6b7280" font-size="8" letter-spacing="2">ZONE ÉQUIPEMENTS SPÉCIAUX</text>
 
-                                <!-- Mini Fraiseuses -->
-                                <g class="zone-machine" data-criticite="eleve">
-                                    <rect x="30" y="420" width="55" height="50" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Fraiseuse 1', 'eleve')"/>
-                                    <text x="57" y="443" text-anchor="middle" fill="#92400e" font-size="7">Mini</text>
-                                    <text x="57" y="455" text-anchor="middle" fill="#92400e" font-size="7">Fraiseuse</text>
-
-                                    <rect x="30" y="480" width="55" height="50" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Fraiseuse 2', 'eleve')"/>
-                                    <text x="57" y="503" text-anchor="middle" fill="#92400e" font-size="7">Mini</text>
-                                    <text x="57" y="515" text-anchor="middle" fill="#92400e" font-size="7">Fraiseuse</text>
-                                </g>
-
-                                <!-- ETABLI 2 et Armoire 2 -->
-                                <g class="zone-travail" data-criticite="moyen">
-                                    <rect x="150" y="440" width="100" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="3" onclick="showMachineInfo('Établi 2', 'moyen')"/>
-                                    <text x="200" y="470" text-anchor="middle" fill="#1e40af" font-size="10" font-weight="bold">ÉTABLI</text>
-
-                                    <rect x="110" y="500" width="30" height="20" fill="#d1fae5" stroke="#10b981" stroke-width="1" rx="2" onclick="showMachineInfo('Armoire 2', 'faible')"/>
-                                    <text x="125" y="514" text-anchor="middle" fill="#065f46" font-size="7">Arm.2</text>
-                                </g>
-
-                                <!-- Mini Tour en bas à droite -->
-                                <g class="zone-machine" data-criticite="eleve">
-                                    <rect x="320" y="430" width="55" height="60" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Tour 2', 'eleve')"/>
-                                    <text x="347" y="455" text-anchor="middle" fill="#92400e" font-size="8">Mini</text>
-                                    <text x="347" y="467" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
-
-                                    <rect x="320" y="500" width="55" height="50" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="3" onclick="showMachineInfo('Mini Tour 3', 'eleve')"/>
-                                    <text x="347" y="522" text-anchor="middle" fill="#92400e" font-size="8">Mini</text>
-                                    <text x="347" y="534" text-anchor="middle" fill="#92400e" font-size="8">Tour</text>
-                                </g>
-
-                                <!-- ZONE ÉQUIPEMENTS SPÉCIAUX (bas) -->
+                                <!-- ═══════ ZONE ÉQUIPEMENTS SPÉCIAUX ═══════ -->
                                 <g class="zone-speciale" data-criticite="eleve" data-zone="Zone Équipements">
-                                    <!-- Compresseur -->
-                                    <rect x="30" y="560" width="60" height="50" fill="#e9d5ff" stroke="#8b5cf6" stroke-width="2" rx="3" onclick="showMachineInfo('Compresseur', 'eleve')"/>
-                                    <text x="60" y="590" text-anchor="middle" fill="#6b21a8" font-size="8">Compres.</text>
+                                    <!-- Mini Tour 3 (gauche) -->
+                                    <rect x="28" y="608" width="90" height="72" fill="#fed7aa" stroke="#f59e0b" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Mini Tour 3','','eleve',event)"/>
+                                    <text x="73" y="638" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">Mini Tour 3</text>
+                                    <text x="73" y="653" text-anchor="middle" fill="#b45309" font-size="7">⚠ EPI requis</text>
 
-                                    <!-- Plieuse -->
-                                    <rect x="280" y="560" width="60" height="50" fill="#e9d5ff" stroke="#8b5cf6" stroke-width="2" rx="3" onclick="showMachineInfo('Plieuse', 'eleve')"/>
-                                    <text x="310" y="590" text-anchor="middle" fill="#6b21a8" font-size="8">Plieuse</text>
+                                    <!-- Compresseur (centre gauche) -->
+                                    <rect x="132" y="608" width="80" height="72" fill="#e9d5ff" stroke="#8b5cf6" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Compresseur','','eleve',event)"/>
+                                    <text x="172" y="638" text-anchor="middle" fill="#6b21a8" font-size="9" font-weight="700">Compresseur</text>
+                                    <text x="172" y="653" text-anchor="middle" fill="#7c3aed" font-size="7">Pneumatique</text>
+                                    <text x="172" y="666" text-anchor="middle" fill="#7c3aed" font-size="7">⚠ EPI</text>
+
+                                    <!-- Plieuse (centre droite) -->
+                                    <rect x="248" y="608" width="80" height="72" fill="#e9d5ff" stroke="#8b5cf6" stroke-width="2" rx="5" class="machine-block" onclick="showMachineReport('Plieuse','','eleve',event)"/>
+                                    <text x="288" y="638" text-anchor="middle" fill="#6b21a8" font-size="9" font-weight="700">Plieuse</text>
+                                    <text x="288" y="653" text-anchor="middle" fill="#7c3aed" font-size="7">Tôlerie</text>
+                                    <text x="288" y="666" text-anchor="middle" fill="#7c3aed" font-size="7">⚠ EPI</text>
+
+                                    <!-- Guillotine (droite) -->
+                                    <rect x="344" y="608" width="96" height="72" fill="#fecaca" stroke="#ef4444" stroke-width="2.5" rx="5" class="machine-block" onclick="showMachineReport('Guillotine','','critique',event)"/>
+                                    <text x="392" y="635" text-anchor="middle" fill="#991b1b" font-size="9" font-weight="700">GUILLOTINE</text>
+                                    <text x="392" y="650" text-anchor="middle" fill="#991b1b" font-size="7">🔴 CRITIQUE</text>
+                                    <text x="392" y="663" text-anchor="middle" fill="#b91c1c" font-size="7">EPI obligatoire</text>
                                 </g>
 
-                                <!-- Porte d'entrée -->
+                                <!-- Zone entrée (bas) -->
                                 <g>
-                                    <rect x="160" y="630" width="80" height="20" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="2"/>
-                                    <text x="200" y="645" text-anchor="middle" fill="#92400e" font-size="9">ENTRÉE</text>
-                                </g>
-
-                                <!-- GUILLOTINE -->
-                                <g class="zone-machine" data-criticite="critique">
-                                    <rect x="260" y="650" width="100" height="30" fill="#fecaca" stroke="#ef4444" stroke-width="2" rx="3" onclick="showMachineInfo('Guillotine', 'critique')"/>
-                                    <text x="310" y="670" text-anchor="middle" fill="#991b1b" font-size="9" font-weight="bold">GUILLOTINE</text>
+                                    <rect x="170" y="700" width="120" height="30" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="4"/>
+                                    <text x="230" y="710" text-anchor="middle" fill="#92400e" font-size="7" font-weight="600">▼</text>
+                                    <text x="230" y="724" text-anchor="middle" fill="#92400e" font-size="9" font-weight="700">ENTRÉE / SORTIE</text>
                                 </g>
                             </svg>
                         </div>
@@ -1623,15 +1724,18 @@
                         <!-- Info machine sélectionnée -->
                         <div id="machineInfoPanel" style="margin-top: 15px; display: none;">
                             <div style="background: #eff6ff; border: 1px solid #3b82f6; border-radius: 8px; padding: 15px;">
-                                <h4 id="machineInfoTitle" style="color: #1e40af; margin: 0 0 10px 0;"></h4>
-                                <p id="machineInfoCriticite" style="margin: 5px 0; font-size: 13px;"></p>
-                                <p id="machineInfoConsignes" style="margin: 5px 0; font-size: 13px; color: #6b7280;"></p>
-                                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                                <h4 id="machineInfoTitle" style="color: #1e40af; margin: 0 0 8px 0;"></h4>
+                                <p id="machineInfoCriticite" style="margin: 4px 0; font-size: 13px;"></p>
+                                <p id="machineInfoConsignes" style="margin: 4px 0; font-size: 13px; color: #6b7280;"></p>
+                                <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
                                     <button onclick="voirConsignesMachine()" class="btn-primary" style="font-size: 12px; padding: 8px 12px;">
                                         <i class="fas fa-shield-alt"></i> Voir consignes
                                     </button>
                                     <button onclick="ajouterConsigneMachine()" class="btn-add" style="font-size: 12px; padding: 8px 12px;">
                                         <i class="fas fa-plus"></i> Ajouter consigne
+                                    </button>
+                                    <button onclick="closeInfoPanel()" class="btn-secondary" style="font-size: 12px; padding: 8px 12px;">
+                                        <i class="fas fa-times"></i> Fermer
                                     </button>
                                 </div>
                             </div>
@@ -1896,6 +2000,90 @@
         .chat-time { font-size: 10px; color: #9ca3af; margin-top: 4px; }
     </style>
 
+    <!-- MODAL RAPPORT MACHINE -->
+    <div id="machineReportModal" class="modal">
+        <div class="modal-content" style="max-width: 680px; width: 95%;">
+            <div class="modal-header">
+                <h3 id="reportMachineTitle"><i class="fas fa-chart-line"></i> Rapport Machine</h3>
+                <button class="close-btn" onclick="closeModal('machineReportModal')">&times;</button>
+            </div>
+
+            <!-- Infos machine -->
+            <div id="reportMachineInfo" style="background: #f0f9ff; border-radius: 10px; padding: 16px; margin-bottom: 16px;"></div>
+
+            <!-- Période du rapport -->
+            <div style="background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+                <h4 style="color: #1e40af; margin: 0 0 12px 0;"><i class="fas fa-calendar-alt"></i> Période du rapport</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label style="font-size:13px;">Du</label>
+                        <input type="date" id="reportDateFrom" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label style="font-size:13px;">Au</label>
+                        <input type="date" id="reportDateTo" style="width:100%;padding:8px;border:1px solid #e5e7eb;border-radius:6px;">
+                    </div>
+                </div>
+                <button onclick="generateMachineReport()" class="btn-primary" style="margin-top:12px;width:100%;">
+                    <i class="fas fa-sync"></i> Générer le rapport
+                </button>
+            </div>
+
+            <!-- Contenu du rapport -->
+            <div id="reportMachineContent" style="background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px; min-height: 120px;">
+                <p style="color:#9ca3af; text-align:center; padding:20px 0;"><i class="fas fa-chart-bar"></i> Sélectionnez une période et cliquez sur "Générer"</p>
+            </div>
+
+            <!-- Notes éditables -->
+            <div style="background: white; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 16px;">
+                <h4 style="color: #1e40af; margin: 0 0 10px 0;"><i class="fas fa-edit"></i> Notes et observations</h4>
+                <textarea id="reportNotes" rows="4" style="width:100%;border:1px solid #e5e7eb;border-radius:6px;padding:10px;font-size:13px;resize:vertical;" placeholder="Ajoutez vos observations sur la machine..."></textarea>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('machineReportModal')">Fermer</button>
+                <button class="btn-primary" onclick="editCurrentMachine()" style="background:linear-gradient(135deg,#8b5cf6,#6d28d9);">
+                    <i class="fas fa-edit"></i> Modifier machine
+                </button>
+                <button class="btn-primary" onclick="downloadMachineReport()" style="background:linear-gradient(135deg,#10b981,#059669);">
+                    <i class="fas fa-download"></i> Télécharger
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DÉTAIL TP -->
+    <div id="tpDetailModal" class="modal">
+        <div class="modal-content" style="max-width: 600px; width: 95%;">
+            <div class="modal-header">
+                <h3><i class="fas fa-flask"></i> Détails du TP</h3>
+                <button class="close-btn" onclick="closeModal('tpDetailModal')">&times;</button>
+            </div>
+            <div id="tpDetailContent" style="padding: 10px 0;"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('tpDetailModal')">Fermer</button>
+                <button class="btn-primary" id="tpDetailEditBtn"><i class="fas fa-edit"></i> Modifier</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL RAPPORT GÉNÉRÉ -->
+    <div id="rapportDetailModal" class="modal">
+        <div class="modal-content" style="max-width: 700px; width: 95%;">
+            <div class="modal-header">
+                <h3><i class="fas fa-file-alt"></i> Contenu du Rapport</h3>
+                <button class="close-btn" onclick="closeModal('rapportDetailModal')">&times;</button>
+            </div>
+            <div id="rapportDetailContent" style="padding:10px 0; max-height:60vh; overflow-y:auto;"></div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('rapportDetailModal')">Fermer</button>
+                <button class="btn-primary" onclick="downloadCurrentRapport()" style="background:linear-gradient(135deg,#10b981,#059669);">
+                    <i class="fas fa-download"></i> Télécharger
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
@@ -2003,12 +2191,32 @@
                     <input type="text" id="machineLieu" placeholder="Ex: Atelier A">
                 </div>
                 <div class="form-group">
+                    <label>Zone (plan atelier)</label>
+                    <select id="machineZone">
+                        <option value="">Sélectionner une zone...</option>
+                        <option value="Zone CNC">Zone CNC</option>
+                        <option value="Zone Machines-outils">Zone Machines-outils</option>
+                        <option value="Zone Travail">Zone Travail</option>
+                        <option value="Zone Équipements">Zone Équipements</option>
+                        <option value="Zone Stockage">Zone Stockage</option>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label>Statut</label>
                     <select id="machineStatut">
                         <option value="disponible">Disponible</option>
                         <option value="maintenance">Maintenance</option>
                         <option value="panne">En panne</option>
+                        <option value="hors_service">Hors service</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label>Heures d'utilisation</label>
+                    <input type="number" id="machineHeures" min="0" value="0" placeholder="0">
+                </div>
+                <div class="form-group">
+                    <label>Description / Notes</label>
+                    <textarea id="machineDescription" rows="3" placeholder="Notes, caractéristiques..."></textarea>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeModal('machineModal')">Annuler</button>
@@ -2655,23 +2863,30 @@
             document.body.insertAdjacentHTML('beforeend', modalHTML);
         }
 
-        function renderMachinesTable() {
-            const html = allMachines.map(m => `
+        function renderMachinesTable(machinesToRender = null) {
+            const machines = machinesToRender || allMachines;
+            const statutBadge = (s) => {
+                const map = { disponible: 'badge-online', maintenance: 'badge-enseignant', panne: 'badge-offline', hors_service: 'badge-offline' };
+                return map[s] || 'badge-user';
+            };
+            const html = machines.map(m => `
                 <tr>
                     <td data-label="Machine"><strong>${m.nom || ''}</strong></td>
                     <td data-label="Type">${m.type || ''}</td>
-                    <td data-label="Statut"><span class="badge ${m.statut === 'disponible' ? 'badge-online' : 'badge-offline'}">${m.statut || 'inconnu'}</span></td>
+                    <td data-label="Zone"><span style="font-size:12px;color:#6b7280;">${m.zone || '-'}</span></td>
+                    <td data-label="Statut"><span class="badge ${statutBadge(m.statut)}">${m.statut || 'inconnu'}</span></td>
                     <td data-label="Lieu">${m.lieu || '-'}</td>
                     <td data-label="Heures">${m.nombreHeuresUtilisation || 0}h</td>
                     <td data-label="Actions">
                         <div class="actions">
+                            <button class="btn-sm" style="background:#6366f1;color:white;" onclick="showMachineReport('${m.nom}','${m.id}')" title="Rapport"><i class="fas fa-chart-line"></i></button>
                             <button class="btn-sm btn-edit" onclick="editMachine('${m.id}')"><i class="fas fa-edit"></i></button>
                             <button class="btn-sm btn-delete" onclick="deleteMachine('${m.id}')"><i class="fas fa-trash"></i></button>
                         </div>
                     </td>
                 </tr>
             `).join('');
-            document.getElementById('machinesTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas de machines</td></tr>';
+            document.getElementById('machinesTable').innerHTML = html || '<tr><td colspan="7" style="text-align: center; padding:30px; color:#999;"><i class="fas fa-cog" style="font-size:32px;display:block;margin-bottom:8px;"></i>Aucune machine</td></tr>';
         }
 
         function renderStockTable() {
@@ -2868,21 +3083,49 @@
             document.getElementById('stockTable').innerHTML = html || '<tr><td colspan="6" style="text-align: center;">Pas d\'articles</td></tr>';
         }
 
+        async function logActivity(action, type, details) {
+            try {
+                const user = window.auth?.currentUser;
+                await window.db.collection('activities').add({
+                    action: action || 'ACTION',
+                    type: type || 'system',
+                    details: details || '',
+                    timestamp: new Date(),
+                    userId: user ? user.uid : 'system',
+                    userName: user ? (user.displayName || user.email) : 'Système'
+                });
+            } catch(e) {
+                console.warn('logActivity ignoré:', e.message);
+            }
+        }
+
         async function loadActivities() {
-            const result = await db.collection('activities').orderBy('timestamp', 'desc').limit(100).get();
-            allActivities = result.docs.map(d => ({ id: d.id, ...d.data() }));
+            const tableEl = document.getElementById('activitiesTable');
+            if (!tableEl) return;
+            tableEl.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:20px;color:#888;"><i class="fas fa-spinner fa-spin"></i> Chargement...</td></tr>';
+            try {
+                const snapshot = await window.db.collection('activities').orderBy('timestamp', 'desc').limit(100).get();
+                allActivities = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
 
-            const html = allActivities.map(a => `
-                <tr>
-                    <td>${a.action}</td>
-                    <td>${a.userName}</td>
-                    <td>${a.type}</td>
-                    <td>${a.details || '-'}</td>
-                    <td>${new Date(a.timestamp?.toDate?.() || a.timestamp).toLocaleString('fr-FR')}</td>
-                </tr>
-            `).join('');
+                const html = allActivities.map(a => {
+                    let ts = '-';
+                    try { ts = new Date(a.timestamp?.toDate?.() || a.timestamp).toLocaleString('fr-FR'); } catch(e) {}
+                    const typeColors = { machine: '#6366f1', stock: '#10b981', user: '#f59e0b', system: '#6b7280', tp: '#3b82f6' };
+                    const color = typeColors[a.type] || '#6b7280';
+                    return `<tr>
+                        <td><strong>${a.action || '-'}</strong></td>
+                        <td>${a.userName || '-'}</td>
+                        <td><span style="background:${color};color:white;padding:2px 8px;border-radius:9999px;font-size:11px;">${a.type || '-'}</span></td>
+                        <td>${a.details || '-'}</td>
+                        <td style="white-space:nowrap;font-size:12px;color:#6b7280;">${ts}</td>
+                    </tr>`;
+                }).join('');
 
-            document.getElementById('activitiesTable').innerHTML = html || '<tr><td colspan="5" style="text-align: center;">Pas d\'activités</td></tr>';
+                tableEl.innerHTML = html || '<tr><td colspan="5" style="text-align:center;padding:30px;color:#888;"><i class="fas fa-history" style="font-size:28px;display:block;margin-bottom:8px;"></i>Aucune activité enregistrée</td></tr>';
+            } catch(error) {
+                console.error('Erreur loadActivities:', error);
+                tableEl.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#e53e3e;"><i class="fas fa-exclamation-triangle"></i> ${error.message}</td></tr>`;
+            }
         }
 
         // Gestion des modales
@@ -2897,6 +3140,9 @@
         // Mais l'idéal est d'avoir des modales dédiées. 
         // Je vais ajouter la logique de sauvegarde utilisateur ici.
 
+        // Variable globale pour suivre l'édition
+        let editingUserId = null;
+
         async function saveUser(e) {
             e.preventDefault();
             const nom = document.getElementById('userNom').value;
@@ -2904,42 +3150,90 @@
             const email = document.getElementById('userEmail').value;
             const role = document.getElementById('userRole').value;
 
-            // Note: On ne peut pas créer de compte Auth sans mot de passe ici sans Cloud Functions
-            // On va supposer ici qu'on édite ou qu'on crée juste la fiche DB
-            alert('Pour créer un utilisateur complet, utilisez la page d\'inscription. Ici vous éditez les rôles.');
+            if (!editingUserId) {
+                showNotification('Pour créer un utilisateur, utilisez la page inscription. Ici vous pouvez modifier un rôle.', 'info');
+                closeModal('userModal');
+                return;
+            }
 
-            // Logique d'update si un ID existait (à gérer via un champ caché ou variable globale)
-            // Pour l'instant simple reload
-            loadUsers();
+            try {
+                await window.db.collection('users').doc(editingUserId).update({ nom, prenom, email, role });
+                await logActivity('USER_MODIFIE', 'user', `Utilisateur modifié : ${prenom} ${nom} (${role})`);
+                showNotification('Utilisateur mis à jour', 'success');
+                editingUserId = null;
+                document.querySelector('#userModal .modal-header h3').textContent = 'Modifier Utilisateur';
+            } catch(err) {
+                showNotification('Erreur: ' + err.message, 'error');
+            }
             closeModal('userModal');
         }
 
         function editUser(uid) {
             const user = allUsers.find(u => u.id === uid);
             if (user) {
-                document.getElementById('userNom').value = user.nom;
-                document.getElementById('userPrenom').value = user.prenom;
-                document.getElementById('userEmail').value = user.email;
-                document.getElementById('userRole').value = user.role;
-                openUserModal();
+                editingUserId = uid;
+                document.getElementById('userNom').value = user.nom || '';
+                document.getElementById('userPrenom').value = user.prenom || '';
+                document.getElementById('userEmail').value = user.email || '';
+                document.getElementById('userRole').value = user.role || 'etudiant';
+                document.querySelector('#userModal .modal-header h3').textContent = 'Modifier Utilisateur';
+                document.getElementById('userModal').classList.add('active');
             }
         }
 
         function viewTPDetails(tpId) {
             const tp = allTP.find(t => t.id === tpId);
-            if (tp) {
-                const details = `
-TP: ${tp.titre}
-Créateur: ${tp.creatorName} (${tp.creatorEmail})
-Type: ${tp.type}
-Durée: ${tp.duree || '-'} heures
-Date de début: ${new Date(tp.dateDebut?.toDate?.() || tp.dateDebut).toLocaleDateString('fr-FR')}
-Description: ${tp.description || '-'}
-Participants: ${(tp.participants || []).length}
-Statut: ${tp.statut || 'En cours'}
-                `;
-                alert(details);
-            }
+            if (!tp) return;
+
+            let dateDebut = tp.dateDebut;
+            if (dateDebut?.toDate) dateDebut = dateDebut.toDate();
+            else if (dateDebut) dateDebut = new Date(dateDebut);
+
+            const statut = getTPStatus(tp);
+            const statusBadge = getStatusBadge(statut);
+            const membres = tp.membres || tp.participants || [];
+
+            const content = `
+                <div style="background: linear-gradient(135deg,#1e40af,#3b82f6);color:white;padding:20px;border-radius:10px;margin-bottom:16px;">
+                    <h3 style="margin:0 0 6px 0;font-size:18px;">${tp.titre || 'Sans titre'}</h3>
+                    <span style="font-size:13px;opacity:0.9;">${tp.type?.toUpperCase() || ''}</span>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                        <p style="margin:0;font-size:12px;color:#6b7280;">Créateur</p>
+                        <strong>${tp.creatorName || 'N/A'}</strong>
+                    </div>
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                        <p style="margin:0;font-size:12px;color:#6b7280;">Statut</p>
+                        ${statusBadge}
+                    </div>
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                        <p style="margin:0;font-size:12px;color:#6b7280;">Date de début</p>
+                        <strong>${dateDebut ? dateDebut.toLocaleDateString('fr-FR') + ' ' + (tp.heureDebut || '') : '-'}</strong>
+                    </div>
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                        <p style="margin:0;font-size:12px;color:#6b7280;">Durée</p>
+                        <strong>${tp.duree || '-'} heure(s)</strong>
+                    </div>
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                        <p style="margin:0;font-size:12px;color:#6b7280;">Participants</p>
+                        <strong>${membres.length} membre(s)</strong>
+                    </div>
+                    <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                        <p style="margin:0;font-size:12px;color:#6b7280;">Machines utilisées</p>
+                        <strong>${(tp.machinesUtilisees || []).length || '-'}</strong>
+                    </div>
+                </div>
+                ${tp.description ? `<div style="background:#f8fafc;padding:12px;border-radius:8px;margin-bottom:12px;"><p style="margin:0;font-size:12px;color:#6b7280;margin-bottom:4px;">Description</p><p style="margin:0;">${tp.description}</p></div>` : ''}
+                ${membres.length > 0 ? `<div style="background:#f8fafc;padding:12px;border-radius:8px;"><p style="margin:0 0 6px 0;font-size:12px;color:#6b7280;">Membres</p>${membres.map(m => `<span style="display:inline-block;background:#dbeafe;color:#1e40af;padding:3px 10px;border-radius:12px;font-size:12px;margin:2px;">${m}</span>`).join('')}</div>` : ''}
+            `;
+
+            document.getElementById('tpDetailContent').innerHTML = content;
+            document.getElementById('tpDetailEditBtn').onclick = () => {
+                closeModal('tpDetailModal');
+                // Optionally open edit modal
+            };
+            document.getElementById('tpDetailModal').classList.add('active');
         }
 
         async function deleteTP(id) {
@@ -2958,9 +3252,11 @@ Statut: ${tp.statut || 'En cours'}
         }
 
         async function deleteMachine(id) {
+            const machine = allMachines.find(m => m.id === id);
             if (confirm('Êtes-vous sûr de vouloir supprimer cette machine ?')) {
                 try {
                     await window.db.collection('machines').doc(id).delete();
+                    await logActivity('MACHINE_SUPPRIMEE', 'machine', 'Machine supprimée : ' + (machine?.nom || id));
                     showNotification('Machine supprimée avec succès', 'success');
                 } catch(e) {
                     showNotification('Erreur: ' + e.message, 'error');
@@ -2969,9 +3265,11 @@ Statut: ${tp.statut || 'En cours'}
         }
 
         async function deleteStock(id) {
+            const article = allStock.find(s => s.id === id);
             if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
                 try {
                     await window.db.collection('stocks').doc(id).delete();
+                    await logActivity('STOCK_SUPPRIME', 'stock', 'Article supprimé : ' + (article?.nom || id));
                     showNotification('Article supprimé avec succès', 'success');
                 } catch(e) {
                     showNotification('Erreur: ' + e.message, 'error');
@@ -3067,7 +3365,6 @@ Statut: ${tp.statut || 'En cours'}
         }
 
         // Variables pour l'édition
-        let editingUserId = null;
         let editingMachineId = null;
         let editingStockId = null;
 
@@ -3079,7 +3376,10 @@ Statut: ${tp.statut || 'En cours'}
                 document.getElementById('machineNom').value = machine.nom || '';
                 document.getElementById('machineType').value = machine.type || '';
                 document.getElementById('machineLieu').value = machine.lieu || '';
+                document.getElementById('machineZone').value = machine.zone || '';
                 document.getElementById('machineStatut').value = machine.statut || 'disponible';
+                document.getElementById('machineHeures').value = machine.nombreHeuresUtilisation || 0;
+                document.getElementById('machineDescription').value = machine.description || '';
                 document.querySelector('#machineModal .modal-header h3').textContent = 'Modifier Machine';
                 document.getElementById('machineModal').classList.add('active');
             }
@@ -3165,20 +3465,33 @@ Statut: ${tp.statut || 'En cours'}
                 nom: document.getElementById('machineNom').value,
                 type: document.getElementById('machineType').value,
                 lieu: document.getElementById('machineLieu').value,
-                statut: document.getElementById('machineStatut').value
+                zone: document.getElementById('machineZone').value || null,
+                statut: document.getElementById('machineStatut').value,
+                nombreHeuresUtilisation: parseFloat(document.getElementById('machineHeures').value) || 0,
+                description: document.getElementById('machineDescription').value || '',
+                dateModification: new Date()
             };
 
-            if (editingMachineId) {
-                // Mode édition
-                await DataManager.machines.update(editingMachineId, data);
-                editingMachineId = null;
-            } else {
-                // Mode création
-                await DataManager.machines.create(data);
+            try {
+                if (editingMachineId) {
+                    await window.db.collection('machines').doc(editingMachineId).update(data);
+                    await logActivity('MACHINE_MODIFIEE', 'machine', 'Machine modifiée : ' + data.nom);
+                    showNotification('Machine mise à jour', 'success');
+                    editingMachineId = null;
+                } else {
+                    data.dateCreation = new Date();
+                    await window.db.collection('machines').add(data);
+                    await logActivity('MACHINE_AJOUTEE', 'machine', 'Machine ajoutée : ' + data.nom);
+                    showNotification('Machine ajoutée avec succès', 'success');
+                }
+            } catch(err) {
+                console.error('Erreur saveMachine:', err);
+                showNotification('Erreur : ' + err.message, 'error');
+                return;
             }
-            loadMachines();
             closeModal('machineModal');
             document.querySelector('#machineModal .modal-header h3').textContent = 'Ajouter une Machine';
+            document.getElementById('machineForm').reset();
         }
 
         function openStockModal() {
@@ -3193,18 +3506,26 @@ Statut: ${tp.statut || 'En cours'}
                 categorie: document.getElementById('stockCat').value,
                 quantite: parseInt(document.getElementById('stockQte').value),
                 quantiteMinimale: parseInt(document.getElementById('stockMin').value),
-                prix: parseFloat(document.getElementById('stockPrix').value || 0)
+                prix: parseFloat(document.getElementById('stockPrix').value || 0),
+                dateModification: new Date()
             };
 
-            if (editingStockId) {
-                // Mode édition
-                await DataManager.stocks.update(editingStockId, data);
-                editingStockId = null;
-            } else {
-                // Mode création
-                await DataManager.stocks.create(data);
+            try {
+                if (editingStockId) {
+                    await window.db.collection('stocks').doc(editingStockId).update(data);
+                    await logActivity('STOCK_MODIFIE', 'stock', 'Stock modifié : ' + data.nom);
+                    showNotification('Stock mis à jour', 'success');
+                    editingStockId = null;
+                } else {
+                    data.dateAjout = new Date();
+                    await window.db.collection('stocks').add(data);
+                    await logActivity('STOCK_AJOUTE', 'stock', 'Stock ajouté : ' + data.nom);
+                    showNotification('Article ajouté avec succès', 'success');
+                }
+            } catch(err) {
+                showNotification('Erreur : ' + err.message, 'error');
+                return;
             }
-            loadStock();
             closeModal('stockModal');
             document.querySelector('#stockModal .modal-header h3').textContent = 'Ajouter du Stock';
         }
@@ -3312,25 +3633,7 @@ Statut: ${tp.statut || 'En cours'}
             if (zoneSelect) zoneSelect.innerHTML = html;
         }
 
-        async function saveConsigne(e) {
-            e.preventDefault();
-            const data = {
-                titre: document.getElementById('consigneTitre').value,
-                type: document.getElementById('consigneType').value,
-                machine: document.getElementById('consigneMachine').value || null,
-                zone: document.getElementById('consigneZone').value || null,
-                niveau: document.getElementById('consigneNiveau').value,
-                description: document.getElementById('consigneDescription').value,
-                dateValidation: document.getElementById('consigneValidation').value || null,
-                dateRevision: document.getElementById('consigneRevision').value || null,
-                dateCreation: new Date(),
-                createdBy: currentUserData.id
-            };
-
-            await db.collection('consignes').add(data);
-            await loadConsignes();
-            closeModal('consigneModal');
-        }
+        // saveConsigne est défini plus bas (version complète avec edit/create)
 
         async function deleteConsigne(id) {
             if (!confirm('Supprimer cette consigne ?')) return;
@@ -3393,27 +3696,7 @@ Statut: ${tp.statut || 'En cours'}
             document.getElementById('zoneModal').classList.add('active');
         }
 
-        async function saveZone(e) {
-            e.preventDefault();
-            const data = {
-                nom: document.getElementById('zoneNom').value,
-                type: document.getElementById('zoneType').value,
-                risque: document.getElementById('zoneRisque').value,
-                capacite: parseInt(document.getElementById('zoneCapacite').value),
-                description: document.getElementById('zoneDescription').value,
-                epiLunettes: document.getElementById('epiLunettes').checked,
-                epiGants: document.getElementById('epiGants').checked,
-                epiCasque: document.getElementById('epiCasque').checked,
-                epiChaussures: document.getElementById('epiChaussures').checked,
-                epiAuditif: document.getElementById('epiAuditif').checked,
-                epiBlouse: document.getElementById('epiBlouse').checked,
-                dateCreation: new Date()
-            };
-
-            await db.collection('zones').add(data);
-            await loadZones();
-            closeModal('zoneModal');
-        }
+        // saveZone est défini plus bas (version complète avec edit/create)
 
         async function deleteZone(id) {
             if (!confirm('Supprimer cette zone ?')) return;
@@ -3605,54 +3888,7 @@ Statut: ${tp.statut || 'En cours'}
             }
         }
 
-        async function genererRapport(type) {
-            const rapportData = {
-                type: type,
-                dateGeneration: new Date(),
-                generePar: currentUserData.nom + ' ' + currentUserData.prenom,
-                contenu: {}
-            };
-
-            switch(type) {
-                case 'general':
-                    rapportData.contenu = {
-                        utilisateurs: allUsers.length,
-                        machines: allMachines.length,
-                        tp: allTP.length,
-                        stock: allStock.length,
-                        zones: allZones.length,
-                        consignes: allConsignes.length
-                    };
-                    break;
-                case 'securite':
-                    rapportData.contenu = {
-                        consignes: allConsignes.length,
-                        zones: allZones.length,
-                        alertesActives: allAlertes.filter(a => a.type === 'alerte').length,
-                        zonesHautRisque: allZones.filter(z => z.risque === 'eleve').length
-                    };
-                    break;
-                case 'stock':
-                    rapportData.contenu = {
-                        totalArticles: allStock.length,
-                        stockBas: allStock.filter(s => s.quantite <= (s.quantiteMinimale || 5)).length,
-                        valeurTotale: allStock.reduce((sum, s) => sum + (s.quantite * (s.prix || 0)), 0)
-                    };
-                    break;
-                case 'machines':
-                    rapportData.contenu = {
-                        totalMachines: allMachines.length,
-                        operationnelles: allMachines.filter(m => m.statut === 'operationnelle').length,
-                        enMaintenance: allMachines.filter(m => m.statut === 'maintenance').length,
-                        enPanne: allMachines.filter(m => m.statut === 'en panne').length
-                    };
-                    break;
-            }
-
-            await db.collection('rapports').add(rapportData);
-            await loadRapportsHistory();
-            alert('Rapport ' + type + ' généré avec succès !');
-        }
+        // genererRapport est défini plus bas (version complète avec modal)
 
         async function deleteRapport(id) {
             if (!confirm('Supprimer ce rapport ?')) return;
@@ -3739,24 +3975,7 @@ Statut: ${tp.statut || 'En cours'}
             document.getElementById('emplacementModal').classList.add('active');
         }
 
-        async function saveEmplacement(e) {
-            e.preventDefault();
-            const data = {
-                code: document.getElementById('emplacementCode').value,
-                nom: document.getElementById('emplacementNom').value,
-                type: document.getElementById('emplacementType').value,
-                zone: document.getElementById('emplacementZone').value || null,
-                capacite: document.getElementById('emplacementCapacite').value,
-                contenu: document.getElementById('emplacementContenu').value,
-                statut: document.getElementById('emplacementStatut').value,
-                dateCreation: new Date()
-            };
-
-            await db.collection('emplacements').add(data);
-            await loadEmplacements();
-            updateRangementStats();
-            closeModal('emplacementModal');
-        }
+        // saveEmplacement est défini plus bas (version complète avec edit/create)
 
         async function deleteEmplacement(id) {
             if (!confirm('Supprimer cet emplacement ?')) return;
@@ -3805,21 +4024,7 @@ Statut: ${tp.statut || 'En cours'}
                 allEmplacements.map(e => `<option value="${e.code}">${e.code} - ${e.nom}</option>`).join('');
         }
 
-        async function saveCategorie(e) {
-            e.preventDefault();
-            const data = {
-                nom: document.getElementById('categorieNom').value,
-                icone: document.getElementById('categorieIcone').value,
-                couleur: document.getElementById('categorieCouleur').value,
-                description: document.getElementById('categorieDescription').value,
-                emplacement: document.getElementById('categorieEmplacement').value || null,
-                dateCreation: new Date()
-            };
-
-            await db.collection('categories').add(data);
-            await loadCategories();
-            closeModal('categorieModal');
-        }
+        // saveCategorie est défini plus bas (version complète avec edit/create)
 
         async function deleteCategorie(id) {
             if (!confirm('Supprimer cette catégorie ?')) return;
@@ -3839,30 +4044,6 @@ Statut: ${tp.statut || 'En cours'}
 
         let selectedMachine = null;
 
-        function showMachineInfo(machineName, criticite) {
-            selectedMachine = machineName;
-            document.getElementById('machineInfoPanel').style.display = 'block';
-            document.getElementById('machineInfoTitle').innerHTML = '<i class="fas fa-cog"></i> ' + machineName;
-
-            const criticiteLabels = {
-                'critique': '🔴 Criticité CRITIQUE - Port des EPI obligatoire',
-                'eleve': '🟠 Criticité ÉLEVÉE - Attention particulière requise',
-                'moyen': '🟡 Criticité MOYENNE - Respect des consignes',
-                'faible': '🟢 Criticité FAIBLE - Zone sécurisée'
-            };
-            document.getElementById('machineInfoCriticite').innerHTML = '<strong>Niveau de risque:</strong> ' + (criticiteLabels[criticite] || 'Non défini');
-
-            // Compter les consignes pour cette machine
-            const consignesMachine = allConsignes.filter(c => c.machine === machineName);
-            document.getElementById('machineInfoConsignes').innerHTML = '<strong>Consignes:</strong> ' + consignesMachine.length + ' consigne(s) de sécurité';
-
-            // Mettre en évidence la machine sélectionnée
-            document.querySelectorAll('.machine-block').forEach(el => {
-                el.style.opacity = '0.5';
-            });
-            event.target.closest('rect')?.style && (event.target.closest('rect').style.opacity = '1');
-        }
-
         function filterZonesByCriticite() {
             const filter = document.getElementById('filterCriticite').value;
             const groups = document.querySelectorAll('#planAtelier g[data-criticite]');
@@ -3878,58 +4059,47 @@ Statut: ${tp.statut || 'En cours'}
             });
         }
 
-        function resetPlanView() {
-            document.getElementById('filterCriticite').value = '';
-            document.querySelectorAll('#planAtelier g[data-criticite]').forEach(g => {
-                g.style.opacity = '1';
-                g.style.pointerEvents = 'auto';
-            });
-            document.querySelectorAll('.machine-block').forEach(el => {
-                el.style.opacity = '1';
-            });
-            document.getElementById('machineInfoPanel').style.display = 'none';
-            selectedMachine = null;
-        }
+        // resetPlanView est défini plus bas (version complète)
 
         function voirConsignesMachine() {
-            if (!selectedMachine) return;
-            // Basculer vers l'onglet Sécurité > Consignes et filtrer
+            const name = currentReportMachine?.nom || selectedMachine;
+            if (!name) return;
+            closeModal('machineReportModal');
             document.querySelector('[data-page="securite"]').click();
             setTimeout(() => {
                 showSecuriteTab('consignes');
-                document.getElementById('consignesSearch').value = selectedMachine;
+                document.getElementById('consignesSearch').value = name;
                 renderConsignes();
-            }, 100);
+            }, 150);
         }
 
         function ajouterConsigneMachine() {
-            if (!selectedMachine) return;
+            const name = currentReportMachine?.nom || selectedMachine;
+            if (!name) return;
             openConsigneModal();
             setTimeout(() => {
                 document.getElementById('consigneType').value = 'machine';
                 document.getElementById('consigneMachineGroup').style.display = 'block';
-                // Chercher ou ajouter la machine dans le select
                 const select = document.getElementById('consigneMachine');
-                let found = false;
-                for (let i = 0; i < select.options.length; i++) {
-                    if (select.options[i].value === selectedMachine) {
-                        select.selectedIndex = i;
-                        found = true;
-                        break;
-                    }
-                }
+                let found = Array.from(select.options).some((opt, i) => {
+                    if (opt.value === name) { select.selectedIndex = i; return true; }
+                });
                 if (!found) {
-                    const option = document.createElement('option');
-                    option.value = selectedMachine;
-                    option.textContent = selectedMachine;
+                    const option = new Option(name, name);
                     select.appendChild(option);
-                    select.value = selectedMachine;
+                    select.value = name;
                 }
             }, 100);
         }
 
+        function closeInfoPanel() {
+            const panel = document.getElementById('machineInfoPanel');
+            if (panel) panel.style.display = 'none';
+            document.querySelectorAll('.machine-block').forEach(el => el.style.opacity = '1');
+        }
+
         function editPlanAtelier() {
-            alert('Le plan de l\'atelier est maintenant interactif ! Cliquez sur les machines pour voir leurs informations et gérer leurs consignes de sécurité.');
+            showNotification('Plan interactif : cliquez sur une machine pour voir son rapport.', 'info');
         }
 
         // ==========================================
@@ -4223,6 +4393,567 @@ Statut: ${tp.statut || 'En cours'}
         function clearChat() {
             chatHistory = [];
             showWelcomeMessage();
+        }
+
+        // ==========================================
+        // FONCTIONS RECHERCHE / FILTRE
+        // ==========================================
+        function filterTP() {
+            const term = (document.getElementById('tpSearch')?.value || '').toLowerCase();
+            const filtered = allTP.filter(t =>
+                (t.titre || '').toLowerCase().includes(term) ||
+                (t.creatorName || '').toLowerCase().includes(term) ||
+                (t.type || '').toLowerCase().includes(term)
+            );
+            renderTPTableFiltered(filtered);
+        }
+
+        function renderTPTableFiltered(tps) {
+            const html = tps.map(t => {
+                let dateDebut = t.dateDebut;
+                if (dateDebut?.toDate) dateDebut = dateDebut.toDate();
+                else if (dateDebut) dateDebut = new Date(dateDebut);
+                const dateStr = dateDebut ? dateDebut.toLocaleDateString('fr-FR') : '-';
+                const heureStr = t.heureDebut || '-';
+                const statut = getTPStatus(t);
+                return `<tr>
+                    <td data-label="Titre"><strong>${t.titre || ''}</strong></td>
+                    <td data-label="Créateur">${t.creatorName || 'N/A'}</td>
+                    <td data-label="Type">${t.type || ''}</td>
+                    <td data-label="Date">${dateStr} ${heureStr}</td>
+                    <td data-label="Durée">${t.duree || '-'}h</td>
+                    <td data-label="Statut">${getStatusBadge(statut)}</td>
+                    <td data-label="Membres"><span class="badge" style="background:#dbeafe;color:#1e40af;">${(t.membres||t.participants||[]).length} 👥</span></td>
+                    <td data-label="Actions"><div class="actions">
+                        <button class="btn-sm btn-edit" onclick="viewTPDetails('${t.id}')"><i class="fas fa-eye"></i></button>
+                        <button class="btn-sm btn-delete" onclick="deleteTP('${t.id}')"><i class="fas fa-trash"></i></button>
+                    </div></td>
+                </tr>`;
+            }).join('');
+            document.getElementById('tpTable').innerHTML = html || '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;"><i class="fas fa-flask" style="font-size:32px;display:block;margin-bottom:8px;"></i>Aucun TP</td></tr>';
+        }
+
+        function filterMachines() {
+            const term = (document.getElementById('machineSearch')?.value || '').toLowerCase();
+            const zone = document.getElementById('machineZoneFilter')?.value || '';
+            const filtered = allMachines.filter(m =>
+                (!term || (m.nom||'').toLowerCase().includes(term) || (m.type||'').toLowerCase().includes(term)) &&
+                (!zone || m.zone === zone)
+            );
+            renderMachinesTable(filtered);
+        }
+
+        function filterStock() {
+            const term = (document.getElementById('stockSearch')?.value || '').toLowerCase();
+            const cat = document.getElementById('stockCatFilter')?.value || '';
+            const filtered = allStock.filter(s =>
+                (!term || (s.nom||'').toLowerCase().includes(term)) &&
+                (!cat || s.categorie === cat)
+            );
+            renderStockTableFiltered(filtered);
+        }
+
+        function renderStockTableFiltered(stocks) {
+            const html = stocks.map(s => {
+                const q = s.quantite || 0;
+                const min = s.quantiteMinimale || 5;
+                const lowStock = q <= min;
+                return `<tr style="${lowStock ? 'border-left-color:#dc2626;' : ''}">
+                    <td data-label="Article"><strong>${s.nom||''}</strong></td>
+                    <td data-label="Catégorie">${s.categorie||''}</td>
+                    <td data-label="Quantité" style="${lowStock?'color:#dc2626;font-weight:bold;':''}">${q} ${lowStock?'⚠️':''}</td>
+                    <td data-label="Min">${min}</td>
+                    <td data-label="Prix">${s.prix||0}€</td>
+                    <td data-label="Actions"><div class="actions">
+                        <button class="btn-sm btn-edit" onclick="editStock('${s.id}')"><i class="fas fa-edit"></i></button>
+                        <button class="btn-sm btn-delete" onclick="deleteStock('${s.id}')"><i class="fas fa-trash"></i></button>
+                    </div></td>
+                </tr>`;
+            }).join('');
+            document.getElementById('stockTable').innerHTML = html || '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Aucun article</td></tr>';
+        }
+
+        // ==========================================
+        // FONCTIONS EDIT MANQUANTES
+        // ==========================================
+        let editingConsigneId = null;
+        function editConsigne(id) {
+            const c = allConsignes.find(x => x.id === id);
+            if (!c) return;
+            editingConsigneId = id;
+            document.getElementById('consigneTitre').value = c.titre || '';
+            document.getElementById('consigneType').value = c.type || 'generale';
+            document.getElementById('consigneNiveau').value = c.niveau || 'info';
+            document.getElementById('consigneDescription').value = c.description || '';
+            document.getElementById('consigneValidation').value = c.dateValidation || '';
+            document.getElementById('consigneRevision').value = c.dateRevision || '';
+            document.querySelector('#consigneModal .modal-header h3').textContent = 'Modifier Consigne';
+            document.getElementById('consigneModal').classList.add('active');
+        }
+
+        async function saveConsigne(e) {
+            e.preventDefault();
+            const data = {
+                titre: document.getElementById('consigneTitre').value,
+                type: document.getElementById('consigneType').value,
+                machine: document.getElementById('consigneMachine').value || null,
+                zone: document.getElementById('consigneZone').value || null,
+                niveau: document.getElementById('consigneNiveau').value,
+                description: document.getElementById('consigneDescription').value,
+                dateValidation: document.getElementById('consigneValidation').value || null,
+                dateRevision: document.getElementById('consigneRevision').value || null,
+            };
+            if (editingConsigneId) {
+                await db.collection('consignes').doc(editingConsigneId).update(data);
+                editingConsigneId = null;
+                document.querySelector('#consigneModal .modal-header h3').textContent = 'Ajouter une Consigne de Sécurité';
+                showNotification('Consigne modifiée', 'success');
+            } else {
+                data.dateCreation = new Date();
+                data.createdBy = currentUserData.id;
+                await db.collection('consignes').add(data);
+                showNotification('Consigne ajoutée', 'success');
+            }
+            await loadConsignes();
+            closeModal('consigneModal');
+        }
+
+        let editingZoneId = null;
+        function editZone(id) {
+            const z = allZones.find(x => x.id === id);
+            if (!z) return;
+            editingZoneId = id;
+            document.getElementById('zoneNom').value = z.nom || '';
+            document.getElementById('zoneType').value = z.type || 'travail';
+            document.getElementById('zoneRisque').value = z.risque || 'faible';
+            document.getElementById('zoneCapacite').value = z.capacite || 5;
+            document.getElementById('zoneDescription').value = z.description || '';
+            document.getElementById('epiLunettes').checked = !!z.epiLunettes;
+            document.getElementById('epiGants').checked = !!z.epiGants;
+            document.getElementById('epiCasque').checked = !!z.epiCasque;
+            document.getElementById('epiChaussures').checked = !!z.epiChaussures;
+            document.getElementById('epiAuditif').checked = !!z.epiAuditif;
+            document.getElementById('epiBlouse').checked = !!z.epiBlouse;
+            document.querySelector('#zoneModal .modal-header h3').textContent = 'Modifier Zone';
+            document.getElementById('zoneModal').classList.add('active');
+        }
+
+        async function saveZone(e) {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('zoneNom').value,
+                type: document.getElementById('zoneType').value,
+                risque: document.getElementById('zoneRisque').value,
+                capacite: parseInt(document.getElementById('zoneCapacite').value),
+                description: document.getElementById('zoneDescription').value,
+                epiLunettes: document.getElementById('epiLunettes').checked,
+                epiGants: document.getElementById('epiGants').checked,
+                epiCasque: document.getElementById('epiCasque').checked,
+                epiChaussures: document.getElementById('epiChaussures').checked,
+                epiAuditif: document.getElementById('epiAuditif').checked,
+                epiBlouse: document.getElementById('epiBlouse').checked,
+            };
+            if (editingZoneId) {
+                await db.collection('zones').doc(editingZoneId).update(data);
+                editingZoneId = null;
+                document.querySelector('#zoneModal .modal-header h3').textContent = 'Ajouter une Zone de Travail';
+                showNotification('Zone modifiée', 'success');
+            } else {
+                data.dateCreation = new Date();
+                await db.collection('zones').add(data);
+                showNotification('Zone ajoutée', 'success');
+            }
+            await loadZones();
+            closeModal('zoneModal');
+        }
+
+        let editingEmplacementId = null;
+        function editEmplacement(id) {
+            const e = allEmplacements.find(x => x.id === id);
+            if (!e) return;
+            editingEmplacementId = id;
+            document.getElementById('emplacementCode').value = e.code || '';
+            document.getElementById('emplacementNom').value = e.nom || '';
+            document.getElementById('emplacementType').value = e.type || 'etagere';
+            document.getElementById('emplacementZone').value = e.zone || '';
+            document.getElementById('emplacementCapacite').value = e.capacite || '';
+            document.getElementById('emplacementContenu').value = e.contenu || '';
+            document.getElementById('emplacementStatut').value = e.statut || 'libre';
+            document.querySelector('#emplacementModal .modal-header h3').textContent = 'Modifier Emplacement';
+            populateZonesSelect();
+            document.getElementById('emplacementModal').classList.add('active');
+        }
+
+        async function saveEmplacement(e) {
+            e.preventDefault();
+            const data = {
+                code: document.getElementById('emplacementCode').value,
+                nom: document.getElementById('emplacementNom').value,
+                type: document.getElementById('emplacementType').value,
+                zone: document.getElementById('emplacementZone').value || null,
+                capacite: document.getElementById('emplacementCapacite').value,
+                contenu: document.getElementById('emplacementContenu').value,
+                statut: document.getElementById('emplacementStatut').value,
+            };
+            if (editingEmplacementId) {
+                await db.collection('emplacements').doc(editingEmplacementId).update(data);
+                editingEmplacementId = null;
+                document.querySelector('#emplacementModal .modal-header h3').textContent = 'Ajouter un Emplacement';
+                showNotification('Emplacement modifié', 'success');
+            } else {
+                data.dateCreation = new Date();
+                await db.collection('emplacements').add(data);
+                showNotification('Emplacement ajouté', 'success');
+            }
+            await loadEmplacements();
+            updateRangementStats();
+            closeModal('emplacementModal');
+        }
+
+        let editingCategorieId = null;
+        function editCategorie(id) {
+            const c = allCategories.find(x => x.id === id);
+            if (!c) return;
+            editingCategorieId = id;
+            document.getElementById('categorieNom').value = c.nom || '';
+            document.getElementById('categorieIcone').value = c.icone || 'fa-box';
+            document.getElementById('categorieCouleur').value = c.couleur || '#3b82f6';
+            document.getElementById('categorieDescription').value = c.description || '';
+            document.getElementById('categorieEmplacement').value = c.emplacement || '';
+            document.querySelector('#categorieModal .modal-header h3').textContent = 'Modifier Catégorie';
+            document.getElementById('categorieModal').classList.add('active');
+        }
+
+        async function saveCategorie(e) {
+            e.preventDefault();
+            const data = {
+                nom: document.getElementById('categorieNom').value,
+                icone: document.getElementById('categorieIcone').value,
+                couleur: document.getElementById('categorieCouleur').value,
+                description: document.getElementById('categorieDescription').value,
+                emplacement: document.getElementById('categorieEmplacement').value || null,
+            };
+            if (editingCategorieId) {
+                await db.collection('categories').doc(editingCategorieId).update(data);
+                editingCategorieId = null;
+                document.querySelector('#categorieModal .modal-header h3').textContent = 'Ajouter une Catégorie';
+                showNotification('Catégorie modifiée', 'success');
+            } else {
+                data.dateCreation = new Date();
+                await db.collection('categories').add(data);
+                showNotification('Catégorie ajoutée', 'success');
+            }
+            await loadCategories();
+            closeModal('categorieModal');
+        }
+
+        // ==========================================
+        // RAPPORTS : voir et télécharger
+        // ==========================================
+        let currentRapportData = null;
+
+        async function viewRapport(id) {
+            try {
+                const doc = await db.collection('rapports').doc(id).get();
+                if (!doc.exists) { showNotification('Rapport introuvable', 'error'); return; }
+                currentRapportData = { id: doc.id, ...doc.data() };
+                const r = currentRapportData;
+                const date = r.dateGeneration?.toDate ? r.dateGeneration.toDate() : new Date(r.dateGeneration);
+                const content = buildRapportHTML(r, date);
+                document.getElementById('rapportDetailContent').innerHTML = content;
+                document.getElementById('rapportDetailModal').classList.add('active');
+            } catch(err) { showNotification('Erreur: ' + err.message, 'error'); }
+        }
+
+        function buildRapportHTML(r, date) {
+            const typeLabels = { general: 'Rapport Général', securite: 'Audit Sécurité', stock: 'Rapport Stock', machines: 'Rapport Machines' };
+            let html = `
+                <div style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:white;padding:18px;border-radius:10px;margin-bottom:16px;">
+                    <h3 style="margin:0 0 4px 0;">${typeLabels[r.type] || r.type}</h3>
+                    <p style="margin:0;opacity:0.85;font-size:13px;">Généré le ${date.toLocaleDateString('fr-FR')} à ${date.toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})} par ${r.generePar || 'Admin'}</p>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">`;
+            for (const [key, val] of Object.entries(r.contenu || {})) {
+                const labels = {
+                    utilisateurs:'Utilisateurs', machines:'Machines', tp:'TP', stock:'Articles Stock',
+                    zones:'Zones', consignes:'Consignes', alertesActives:'Alertes actives',
+                    zonesHautRisque:'Zones haut risque', totalArticles:'Total articles',
+                    stockBas:'Stock bas', valeurTotale:'Valeur totale (€)',
+                    totalMachines:'Total machines', operationnelles:'Opérationnelles',
+                    enMaintenance:'En maintenance', enPanne:'En panne'
+                };
+                html += `<div style="background:#f8fafc;padding:12px;border-radius:8px;"><p style="margin:0;font-size:11px;color:#6b7280;">${labels[key]||key}</p><strong style="font-size:22px;color:#1e40af;">${typeof val === 'number' && key === 'valeurTotale' ? val.toFixed(2) + '€' : val}</strong></div>`;
+            }
+            html += '</div>';
+            return html;
+        }
+
+        function downloadCurrentRapport() {
+            if (!currentRapportData) return;
+            const r = currentRapportData;
+            const date = r.dateGeneration?.toDate ? r.dateGeneration.toDate() : new Date(r.dateGeneration);
+            let text = `RAPPORT ESIG ATELIER\n${'='.repeat(50)}\n`;
+            text += `Type: ${r.type?.toUpperCase()}\n`;
+            text += `Date: ${date.toLocaleString('fr-FR')}\n`;
+            text += `Généré par: ${r.generePar || 'Admin'}\n\n`;
+            text += `DONNÉES:\n${'-'.repeat(30)}\n`;
+            for (const [key, val] of Object.entries(r.contenu || {})) {
+                text += `${key}: ${val}\n`;
+            }
+            downloadText(text, `rapport_${r.type}_${date.toISOString().split('T')[0]}.txt`);
+        }
+
+        // Améliorer genererRapport pour télécharger directement
+        async function genererRapport(type) {
+            try {
+                const rapportData = { type, dateGeneration: new Date(), generePar: currentUserData.nom + ' ' + currentUserData.prenom, contenu: {} };
+                switch(type) {
+                    case 'general':
+                        rapportData.contenu = { utilisateurs: allUsers.length, machines: allMachines.length, tp: allTP.length, stock: allStock.length, zones: allZones.length, consignes: allConsignes.length }; break;
+                    case 'securite':
+                        rapportData.contenu = { consignes: allConsignes.length, zones: allZones.length, alertesActives: allAlertes.filter(a => a.type === 'alerte').length, zonesHautRisque: allZones.filter(z => z.risque === 'eleve').length }; break;
+                    case 'stock':
+                        rapportData.contenu = { totalArticles: allStock.length, stockBas: allStock.filter(s => s.quantite <= (s.quantiteMinimale||5)).length, valeurTotale: allStock.reduce((sum,s) => sum + (s.quantite*(s.prix||0)), 0) }; break;
+                    case 'machines':
+                        rapportData.contenu = { totalMachines: allMachines.length, operationnelles: allMachines.filter(m => m.statut === 'disponible').length, enMaintenance: allMachines.filter(m => m.statut === 'maintenance').length, enPanne: allMachines.filter(m => m.statut === 'panne' || m.statut === 'hors_service').length }; break;
+                }
+                const docRef = await db.collection('rapports').add(rapportData);
+                currentRapportData = { id: docRef.id, ...rapportData };
+                await loadRapportsHistory();
+                showNotification('Rapport ' + type + ' généré !', 'success');
+                // Afficher le rapport
+                const date = rapportData.dateGeneration;
+                document.getElementById('rapportDetailContent').innerHTML = buildRapportHTML(rapportData, date);
+                document.getElementById('rapportDetailModal').classList.add('active');
+            } catch(err) { showNotification('Erreur: ' + err.message, 'error'); }
+        }
+
+        function downloadText(text, filename) {
+            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename;
+            document.body.appendChild(a); a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Stub document sécurité
+        function openDocumentModal(type) {
+            showNotification('Fonctionnalité documents disponible – utilisez un lien URL vers vos docs.', 'info');
+        }
+
+        // ==========================================
+        // RAPPORT MACHINE (plan atelier)
+        // ==========================================
+        let currentReportMachine = null;
+        let currentReportMachineId = null;
+
+        function showMachineReport(machineName, machineId, criticite, event) {
+            // Chercher la machine dans Firebase data
+            const machine = allMachines.find(m =>
+                m.nom?.toLowerCase() === machineName.toLowerCase() ||
+                (machineId && m.id === machineId)
+            );
+            currentReportMachine = machine || { nom: machineName, criticite };
+            currentReportMachineId = machine?.id || null;
+
+            // Mise à jour visuelle sur le plan
+            document.querySelectorAll('.machine-block').forEach(el => el.style.opacity = '0.45');
+            if (event?.target) {
+                const target = event.target.closest('rect') || event.target;
+                target.style.opacity = '1';
+            }
+
+            // Remplir le modal
+            const cLabels = { critique:'🔴 CRITIQUE', eleve:'🟠 Élevée', moyen:'🟡 Moyenne', faible:'🟢 Faible' };
+            const cColors = { critique:'#dc2626', eleve:'#d97706', moyen:'#ca8a04', faible:'#16a34a' };
+            const color = cColors[criticite] || '#3b82f6';
+
+            let infoHTML = `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Machine</p><strong style="color:#1e40af;font-size:16px;">${machineName}</strong></div>
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Criticité</p><strong style="color:${color};">${cLabels[criticite]||'Non définie'}</strong></div>`;
+            if (machine) {
+                infoHTML += `
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Type</p><strong>${machine.type || '-'}</strong></div>
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Statut</p><span class="badge ${machine.statut==='disponible'?'badge-online':'badge-offline'}">${machine.statut||'-'}</span></div>
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Zone</p><strong>${machine.zone || '-'}</strong></div>
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Heures utilisées</p><strong>${machine.nombreHeuresUtilisation || 0}h</strong></div>
+                    <div><p style="margin:0;font-size:11px;color:#6b7280;">Lieu</p><strong>${machine.lieu || '-'}</strong></div>`;
+                // Consignes liées
+                const consignes = allConsignes.filter(c => c.machine?.toLowerCase() === machineName.toLowerCase());
+                infoHTML += `<div><p style="margin:0;font-size:11px;color:#6b7280;">Consignes sécurité</p><strong style="color:#dc2626;">${consignes.length} consigne(s)</strong></div>`;
+                if (machine.description) {
+                    infoHTML += `</div><div style="margin-top:10px;background:#fff;padding:10px;border-radius:6px;border-left:3px solid #3b82f6;"><p style="margin:0;font-size:12px;color:#374151;">${machine.description}</p></div>`;
+                } else {
+                    infoHTML += '</div>';
+                }
+            } else {
+                infoHTML += `</div><p style="margin-top:8px;font-size:12px;color:#9ca3af;"><i class="fas fa-info-circle"></i> Machine non encore ajoutée en base. Cliquez "Modifier machine" pour l'ajouter.</p>`;
+            }
+            document.getElementById('reportMachineInfo').innerHTML = infoHTML;
+            document.getElementById('reportMachineTitle').innerHTML = '<i class="fas fa-chart-line"></i> Rapport – ' + machineName;
+            document.getElementById('reportNotes').value = machine?.reportNotes || '';
+
+            // Pré-remplir les dates (derniers 30 jours)
+            const today = new Date();
+            const past = new Date(today); past.setDate(today.getDate() - 30);
+            document.getElementById('reportDateFrom').value = past.toISOString().split('T')[0];
+            document.getElementById('reportDateTo').value = today.toISOString().split('T')[0];
+
+            document.getElementById('reportMachineContent').innerHTML = '<p style="color:#9ca3af;text-align:center;padding:20px 0;"><i class="fas fa-chart-bar"></i> Cliquez sur "Générer le rapport"</p>';
+            document.getElementById('machineReportModal').classList.add('active');
+
+            // Aussi afficher le panel dans le plan
+            const panel = document.getElementById('machineInfoPanel');
+            if (panel) {
+                panel.style.display = 'block';
+                document.getElementById('machineInfoTitle').innerHTML = '<i class="fas fa-cog"></i> ' + machineName;
+                const crit = { critique:'🔴 CRITIQUE – EPI obligatoire', eleve:'🟠 ÉLEVÉE – Attention requise', moyen:'🟡 MOYENNE – Respecter consignes', faible:'🟢 FAIBLE – Zone sécurisée' };
+                document.getElementById('machineInfoCriticite').innerHTML = '<strong>Niveau de risque:</strong> ' + (crit[criticite]||'Non défini');
+                const nb = allConsignes.filter(c => c.machine?.toLowerCase() === machineName.toLowerCase()).length;
+                document.getElementById('machineInfoConsignes').innerHTML = '<strong>Consignes:</strong> ' + nb + ' consigne(s)';
+            }
+        }
+
+        // Rétro-compatibilité: ancienne fonction
+        function showMachineInfo(machineName, criticite) {
+            showMachineReport(machineName, '', criticite, null);
+        }
+
+        function generateMachineReport() {
+            const m = currentReportMachine;
+            if (!m) return;
+            const from = document.getElementById('reportDateFrom').value;
+            const to = document.getElementById('reportDateTo').value;
+            if (!from || !to) { showNotification('Sélectionnez une période', 'info'); return; }
+
+            const fromDate = new Date(from);
+            const toDate = new Date(to);
+            const days = Math.round((toDate - fromDate) / (1000*60*60*24));
+
+            // Simuler des statistiques basées sur les heures d'utilisation connues
+            const heures = m.nombreHeuresUtilisation || 0;
+            const heuresPeriode = Math.min(heures, days * 8); // Max 8h/jour
+            const tauxDispo = m.statut === 'disponible' ? 92 : m.statut === 'maintenance' ? 0 : 50;
+
+            const html = `
+                <h4 style="color:#1e40af;margin:0 0 12px 0;"><i class="fas fa-chart-bar"></i> Rapport du ${new Date(from).toLocaleDateString('fr-FR')} au ${new Date(to).toLocaleDateString('fr-FR')}</h4>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;">
+                    <div style="background:#f0f9ff;padding:12px;border-radius:8px;text-align:center;">
+                        <p style="margin:0;font-size:11px;color:#6b7280;">Période analysée</p>
+                        <strong style="font-size:20px;color:#1e40af;">${days} jours</strong>
+                    </div>
+                    <div style="background:#f0fdf4;padding:12px;border-radius:8px;text-align:center;">
+                        <p style="margin:0;font-size:11px;color:#6b7280;">Taux de disponibilité</p>
+                        <strong style="font-size:20px;color:#16a34a;">${tauxDispo}%</strong>
+                    </div>
+                    <div style="background:#fff7ed;padding:12px;border-radius:8px;text-align:center;">
+                        <p style="margin:0;font-size:11px;color:#6b7280;">Heures utilisées (total)</p>
+                        <strong style="font-size:20px;color:#d97706;">${heures}h</strong>
+                    </div>
+                    <div style="background:#fdf4ff;padding:12px;border-radius:8px;text-align:center;">
+                        <p style="margin:0;font-size:11px;color:#6b7280;">Consignes associées</p>
+                        <strong style="font-size:20px;color:#7c3aed;">${allConsignes.filter(c => c.machine?.toLowerCase() === m.nom?.toLowerCase()).length}</strong>
+                    </div>
+                </div>
+                <div style="background:#f8fafc;padding:12px;border-radius:8px;">
+                    <p style="margin:0 0 6px 0;font-size:12px;color:#374151;"><strong>Statut actuel:</strong> ${m.statut || 'Inconnu'} | <strong>Zone:</strong> ${m.zone || '-'} | <strong>Lieu:</strong> ${m.lieu || '-'}</p>
+                    ${m.description ? `<p style="margin:6px 0 0 0;font-size:12px;color:#6b7280;">${m.description}</p>` : ''}
+                </div>
+            `;
+            document.getElementById('reportMachineContent').innerHTML = html;
+        }
+
+        function editCurrentMachine() {
+            closeModal('machineReportModal');
+            if (currentReportMachineId) {
+                editMachine(currentReportMachineId);
+            } else {
+                // La machine n'est pas encore dans Firebase → ouvrir modal création
+                openMachineModal();
+                document.getElementById('machineNom').value = currentReportMachine?.nom || '';
+                showNotification('Machine non trouvée dans la base – complétez les infos', 'info');
+            }
+            // Réinitialiser le plan
+            document.querySelectorAll('.machine-block').forEach(el => el.style.opacity = '1');
+        }
+
+        function downloadMachineReport() {
+            const m = currentReportMachine;
+            if (!m) return;
+            const from = document.getElementById('reportDateFrom').value || '-';
+            const to = document.getElementById('reportDateTo').value || '-';
+            const notes = document.getElementById('reportNotes').value;
+            const today = new Date();
+
+            let text = `RAPPORT MACHINE – ESIG ATELIER\n${'='.repeat(50)}\n\n`;
+            text += `Machine: ${m.nom}\n`;
+            text += `Type: ${m.type || '-'}\n`;
+            text += `Zone: ${m.zone || '-'}\n`;
+            text += `Lieu: ${m.lieu || '-'}\n`;
+            text += `Statut: ${m.statut || '-'}\n`;
+            text += `Heures totales: ${m.nombreHeuresUtilisation || 0}h\n`;
+            text += `\nPériode du rapport: ${from} au ${to}\n`;
+            text += `Généré le: ${today.toLocaleString('fr-FR')}\n`;
+            text += `\n${'-'.repeat(50)}\nOBSERVATIONS:\n${notes || 'Aucune observation'}\n`;
+
+            // Sauvegarder les notes si machine Firebase
+            if (currentReportMachineId && notes) {
+                db.collection('machines').doc(currentReportMachineId).update({ reportNotes: notes }).catch(()=>{});
+            }
+
+            downloadText(text, `rapport_machine_${(m.nom||'machine').replace(/\s+/g,'_')}_${from}.txt`);
+            showNotification('Rapport téléchargé', 'success');
+        }
+
+        // ==========================================
+        // SIDEBAR MOBILE
+        // ==========================================
+        function toggleSidebar() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const icon = document.getElementById('hamburgerIcon');
+            const isOpen = sidebar.classList.contains('mobile-open');
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+                icon.className = 'fas fa-bars';
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+                icon.className = 'fas fa-times';
+            }
+        }
+
+        function closeSidebar() {
+            const sidebar = document.getElementById('mainSidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const icon = document.getElementById('hamburgerIcon');
+            sidebar.classList.remove('mobile-open');
+            overlay.classList.remove('active');
+            icon.className = 'fas fa-bars';
+        }
+
+        // Fermer sidebar après navigation sur mobile
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 1024) closeSidebar();
+            });
+        });
+
+        // Réinitialiser le plan atelier quand on quitte la vue
+        function resetPlanView() {
+            document.getElementById('filterCriticite').value = '';
+            document.querySelectorAll('#planAtelier g[data-criticite]').forEach(g => {
+                g.style.opacity = '1';
+                g.style.pointerEvents = 'auto';
+            });
+            document.querySelectorAll('.machine-block').forEach(el => el.style.opacity = '1');
+            const panel = document.getElementById('machineInfoPanel');
+            if (panel) panel.style.display = 'none';
+            currentReportMachine = null;
         }
     </script>
 </body>

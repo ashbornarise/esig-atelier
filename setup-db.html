@@ -190,9 +190,14 @@
 
                 // Machines
                 const machines = [
-                    { nom: "Tour CNC HAAS", type: "Tournage", statut: "disponible", lieu: "Atelier A", nombreHeuresUtilisation: 120 },
-                    { nom: "Fraiseuse 3 Axes", type: "Fraisage", statut: "maintenance", lieu: "Atelier B", nombreHeuresUtilisation: 450 },
-                    { nom: "Imprimante 3D Prusa", type: "Autre", statut: "disponible", lieu: "FabLab", nombreHeuresUtilisation: 80 }
+                    { nom: "Tour CNC HAAS", type: "Tournage", statut: "disponible", lieu: "Atelier A", zone: "Zone CNC", nombreHeuresUtilisation: 120, description: "Tour CNC haute précision pour usinage de pièces cylindriques" },
+                    { nom: "Fraiseuse 3 Axes", type: "Fraisage", statut: "maintenance", lieu: "Atelier B", zone: "Zone CNC", nombreHeuresUtilisation: 450, description: "Fraiseuse CNC 3 axes pour usinages complexes" },
+                    { nom: "Tour Conventionnel", type: "Tournage", statut: "disponible", lieu: "Atelier A", zone: "Zone Machines-outils", nombreHeuresUtilisation: 200, description: "Tour conventionnel pour travaux manuels" },
+                    { nom: "Fraiseuse Conventionnelle", type: "Fraisage", statut: "disponible", lieu: "Atelier B", zone: "Zone Machines-outils", nombreHeuresUtilisation: 180, description: "Fraiseuse conventionnelle polyvalente" },
+                    { nom: "Perceuse à Colonne", type: "Perçage", statut: "disponible", lieu: "Atelier A", zone: "Zone Machines-outils", nombreHeuresUtilisation: 95, description: "Perceuse à colonne pour perçages précis" },
+                    { nom: "Scie Mécanique", type: "Découpe", statut: "disponible", lieu: "Atelier B", zone: "Zone Machines-outils", nombreHeuresUtilisation: 60, description: "Scie mécanique pour découpe de barres et profilés" },
+                    { nom: "Imprimante 3D Prusa", type: "Impression 3D", statut: "disponible", lieu: "FabLab", zone: "Zone Équipements", nombreHeuresUtilisation: 80, description: "Imprimante 3D FDM pour prototypage rapide" },
+                    { nom: "Compresseur", type: "Équipement", statut: "disponible", lieu: "Atelier A", zone: "Zone Équipements", nombreHeuresUtilisation: 340, description: "Compresseur d'air pour outillage pneumatique" }
                 ];
 
                 for (const m of machines) {
@@ -223,15 +228,27 @@
         async function initLogs() {
             try {
                 const user = auth.currentUser;
-                await db.collection('activities').add({
-                    action: 'INIT_DB',
-                    type: 'system',
-                    details: 'Initialisation de la base de données',
-                    timestamp: new Date(),
-                    userId: user ? user.uid : 'system',
-                    userName: user ? user.email : 'System'
-                });
-                log('Collection activities initialisée.', 'success');
+                const userName = user ? user.email : 'System';
+                const userId = user ? user.uid : 'system';
+
+                const sampleActivities = [
+                    { action: 'INIT_DB', type: 'system', details: 'Initialisation de la base de données' },
+                    { action: 'MACHINE_AJOUTEE', type: 'machine', details: 'Machine ajoutée : Tour CNC HAAS' },
+                    { action: 'MACHINE_AJOUTEE', type: 'machine', details: 'Machine ajoutée : Fraiseuse 3 Axes' },
+                    { action: 'STOCK_AJOUTE', type: 'stock', details: 'Stock ajouté : Filament PLA Blanc' },
+                    { action: 'STOCK_AJOUTE', type: 'stock', details: 'Stock ajouté : Huile de coupe' },
+                    { action: 'USER_MODIFIE', type: 'user', details: 'Rôle admin attribué au compte principal' }
+                ];
+
+                for (const a of sampleActivities) {
+                    await db.collection('activities').add({
+                        ...a,
+                        timestamp: new Date(),
+                        userId,
+                        userName
+                    });
+                }
+                log(`${sampleActivities.length} activités initiales créées.`, 'success');
             } catch (error) {
                 log(`Erreur: ${error.message}`, 'error');
             }
