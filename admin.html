@@ -3842,10 +3842,15 @@
                 dateCreation: new Date(),
                 createdBy: currentUserData.id
             };
-
-            await db.collection('alertes').add(data);
-            await loadAlertes();
-            closeModal('alerteModal');
+            try {
+                await db.collection('alertes').add(data);
+                showNotification('Alerte créée avec succès', 'success');
+                await loadAlertes();
+                closeModal('alerteModal');
+            } catch(err) {
+                showNotification('Erreur sauvegarde alerte : ' + err.message, 'error');
+                console.error('saveAlerte error:', err);
+            }
         }
 
         async function deleteAlerte(id) {
@@ -4568,19 +4573,24 @@
                 dateValidation: document.getElementById('consigneValidation').value || null,
                 dateRevision: document.getElementById('consigneRevision').value || null,
             };
-            if (editingConsigneId) {
-                await db.collection('consignes').doc(editingConsigneId).update(data);
-                editingConsigneId = null;
-                document.querySelector('#consigneModal .modal-header h3').textContent = 'Ajouter une Consigne de Sécurité';
-                showNotification('Consigne modifiée', 'success');
-            } else {
-                data.dateCreation = new Date();
-                data.createdBy = currentUserData.id;
-                await db.collection('consignes').add(data);
-                showNotification('Consigne ajoutée', 'success');
+            try {
+                if (editingConsigneId) {
+                    await db.collection('consignes').doc(editingConsigneId).update(data);
+                    editingConsigneId = null;
+                    document.querySelector('#consigneModal .modal-header h3').textContent = 'Ajouter une Consigne de Sécurité';
+                    showNotification('Consigne modifiée', 'success');
+                } else {
+                    data.dateCreation = new Date();
+                    data.createdBy = currentUserData.id;
+                    await db.collection('consignes').add(data);
+                    showNotification('Consigne ajoutée', 'success');
+                }
+                await loadConsignes();
+                closeModal('consigneModal');
+            } catch(err) {
+                showNotification('Erreur sauvegarde consigne : ' + err.message, 'error');
+                console.error('saveConsigne error:', err);
             }
-            await loadConsignes();
-            closeModal('consigneModal');
         }
 
         let editingZoneId = null;

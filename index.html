@@ -2681,7 +2681,13 @@
                 renderUserDocsByType(docs, 'reglementaire', 'userDocsReglementaires');
                 renderUserDocsByType(docs, 'epi', 'userDocsEPI');
                 renderUserDocsByType(docs, 'urgence', 'userDocsUrgence');
-            } catch(e) { console.error('Erreur documents:', e); }
+            } catch(e) {
+                console.error('Erreur documents:', e);
+                ['userDocsReglementaires','userDocsEPI','userDocsUrgence'].forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.innerHTML = `<p style="color:#ef4444;font-size:13px;padding:10px;">⚠️ Erreur: ${e.message}</p>`;
+                });
+            }
         }
 
         function renderUserDocsByType(docs, type, containerId) {
@@ -2785,7 +2791,7 @@
                 }
             } catch(e) {
                 console.error('Erreur chargement alertes:', e);
-                document.getElementById('userAlertesSecurite').innerHTML = '';
+                document.getElementById('userAlertesSecurite').innerHTML = `<p style="color:#ef4444;font-size:13px;padding:10px;">⚠️ Erreur: ${e.message}</p>`;
             }
         }
 
@@ -2825,6 +2831,7 @@
                 }
             } catch(e) {
                 console.error('Erreur chargement consignes générales:', e);
+                document.getElementById('consignesGenerales').innerHTML = `<p style="color:#ef4444;font-size:13px;padding:10px;">⚠️ Erreur: ${e.message}</p>`;
             }
         }
 
@@ -2872,6 +2879,7 @@
                 }
             } catch(e) {
                 console.error('Erreur chargement zones:', e);
+                document.getElementById('zonesSecurite').innerHTML = `<p style="color:#ef4444;font-size:13px;padding:10px;">⚠️ Erreur: ${e.message}</p>`;
             }
         }
 
@@ -2924,6 +2932,7 @@
                 }
             } catch(e) {
                 console.error('Erreur chargement consignes machines:', e);
+                document.getElementById('consignesMachines').innerHTML = `<p style="color:#ef4444;font-size:13px;padding:10px;">⚠️ Erreur: ${e.message}</p>`;
             }
         }
 
