@@ -2670,8 +2670,14 @@
 
         async function loadUserDocuments() {
             try {
-                const snap = await db.collection('documents').orderBy('dateAjout', 'desc').get();
-                const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                const snap = await db.collection('documents').get();
+                const docs = snap.docs
+                    .map(d => ({ id: d.id, ...d.data() }))
+                    .sort((a, b) => {
+                        const da = a.dateAjout?.toDate ? a.dateAjout.toDate() : new Date(a.dateAjout || 0);
+                        const db2 = b.dateAjout?.toDate ? b.dateAjout.toDate() : new Date(b.dateAjout || 0);
+                        return db2 - da;
+                    });
                 renderUserDocsByType(docs, 'reglementaire', 'userDocsReglementaires');
                 renderUserDocsByType(docs, 'epi', 'userDocsEPI');
                 renderUserDocsByType(docs, 'urgence', 'userDocsUrgence');
@@ -2740,13 +2746,13 @@
         async function loadUserAlertes() {
             try {
                 const now = new Date();
-                const snapshot = await db.collection('alertes')
-                    .where('destinataires', 'in', ['tous', 'etudiants'])
-                    .get();
+                const snapshot = await db.collection('alertes').get();
 
                 const alertes = snapshot.docs
                     .map(doc => ({ id: doc.id, ...doc.data() }))
                     .filter(a => {
+                        const dest = a.destinataires || 'tous';
+                        if (dest !== 'tous' && dest !== 'etudiants') return false;
                         const dateActivation = a.dateActivation?.toDate ? a.dateActivation.toDate() : new Date(a.dateActivation);
                         return dateActivation <= now;
                     });
