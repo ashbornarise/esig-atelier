@@ -1138,6 +1138,35 @@
                     </div>
                 </div>
             </div>
+
+            <!-- DOCUMENTS SECTION -->
+            <div id="documentsSection" class="section" style="display: none;">
+                <div class="section-title">
+                    <i class="fas fa-folder-open"></i> Documents & Ressources
+                </div>
+                <div style="background:linear-gradient(135deg,#1e3a5f,#2d5a8a);color:white;border-radius:12px;padding:16px;margin-bottom:16px;">
+                    <h3 style="margin:0 0 4px 0;font-size:16px;"><i class="fas fa-file-alt"></i> Ressources de l'Atelier</h3>
+                    <p style="margin:0;font-size:13px;opacity:.85;">Documents mis à disposition par l'administration</p>
+                </div>
+                <div style="background:white;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;">
+                    <h3 style="color:#1e40af;margin:0 0 12px 0;font-size:15px;display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-file-pdf" style="color:#ef4444;"></i> Documents Réglementaires
+                    </h3>
+                    <div id="userDocsReglementaires"><p style="color:#9ca3af;text-align:center;padding:16px;font-size:13px;">Chargement...</p></div>
+                </div>
+                <div style="background:white;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;">
+                    <h3 style="color:#1e40af;margin:0 0 12px 0;font-size:15px;display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-hard-hat" style="color:#f59e0b;"></i> Équipements de Protection
+                    </h3>
+                    <div id="userDocsEPI"><p style="color:#9ca3af;text-align:center;padding:16px;font-size:13px;">Chargement...</p></div>
+                </div>
+                <div style="background:white;border-radius:12px;padding:16px;margin-bottom:14px;border:1px solid #e5e7eb;">
+                    <h3 style="color:#1e40af;margin:0 0 12px 0;font-size:15px;display:flex;align-items:center;gap:8px;">
+                        <i class="fas fa-first-aid" style="color:#10b981;"></i> Procédures d'Urgence
+                    </h3>
+                    <div id="userDocsUrgence"><p style="color:#9ca3af;text-align:center;padding:16px;font-size:13px;">Chargement...</p></div>
+                </div>
+            </div>
         </div>
 
         <!-- MODAL -->
@@ -1359,11 +1388,12 @@
             <button class="nav-item" data-nav="stock" onclick="switchSection('stock')">
                 <i class="fas fa-box"></i> Stock
             </button>
-            <button class="nav-item" data-nav="maintenance" onclick="switchSection('maintenance')">
-                <i class="fas fa-tools"></i> Maintenance
-            </button>
-            <button class="nav-item" data-nav="securite" onclick="switchSection('securite')">
+            <button class="nav-item" data-nav="securite" onclick="switchSection('securite')" style="position:relative;">
                 <i class="fas fa-shield-alt"></i> Sécurité
+                <span id="securiteBadge" style="display:none;position:absolute;top:4px;right:4px;background:#ef4444;color:white;border-radius:50%;width:8px;height:8px;"></span>
+            </button>
+            <button class="nav-item" data-nav="documents" onclick="switchSection('documents')">
+                <i class="fas fa-folder-open"></i> Docs
             </button>
         </div>
     </div>
@@ -1373,22 +1403,16 @@
         position: fixed;
         bottom: 90px;
         right: 20px;
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #1e40af, #3b82f6);
-        color: white;
+        background: none;
         border: none;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
         z-index: 500;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 24px;
-        transition: all 0.3s ease;
+        padding: 0;
     ">
-        <i class="fas fa-robot"></i>
+        <div class="elise-blob-btn">E</div>
     </button>
 
     <div id="chatPanel" style="
@@ -1408,9 +1432,7 @@
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-robot" style="font-size: 20px;"></i>
-                </div>
+                <div class="elise-blob-sm">E</div>
                 <div>
                     <h3 style="margin: 0; font-size: 15px;">Elise</h3>
                     <p style="margin: 0; font-size: 11px; opacity: 0.8;">Experte en Ingenierie - ESIG</p>
@@ -1462,6 +1484,41 @@
     </div>
 
     <style>
+        /* === ELISE 3D BLOB AVATAR === */
+        @keyframes eliseBlobMorph {
+            0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%}
+            25%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%}
+            50%{border-radius:50% 60% 30% 60%/30% 60% 70% 40%}
+            75%{border-radius:60% 40% 60% 30%/70% 30% 50% 60%}
+        }
+        @keyframes eliseGlowPulse {
+            0%,100%{box-shadow:0 0 20px rgba(168,85,247,.7),0 0 40px rgba(236,72,153,.4),inset 0 1px 3px rgba(255,255,255,.4)}
+            50%{box-shadow:0 0 35px rgba(168,85,247,.9),0 0 70px rgba(236,72,153,.6),0 0 100px rgba(59,130,246,.3),inset 0 1px 3px rgba(255,255,255,.5)}
+        }
+        @keyframes eliseFloat {
+            0%,100%{transform:translateY(0)}
+            50%{transform:translateY(-10px)}
+        }
+        .elise-blob-btn{
+            width:52px;height:52px;
+            background:linear-gradient(135deg,#7c3aed 0%,#a855f7 35%,#ec4899 70%,#3b82f6 100%);
+            border-radius:60% 40% 30% 70%/60% 30% 70% 40%;
+            animation:eliseBlobMorph 7s ease-in-out infinite,eliseGlowPulse 3s ease-in-out infinite,eliseFloat 3.5s ease-in-out infinite;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-weight:800;font-size:18px;font-family:sans-serif;
+            position:relative;cursor:pointer;
+        }
+        .elise-blob-btn:hover{animation-play-state:paused;transform:scale(1.15)}
+        .elise-blob-sm{
+            width:40px;height:40px;
+            background:linear-gradient(135deg,#7c3aed 0%,#a855f7 40%,#ec4899 100%);
+            border-radius:60% 40% 30% 70%/60% 30% 70% 40%;
+            animation:eliseBlobMorph 7s ease-in-out infinite,eliseGlowPulse 3s ease-in-out infinite;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-weight:800;font-size:14px;font-family:sans-serif;
+            flex-shrink:0;
+        }
+
         /* CHATBOT RESPONSIVE */
         @media (max-width: 640px) {
             #chatPanel {
@@ -2107,6 +2164,8 @@
                 }
                 console.log('📊 Chargement des données...');
                 loadData();
+                // Charger les alertes sécurité en arrière-plan pour afficher le badge
+                loadUserAlertesBadge();
             }
         });
 
@@ -2121,6 +2180,7 @@
             else if (section === 'stock') loadStock();
             else if (section === 'maintenance') loadMaintenance();
             else if (section === 'securite') loadSecuriteUser();
+            else if (section === 'documents') loadUserDocuments();
         }
 
         // Load stats et afficher les TP de l'utilisateur
@@ -2608,6 +2668,50 @@
         // FONCTIONS SÉCURITÉ UTILISATEUR
         // ==========================================
 
+        async function loadUserDocuments() {
+            try {
+                const snap = await db.collection('documents').orderBy('dateAjout', 'desc').get();
+                const docs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderUserDocsByType(docs, 'reglementaire', 'userDocsReglementaires');
+                renderUserDocsByType(docs, 'epi', 'userDocsEPI');
+                renderUserDocsByType(docs, 'urgence', 'userDocsUrgence');
+            } catch(e) { console.error('Erreur documents:', e); }
+        }
+
+        function renderUserDocsByType(docs, type, containerId) {
+            const el = document.getElementById(containerId);
+            if (!el) return;
+            const filtered = docs.filter(d => d.type === type);
+            if (filtered.length === 0) {
+                el.innerHTML = '<p style="color:#9ca3af;text-align:center;padding:12px;font-size:13px;">Aucun document disponible</p>';
+                return;
+            }
+            el.innerHTML = filtered.map(doc => `
+                <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:#f8fafc;border-radius:10px;margin-bottom:8px;border:1px solid #e5e7eb;">
+                    <i class="fas fa-file-alt" style="color:#3b82f6;font-size:18px;flex-shrink:0;"></i>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:14px;color:#1e40af;">${doc.titre}</div>
+                        ${doc.description ? `<div style="font-size:12px;color:#6b7280;margin-top:2px;">${doc.description}</div>` : ''}
+                    </div>
+                    <div style="display:flex;gap:6px;flex-shrink:0;">
+                        ${doc.url ? `<a href="${doc.url}" target="_blank" rel="noopener" style="background:#dbeafe;color:#1e40af;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;text-decoration:none;white-space:nowrap;display:flex;align-items:center;gap:4px;"><i class="fas fa-eye"></i> Ouvrir</a>` : ''}
+                        ${doc.fileData ? `<button onclick="downloadUserDoc('${doc.id}','${(doc.fileName||doc.titre).replace(/'/g,'&#39;')}')" style="background:#d1fae5;color:#065f46;border:none;padding:6px 12px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;white-space:nowrap;"><i class="fas fa-download"></i></button>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function downloadUserDoc(id, filename) {
+            db.collection('documents').doc(id).get().then(function(snap) {
+                if (snap.exists && snap.data().fileData) {
+                    var a = document.createElement('a');
+                    a.href = snap.data().fileData;
+                    a.download = filename;
+                    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                }
+            });
+        }
+
         async function loadSecuriteUser() {
             await Promise.all([
                 loadUserAlertes(),
@@ -2615,6 +2719,14 @@
                 loadUserZones(),
                 loadUserConsignesMachines()
             ]);
+        }
+
+        async function loadUserAlertesBadge() {
+            try {
+                const snap = await db.collection('alertes').where('statut', '==', 'active').get();
+                const badge = document.getElementById('securiteBadge');
+                if (badge) badge.style.display = snap.docs.length > 0 ? 'block' : 'none';
+            } catch(e) {}
         }
 
         async function loadUserAlertes() {
@@ -2970,13 +3082,13 @@
 
         function toggleChat() {
             const panel = document.getElementById('chatPanel');
-            const btn = document.getElementById('chatbotBtn');
+            const blob = document.querySelector('#chatbotBtn .elise-blob-btn');
             isChatOpen = !isChatOpen;
             if (isChatOpen) {
                 panel.style.display = 'flex';
                 panel.classList.remove('closing');
                 panel.classList.add('active');
-                btn.innerHTML = '<i class="fas fa-times"></i>';
+                if (blob) blob.textContent = '✕';
                 if (document.getElementById('chatMessages').children.length === 0) {
                     showWelcomeMessage();
                 }
@@ -2984,7 +3096,7 @@
             } else {
                 panel.classList.remove('active');
                 panel.classList.add('closing');
-                btn.innerHTML = '<i class="fas fa-robot"></i>';
+                if (blob) blob.textContent = 'E';
                 setTimeout(() => {
                     panel.classList.remove('closing');
                     panel.style.display = 'none';

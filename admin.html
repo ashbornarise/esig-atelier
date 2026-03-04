@@ -28,6 +28,41 @@
             box-sizing: border-box;
         }
 
+        /* === ELISE 3D BLOB AVATAR === */
+        @keyframes eliseBlobMorph {
+            0%,100%{border-radius:60% 40% 30% 70%/60% 30% 70% 40%}
+            25%{border-radius:30% 60% 70% 40%/50% 60% 30% 60%}
+            50%{border-radius:50% 60% 30% 60%/30% 60% 70% 40%}
+            75%{border-radius:60% 40% 60% 30%/70% 30% 50% 60%}
+        }
+        @keyframes eliseGlowPulse {
+            0%,100%{box-shadow:0 0 20px rgba(168,85,247,.7),0 0 40px rgba(236,72,153,.4),inset 0 1px 3px rgba(255,255,255,.4)}
+            50%{box-shadow:0 0 35px rgba(168,85,247,.9),0 0 70px rgba(236,72,153,.6),0 0 100px rgba(59,130,246,.3),inset 0 1px 3px rgba(255,255,255,.5)}
+        }
+        @keyframes eliseFloat {
+            0%,100%{transform:translateY(0)}
+            50%{transform:translateY(-10px)}
+        }
+        .elise-blob-btn{
+            width:54px;height:54px;
+            background:linear-gradient(135deg,#7c3aed 0%,#a855f7 35%,#ec4899 70%,#3b82f6 100%);
+            border-radius:60% 40% 30% 70%/60% 30% 70% 40%;
+            animation:eliseBlobMorph 7s ease-in-out infinite,eliseGlowPulse 3s ease-in-out infinite,eliseFloat 3.5s ease-in-out infinite;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-weight:800;font-size:18px;font-family:sans-serif;
+            position:relative;cursor:pointer;
+        }
+        .elise-blob-btn:hover{animation-play-state:paused;transform:scale(1.15)}
+        .elise-blob-sm{
+            width:40px;height:40px;
+            background:linear-gradient(135deg,#7c3aed 0%,#a855f7 40%,#ec4899 100%);
+            border-radius:60% 40% 30% 70%/60% 30% 70% 40%;
+            animation:eliseBlobMorph 7s ease-in-out infinite,eliseGlowPulse 3s ease-in-out infinite;
+            display:flex;align-items:center;justify-content:center;
+            color:#fff;font-weight:800;font-size:14px;font-family:sans-serif;
+            flex-shrink:0;
+        }
+
         /* Animations */
         @keyframes slideIn {
             from { transform: translateX(100px); opacity: 0; }
@@ -1788,22 +1823,16 @@
         position: fixed;
         bottom: 30px;
         right: 20px;
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #1e40af, #3b82f6);
-        color: white;
+        background: none;
         border: none;
         cursor: pointer;
-        box-shadow: 0 6px 20px rgba(30, 64, 175, 0.4);
         z-index: 500;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
-        transition: all 0.3s ease;
+        padding: 0;
     ">
-        <i class="fas fa-robot"></i>
+        <div class="elise-blob-btn">E</div>
     </button>
 
     <div id="chatPanel" style="
@@ -1823,9 +1852,7 @@
         <!-- Header -->
         <div style="background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-robot" style="font-size: 20px;"></i>
-                </div>
+                <div class="elise-blob-sm">E</div>
                 <div>
                     <h3 style="margin: 0; font-size: 15px;">Elise</h3>
                     <p style="margin: 0; font-size: 11px; opacity: 0.8;">Experte en Ingenierie - ESIG</p>
@@ -2063,6 +2090,42 @@
             <div class="modal-footer">
                 <button class="btn-secondary" onclick="closeModal('tpDetailModal')">Fermer</button>
                 <button class="btn-primary" id="tpDetailEditBtn"><i class="fas fa-edit"></i> Modifier</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DOCUMENT -->
+    <div id="documentModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:2000;align-items:center;justify-content:center;">
+        <div style="background:white;border-radius:16px;padding:28px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h3 id="docModalTitle" style="margin:0;color:#1e40af;font-size:18px;"></h3>
+                <button onclick="closeDocumentModal()" style="background:#f3f4f6;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;font-size:16px;">✕</button>
+            </div>
+            <input type="hidden" id="docModalType">
+            <div style="margin-bottom:14px;">
+                <label style="font-weight:600;font-size:13px;color:#374151;display:block;margin-bottom:6px;">Titre *</label>
+                <input type="text" id="docModalTitre" placeholder="Ex: Règlement intérieur, Fiche EPI..." style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="font-weight:600;font-size:13px;color:#374151;display:block;margin-bottom:6px;">Description</label>
+                <textarea id="docModalDesc" placeholder="Description courte..." rows="2" style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;resize:vertical;"></textarea>
+            </div>
+            <div style="margin-bottom:14px;">
+                <label style="font-weight:600;font-size:13px;color:#374151;display:block;margin-bottom:6px;"><i class="fas fa-link" style="color:#3b82f6;"></i> URL (Google Drive, SharePoint…)</label>
+                <input type="url" id="docModalUrl" placeholder="https://drive.google.com/..." style="width:100%;padding:10px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="font-weight:600;font-size:13px;color:#374151;display:block;margin-bottom:6px;"><i class="fas fa-upload" style="color:#10b981;"></i> OU fichier local (max 2 Mo)</label>
+                <label style="display:flex;align-items:center;gap:10px;background:#f0fdf4;border:2px dashed #10b981;border-radius:10px;padding:14px;cursor:pointer;">
+                    <i class="fas fa-folder-open" style="color:#10b981;font-size:20px;"></i>
+                    <span style="color:#065f46;font-size:13px;">Cliquer pour parcourir…</span>
+                    <input type="file" id="docModalFile" accept=".pdf,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.txt" style="display:none;">
+                </label>
+                <p id="docModalFileInfo" style="margin:6px 0 0 0;font-size:12px;color:#6b7280;font-weight:500;"></p>
+            </div>
+            <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button onclick="closeDocumentModal()" style="padding:10px 20px;border:1.5px solid #e5e7eb;border-radius:8px;background:white;cursor:pointer;font-size:14px;">Annuler</button>
+                <button onclick="saveDocument()" style="padding:10px 24px;background:linear-gradient(135deg,#1e40af,#3b82f6);color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;"><i class="fas fa-save"></i> Enregistrer</button>
             </div>
         </div>
     </div>
@@ -3550,6 +3613,7 @@
             document.querySelector(`.securite-tab[data-tab="${tabName}"]`).classList.add('active');
             document.querySelector(`.securite-tab[data-tab="${tabName}"]`).classList.remove('btn-secondary');
             document.querySelector(`.securite-tab[data-tab="${tabName}"]`).classList.add('btn-primary');
+            if (tabName === 'dossier') loadDocuments();
         }
 
         async function loadSecurite() {
@@ -4186,13 +4250,13 @@
 
         function toggleChat() {
             const panel = document.getElementById('chatPanel');
-            const btn = document.getElementById('chatbotBtn');
+            const blob = document.querySelector('#chatbotBtn .elise-blob-btn');
             isChatOpen = !isChatOpen;
             if (isChatOpen) {
                 panel.style.display = 'flex';
                 panel.classList.remove('closing');
                 panel.classList.add('active');
-                btn.innerHTML = '<i class="fas fa-times"></i>';
+                if (blob) blob.textContent = '✕';
                 if (document.getElementById('chatMessages').children.length === 0) {
                     showWelcomeMessage();
                 }
@@ -4200,7 +4264,7 @@
             } else {
                 panel.classList.remove('active');
                 panel.classList.add('closing');
-                btn.innerHTML = '<i class="fas fa-robot"></i>';
+                if (blob) blob.textContent = 'E';
                 setTimeout(() => {
                     panel.classList.remove('closing');
                     panel.style.display = 'none';
@@ -4738,9 +4802,123 @@
             URL.revokeObjectURL(url);
         }
 
-        // Stub document sécurité
+        // === SYSTÈME DOCUMENTS ===
+        let allDocuments = [];
+
+        async function loadDocuments() {
+            try {
+                const snap = await db.collection('documents').orderBy('dateAjout', 'desc').get();
+                allDocuments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+                renderDocumentsByType('reglementaire', 'docsReglementaires');
+                renderDocumentsByType('epi', 'docsEPI');
+                renderDocumentsByType('urgence', 'docsUrgence');
+            } catch(e) { console.error('Erreur chargement documents:', e); }
+        }
+
+        function renderDocumentsByType(type, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+            const docs = allDocuments.filter(d => d.type === type);
+            if (docs.length === 0) {
+                container.innerHTML = '<p style="color:#9ca3af;font-size:13px;">Aucun document</p>';
+                return;
+            }
+            container.innerHTML = docs.map(doc => `
+                <div style="display:flex;align-items:center;gap:8px;padding:8px;background:#f8fafc;border-radius:8px;margin-bottom:6px;border:1px solid #e5e7eb;">
+                    <i class="fas fa-file-alt" style="color:#3b82f6;flex-shrink:0;"></i>
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:13px;color:#1e40af;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${doc.titre}</div>
+                        ${doc.description ? `<div style="font-size:11px;color:#6b7280;">${doc.description}</div>` : ''}
+                    </div>
+                    <div style="display:flex;gap:4px;flex-shrink:0;">
+                        ${doc.url ? `<a href="${doc.url}" target="_blank" rel="noopener" style="background:#dbeafe;color:#1e40af;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:11px;text-decoration:none;"><i class="fas fa-eye"></i></a>` : ''}
+                        ${doc.fileData ? `<button onclick="downloadAdminDoc('${doc.id}')" style="background:#d1fae5;color:#065f46;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:11px;"><i class="fas fa-download"></i></button>` : ''}
+                        <button onclick="deleteDocument('${doc.id}')" style="background:#fee2e2;color:#991b1b;border:none;padding:4px 8px;border-radius:6px;cursor:pointer;font-size:11px;"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function openDocumentModal(type) {
-            showNotification('Fonctionnalité documents disponible – utilisez un lien URL vers vos docs.', 'info');
+            document.getElementById('docModalType').value = type;
+            document.getElementById('docModalTitre').value = '';
+            document.getElementById('docModalDesc').value = '';
+            document.getElementById('docModalUrl').value = '';
+            document.getElementById('docModalFileInfo').textContent = '';
+            document.getElementById('docModalFile').value = '';
+            window._docFileData = null;
+            window._docFileName = null;
+            const typeLabels = { reglementaire: 'Réglementaire', epi: 'Équipement de Protection', urgence: "Procédure d'Urgence" };
+            document.getElementById('docModalTitle').textContent = 'Ajouter – ' + (typeLabels[type] || type);
+            document.getElementById('documentModal').style.display = 'flex';
+        }
+
+        function closeDocumentModal() {
+            document.getElementById('documentModal').style.display = 'none';
+        }
+
+        document.addEventListener('change', function(e) {
+            if (e.target && e.target.id === 'docModalFile') {
+                const file = e.target.files[0];
+                if (!file) return;
+                if (file.size > 500 * 1024) {
+                    showNotification('Fichier trop lourd (max 500 Ko). Pour les gros fichiers, utilisez une URL Google Drive.', 'warning');
+                    e.target.value = ''; return;
+                }
+                const sizeKo = (file.size / 1024).toFixed(0);
+                document.getElementById('docModalFileInfo').textContent = file.name + ' — ' + sizeKo + ' Ko ✓';
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    window._docFileData = ev.target.result;
+                    window._docFileName = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        async function saveDocument() {
+            const titre = document.getElementById('docModalTitre').value.trim();
+            const type = document.getElementById('docModalType').value;
+            const desc = document.getElementById('docModalDesc').value.trim();
+            const urlInput = document.getElementById('docModalUrl').value.trim();
+            if (!titre) { showNotification('Titre requis', 'error'); return; }
+            if (!urlInput && !window._docFileData) { showNotification('Ajoutez une URL ou choisissez un fichier.', 'warning'); return; }
+
+            const data = {
+                titre, type, description: desc,
+                url: urlInput || null,
+                fileData: window._docFileData || null,
+                fileName: window._docFileName || null,
+                dateAjout: firebase.firestore.FieldValue.serverTimestamp(),
+                addedBy: auth.currentUser ? auth.currentUser.uid : null
+            };
+            try {
+                await db.collection('documents').add(data);
+                showNotification('Document ajouté !', 'success');
+                closeDocumentModal();
+                await loadDocuments();
+                if (typeof logActivity === 'function') logActivity('document_add', 'Document ajouté: ' + titre);
+            } catch(e) { console.error(e); showNotification("Erreur lors de l'ajout", 'error'); }
+        }
+
+        async function deleteDocument(id) {
+            if (!confirm('Supprimer ce document ?')) return;
+            try {
+                await db.collection('documents').doc(id).delete();
+                showNotification('Document supprimé', 'success');
+                await loadDocuments();
+            } catch(e) { showNotification('Erreur suppression', 'error'); }
+        }
+
+        function downloadAdminDoc(id) {
+            const doc = allDocuments.find(d => d.id === id);
+            if (!doc) return;
+            if (doc.url) { window.open(doc.url, '_blank'); return; }
+            if (doc.fileData) {
+                const a = document.createElement('a');
+                a.href = doc.fileData; a.download = doc.fileName || doc.titre;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            }
         }
 
         // ==========================================

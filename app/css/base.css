@@ -44,9 +44,16 @@ img {
     display: block;
 }
 
-/* Focus visible */
+/* Focus visible (avec fallback pour navigateurs anciens) */
+:focus {
+    outline: 2px solid var(--accent, #3b82f6);
+    outline-offset: 2px;
+}
+:focus:not(:focus-visible) {
+    outline: none;
+}
 :focus-visible {
-    outline: 2px solid var(--accent);
+    outline: 2px solid var(--accent, #3b82f6);
     outline-offset: 2px;
 }
 
@@ -56,23 +63,29 @@ img {
     color: var(--white);
 }
 
-/* Scrollbar personnalisée */
+/* Scrollbar — WebKit (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-tertiary);
+    background: var(--bg-tertiary, #f3f4f6);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--gray-400);
+    background: var(--gray-400, #9ca3af);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--gray-500);
+    background: var(--gray-500, #6b7280);
+}
+
+/* Scrollbar — Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-400, #9ca3af) var(--bg-tertiary, #f3f4f6);
 }
 
 /* Typography */
