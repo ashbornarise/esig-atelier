@@ -2723,9 +2723,17 @@
 
         async function loadUserAlertesBadge() {
             try {
-                const snap = await db.collection('alertes').where('statut', '==', 'active').get();
+                const now = new Date();
+                const snap = await db.collection('alertes')
+                    .where('destinataires', 'in', ['tous', 'etudiants'])
+                    .get();
+                const hasActive = snap.docs.some(doc => {
+                    const a = doc.data();
+                    const dateActivation = a.dateActivation?.toDate ? a.dateActivation.toDate() : new Date(a.dateActivation);
+                    return dateActivation <= now;
+                });
                 const badge = document.getElementById('securiteBadge');
-                if (badge) badge.style.display = snap.docs.length > 0 ? 'block' : 'none';
+                if (badge) badge.style.display = hasActive ? 'block' : 'none';
             } catch(e) {}
         }
 

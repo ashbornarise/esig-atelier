@@ -3838,6 +3838,7 @@
                 priorite: document.getElementById('alertePriorite').value,
                 dateActivation: new Date(document.getElementById('alerteDate').value),
                 destinataires: document.getElementById('alerteDestinataires').value,
+                statut: 'active',
                 dateCreation: new Date(),
                 createdBy: currentUserData.id
             };
@@ -4861,6 +4862,44 @@
             if (e.target && e.target.id === 'docModalFile') {
                 const file = e.target.files[0];
                 if (!file) return;
+
+                const isImage = file.type.startsWith('image/');
+
+                // Pour les images : compression canvas automatique (max 800px, JPEG 75%)
+                if (isImage) {
+                    if (file.size > 5 * 1024 * 1024) {
+                        showNotification('Image trop lourde (max 5 Mo).', 'warning');
+                        e.target.value = ''; return;
+                    }
+                    const imgUrl = URL.createObjectURL(file);
+                    const img = new Image();
+                    img.onload = function() {
+                        const MAX = 800;
+                        let w = img.width, h = img.height;
+                        if (w > MAX || h > MAX) {
+                            if (w > h) { h = Math.round(h * MAX / w); w = MAX; }
+                            else { w = Math.round(w * MAX / h); h = MAX; }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = w; canvas.height = h;
+                        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+                        canvas.toBlob(function(blob) {
+                            const sizeKo = (blob.size / 1024).toFixed(0);
+                            document.getElementById('docModalFileInfo').textContent = file.name + ' — compressée : ' + sizeKo + ' Ko ✓';
+                            const reader = new FileReader();
+                            reader.onload = function(ev) {
+                                window._docFileData = ev.target.result;
+                                window._docFileName = file.name;
+                            };
+                            reader.readAsDataURL(blob);
+                        }, 'image/jpeg', 0.75);
+                        URL.revokeObjectURL(imgUrl);
+                    };
+                    img.src = imgUrl;
+                    return;
+                }
+
+                // Pour les autres fichiers : limite 500 Ko, base64 direct
                 if (file.size > 500 * 1024) {
                     showNotification('Fichier trop lourd (max 500 Ko). Pour les gros fichiers, utilisez une URL Google Drive.', 'warning');
                     e.target.value = ''; return;
